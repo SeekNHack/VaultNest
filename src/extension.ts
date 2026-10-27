@@ -5,6 +5,7 @@ import { Actions } from './host/Actions';
 import { registerCommands } from './host/commands';
 import { AutoLock } from './host/services/AutoLock';
 import { ClipboardService } from './host/services/ClipboardService';
+import { DashboardPanel } from './host/views/DashboardPanel';
 import { StatusBar } from './host/views/StatusBar';
 import { VaultTreeProvider } from './host/views/VaultTreeProvider';
 import { VaultManager } from './host/VaultManager';
@@ -23,6 +24,7 @@ export interface TestApi {
   autoLock: AutoLock;
   kdbxweb: typeof kdbxweb;
   VaultSession: typeof VaultSession;
+  dashboard: () => DashboardPanel | undefined;
 }
 
 export function activate(context: vscode.ExtensionContext): TestApi | undefined {
@@ -56,7 +58,7 @@ export function activate(context: vscode.ExtensionContext): TestApi | undefined 
   registerCommands(context, manager, actions, tree, () => autoLock.touch());
   log.info('PasswdVault activated. All vaults are locked.');
   // Internals are exposed to the integration tests only; never to other extensions in production.
-  return context.extensionMode === vscode.ExtensionMode.Test ? { manager, actions, tree, autoLock, kdbxweb, VaultSession } : undefined;
+  return context.extensionMode === vscode.ExtensionMode.Test ? { manager, actions, tree, autoLock, kdbxweb, VaultSession, dashboard: () => DashboardPanel.current } : undefined;
 }
 
 export async function deactivate(): Promise<void> {
