@@ -3,6 +3,7 @@ import { activeVault, app, render, selectEntry, strengthMeter, type NewItemPrese
 import { confirmDialog } from '../dialog';
 import { button, debounce, h, icon, iconButton, replace } from '../dom';
 import { rpc } from '../rpc';
+import { generatorDialog } from './generator';
 import { reportError, toast } from '../toast';
 
 /**
@@ -19,7 +20,7 @@ interface SecretInput {
 
 function secretInput(opts: {
   id: string; existing: boolean; reveal?: () => Promise<string>; multiline?: boolean; placeholder?: string;
-  onInput?: (v: string) => void; generate?: () => Promise<string>;
+  onInput?: (v: string) => void; generate?: () => Promise<string>; actions?: HTMLElement[];
 }): SecretInput {
   let keep = opts.existing;
   let loaded = !opts.existing;
@@ -67,7 +68,7 @@ function secretInput(opts: {
       reportError(err);
     }
   }) : null;
-  const el = h('div', { class: 'input-group' }, input, h('div', { class: 'input-actions' }, eye, gen));
+  const el = h('div', { class: 'input-group' }, input, h('div', { class: 'input-actions' }, eye, gen, opts.actions));
   return {
     el, input,
     value: () => (keep ? { keep: true } : input.value),
@@ -117,10 +118,17 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
     const options = await rpc('getGeneratorOptions', {});
     return (await rpc('generate', { options })).value;
   };
+  // Opens the generator in a dialog: the options chosen there apply only to this password.
+  const optionsButton = iconButton('settings', 'Generate with options…', () => {
+    rpc('getGeneratorOptions', {})
+      .then((options) => generatorDialog(options))
+      .then((value) => { if (value) password.set(value); })
+      .catch(reportError);
+  });
   const password = secretInput({
     id: uid('pw'), existing: !!detail?.hasPassword,
     reveal: () => rpc('reveal', { vaultId: vault.id, entryId: detail!.id, field: 'Password' }),
-    onInput: (v) => { markDirty(); updateStrength(v); }, generate,
+    onInput: (v) => { markDirty(); updateStrength(v); }, generate, actions: [optionsButton],
   });
   if (preset.password) password.set(preset.password);
   // ---- 2FA: the setup key (or an otpauth:// link) shown by the website

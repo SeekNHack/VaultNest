@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Item editor: a new button next to *Generate* opens the generator in a dialog, to choose the length, character sets or a passphrase for that password only (the saved defaults are not changed).
+
 ## 1.3.1 — 2026-10-27
 
 - Fixed the extension icon.
