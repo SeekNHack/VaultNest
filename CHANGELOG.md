@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 — 2026-10-27
+
+- Fixed the extension icon.
+
 ## 1.3.0 — 2026-10-27
 
 First Marketplace release.
