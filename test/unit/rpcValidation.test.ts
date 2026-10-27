@@ -30,8 +30,5 @@ describe('webview message validation', () => {
     expect(() => validateRequest(req('saveEntry', { vaultId: 'v', entryId: null, input: { ...entryInput(), type: 'virus' } }))).toThrow(ValidationError);
     expect(() => validateRequest(req('saveEntry', { vaultId: 'v', entryId: null, input: { ...entryInput(), password: { keep: true, x: 1 } } }))).toThrow(ValidationError);
     expect(() => validateRequest(req('copyText', { text: 'x'.repeat(2_000_000), sensitive: true }))).toThrow(ValidationError);
-    expect(() => validateRequest(req('setAutoLock', { vaultId: 'v', minutes: -1 }))).toThrow(ValidationError);
-    expect(() => validateRequest(req('setAutoLock', { vaultId: 'v', minutes: 5000 }))).toThrow(ValidationError);
-    expect(validateRequest(req('setAutoLock', { vaultId: 'v', minutes: null })).method).toBe('setAutoLock');
   });
 });

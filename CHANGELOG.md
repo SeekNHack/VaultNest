@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 — 2026-10-27
+
+- The auto-lock time is now stored inside each encrypted vault and changing it asks for the master password (*Vault settings → Auto-lock → Change…* or **VaultNest: Change Auto-Lock Time…**). It can no longer be changed from VS Code settings or by editing a file.
+- Removed the `vaultnest.autoLock.minutes` setting. Vaults lock after 15 minutes without activity until you choose another time.
+
 ## 1.4.0 — 2026-10-27
 
 - Vault settings: choose after how long each vault locks itself without activity (or use the global default). The setting can only be changed while the vault is unlocked; closing VS Code always locks every vault.

@@ -100,7 +100,6 @@ const schemas: { [M in RpcMethod]: Check } = {
   strength: obj({ value: str(4096) }),
   health: obj(vaultRef),
   vaultCommand: obj({ vaultId: id, command: oneOf(VAULT_COMMANDS) }),
-  setAutoLock: obj({ vaultId: id, minutes: nullable(num(0, 1440)) }),
   openSettings: empty,
 };
 

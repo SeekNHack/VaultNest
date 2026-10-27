@@ -15,8 +15,6 @@ export interface VaultRef {
   path: string;
   scope: 'global' | 'workspace';
   keyFilePath?: string;
-  /** Inactivity timeout for this vault in minutes (0 = never); unset uses the global setting. */
-  autoLockMinutes?: number;
 }
 
 export type ChangeKind = 'registry' | 'lock' | 'content' | 'health';
@@ -77,7 +75,7 @@ export class VaultManager implements vscode.Disposable {
   }
 
   private async saveRefs(refs: VaultRef[]): Promise<void> {
-    const strip = (r: VaultRef) => ({ id: r.id, name: r.name, path: r.path, keyFilePath: r.keyFilePath, autoLockMinutes: r.autoLockMinutes });
+    const strip = (r: VaultRef) => ({ id: r.id, name: r.name, path: r.path, keyFilePath: r.keyFilePath });
     await this.context.globalState.update(GLOBAL_KEY, refs.filter((r) => r.scope === 'global').map(strip));
     await this.context.workspaceState.update(WORKSPACE_KEY, refs.filter((r) => r.scope === 'workspace').map(strip));
     this.emitter.fire({ kind: 'registry' });
@@ -174,11 +172,6 @@ export class VaultManager implements vscode.Disposable {
 
   unlockedIds(): string[] {
     return this.refs().filter((r) => this.isUnlocked(r.id)).map((r) => r.id);
-  }
-
-  /** The effective inactivity timeout of a vault, in minutes (0 = never). */
-  autoLockMinutes(id: string): number {
-    return this.ref(id).autoLockMinutes ?? config.autoLockMinutes();
   }
 
   hasUnlocked(): boolean {
@@ -325,13 +318,14 @@ export class VaultManager implements vscode.Disposable {
 
   info(ref: VaultRef): VaultInfo {
     const s = this.sessions.get(ref.id);
-    const info: VaultInfo = { id: ref.id, name: ref.name, path: ref.path, scope: ref.scope, locked: !s?.unlocked, keyFilePath: ref.keyFilePath, autoLockMinutes: ref.autoLockMinutes };
+    const info: VaultInfo = { id: ref.id, name: ref.name, path: ref.path, scope: ref.scope, locked: !s?.unlocked, keyFilePath: ref.keyFilePath };
     if (s?.unlocked) {
       const d = s.doc;
       info.details = {
         ...d.formatInfo,
         entryCount: [...d.allEntries(false)].length,
         description: d.description,
+        autoLockMinutes: d.autoLockMinutes,
         lastSaved: s.lastSaved,
       };
     }

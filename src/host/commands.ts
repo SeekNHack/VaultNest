@@ -4,7 +4,7 @@ import { ITEM_TYPE_INFO, type EntrySummary } from '../shared/model';
 import { Actions } from './Actions';
 import { config } from './config';
 import { exportFlow, importFlow } from './services/dataFlows';
-import { changeMasterPasswordFlow, createVaultFlow, openVaultFlow } from './services/vaultFlows';
+import { autoLockFlow, changeMasterPasswordFlow, createVaultFlow, openVaultFlow } from './services/vaultFlows';
 import { DashboardPanel } from './views/DashboardPanel';
 import type { TreeNode } from './views/VaultTreeProvider';
 import { VaultTreeProvider } from './views/VaultTreeProvider';
@@ -226,6 +226,10 @@ export function registerCommands(
   reg('vaultnest.changeMasterPassword', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (id) await changeMasterPasswordFlow(manager, id);
+  });
+  reg('vaultnest.setAutoLock', async (arg) => {
+    const id = await resolveVault(arg, { unlocked: true });
+    if (id) await autoLockFlow(manager, id);
   });
   reg('vaultnest.backupNow', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });

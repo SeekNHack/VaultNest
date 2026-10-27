@@ -39,7 +39,7 @@
 | | |
 |---|---|
 | 🔐 **Encrypted vaults** | KDBX 4 with AES-256 and Argon2id, unlocked with a master password and, optionally, a key file. You can have several vaults; each one is either *global* or tied to a workspace. |
-| 🔒 **Locked by default** | Vaults are locked when VS Code starts, after a configurable idle time, on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored. |
+| 🔒 **Locked by default** | Vaults are locked when VS Code starts, after an idle time chosen per vault (stored in the encrypted vault; changing it asks for the master password), on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored. |
 | 🗂️ **Every kind of secret** | Logins, API keys, tokens, SSH keys, cards and secure notes. Items can have custom fields (plain or hidden), folders, tags, favorites, expiry dates and 2FA codes. |
 | 🛡️ **Two-factor codes (TOTP)** | Get 6- or 8-digit codes for any account: paste the setup key shown by the website into the item, and the current code is always one click away. |
 | 🧭 **Dashboard** | Search, filters (type, folder, tag, favorites, *with 2FA*), item details and editor, password generator, health report and vault settings. It follows your light, dark or high-contrast theme. |
@@ -105,7 +105,6 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 
 | Setting | Default | Description |
 |---|---|---|
-| `vaultnest.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never). Each vault can override it under *Vault settings* in the dashboard |
 | `vaultnest.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
 | `vaultnest.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
 | `vaultnest.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |

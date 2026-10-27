@@ -11,7 +11,7 @@ VaultNest protects secrets **at rest** and limits their exposure **while in use*
 **In scope**
 
 - Theft or copy of the vault file or its backups (stolen laptop, leaked sync folder, accidental commit): the file is a KDBX 4 database encrypted with AES-256 (or ChaCha20 for imported files) under a key derived with Argon2id. Its security depends on the strength of the master password.
-- Shoulder-surfing and accidental disclosure: secrets are masked by default, revealed values re-mask after 30 seconds, the clipboard is cleared automatically, and vaults auto-lock.
+- Shoulder-surfing and accidental disclosure: secrets are masked by default, revealed values re-mask after 30 seconds, the clipboard is cleared automatically, and vaults auto-lock. Each vault's auto-lock time is stored inside the encrypted vault and changing it requires the master password, so it cannot be weakened from VS Code settings or by editing the file.
 - Data loss: atomic writes, decryption check before replacing the file, rotating backups, merge of concurrent changes, recovery copy if saving fails.
 - Content injected through vault data (malicious titles, URLs or notes in an imported file): the dashboard renders text with DOM APIs only (no `innerHTML`), runs under a strict CSP with nonce-only scripts, and only opens `http(s)`, `ftp`, `sftp`, `ssh` and `mailto` links.
 

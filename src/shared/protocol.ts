@@ -19,7 +19,7 @@ export interface DashboardState {
   folders: FolderNode[];
   entries: EntrySummary[];
   tags: string[];
-  prefs: { showPasswordStrength: boolean; clipboardClearSeconds: number; autoLockMinutes: number };
+  prefs: { showPasswordStrength: boolean; clipboardClearSeconds: number };
 }
 
 /** RPC method signatures: [params, result]. */
@@ -51,18 +51,17 @@ export interface RpcMethods {
   strength: [{ value: string }, StrengthResult];
   health: [{ vaultId: string }, HealthReport];
   vaultCommand: [{ vaultId: string; command: VaultCommand }, void];
-  setAutoLock: [{ vaultId: string; minutes: number | null }, void];
   openSettings: [Record<string, never>, void];
 }
 
 
 export type VaultCommand =
   | 'changeMasterPassword' | 'backupNow' | 'openBackupFolder' | 'sync' | 'import' | 'export'
-  | 'remove' | 'reveal' | 'rename' | 'upgradeFormat' | 'editDescription';
+  | 'remove' | 'reveal' | 'rename' | 'upgradeFormat' | 'editDescription' | 'autoLock';
 
 export const VAULT_COMMANDS: readonly VaultCommand[] = [
   'changeMasterPassword', 'backupNow', 'openBackupFolder', 'sync', 'import', 'export',
-  'remove', 'reveal', 'rename', 'upgradeFormat', 'editDescription',
+  'remove', 'reveal', 'rename', 'upgradeFormat', 'editDescription', 'autoLock',
 ];
 
 export type RpcMethod = keyof RpcMethods;

@@ -54,6 +54,24 @@ describe('VaultDocument', () => {
     expect(raw.customData?.get(CUSTOM_DATA.type)?.value).toBe('apiKey');
   });
 
+  it('stores the auto-lock time inside the encrypted vault', async () => {
+    const doc = await newDoc();
+    expect(doc.autoLockMinutes).toBe(15);
+    doc.autoLockMinutes = 5;
+    expect((await roundtrip(doc)).autoLockMinutes).toBe(5);
+    expect(() => { doc.autoLockMinutes = -1; }).toThrow();
+    expect(() => { doc.autoLockMinutes = 1.5; }).toThrow();
+    expect(() => { doc.autoLockMinutes = 100_000; }).toThrow();
+  });
+
+  it('refuses a vault file modified without the master password', async () => {
+    const doc = await newDoc();
+    doc.autoLockMinutes = 5;
+    const bytes = new Uint8Array(await doc.save());
+    bytes[bytes.length - 40] ^= 0x01;
+    await expect(VaultDocument.load(bytes.buffer, await makeCredentials({ password: pv('master') }))).rejects.toBeTruthy();
+  });
+
   it('reads item type written under the old PasswdManager key', async () => {
     const doc = await newDoc();
     const id = doc.saveEntry(null, entryInput({ type: 'login' }));

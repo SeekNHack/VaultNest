@@ -25,6 +25,11 @@ const LEGACY_CUSTOM_DATA: Record<string, string[]> = {
   [CUSTOM_DATA.favorite]: ['PasswdManager.Favorite', 'PasswdVault.Favorite'],
 };
 
+/** Vault-level custom data key (KDBX `Meta/CustomData`) holding the auto-lock time in minutes. */
+const AUTO_LOCK_KEY = 'VaultNest.AutoLockMinutes';
+export const DEFAULT_AUTO_LOCK_MINUTES = 15;
+export const MAX_AUTO_LOCK_MINUTES = 1440;
+
 /** Standard KDBX field names. */
 export const STD_FIELDS = {
   title: 'Title',
@@ -173,6 +178,21 @@ export class VaultDocument {
   }
   set description(value: string) {
     this.db.meta.desc = clampString(value, 10_000, 'Description');
+  }
+
+  /**
+   * Inactivity timeout in minutes (0 = never). It is stored inside the encrypted,
+   * integrity-protected vault, so it cannot be changed without the master password.
+   */
+  get autoLockMinutes(): number {
+    const raw = this.db.meta.customData?.get(AUTO_LOCK_KEY)?.value;
+    const n = raw === undefined ? NaN : Number(raw);
+    return Number.isInteger(n) && n >= 0 && n <= MAX_AUTO_LOCK_MINUTES ? n : DEFAULT_AUTO_LOCK_MINUTES;
+  }
+  set autoLockMinutes(value: number) {
+    if (!Number.isInteger(value) || value < 0 || value > MAX_AUTO_LOCK_MINUTES) throw new Error('Invalid auto-lock time.');
+    if (!this.db.meta.customData) this.db.meta.customData = new Map();
+    this.db.meta.customData.set(AUTO_LOCK_KEY, { value: String(value), lastModified: new Date() });
   }
 
   get formatInfo(): { kdbxVersion: string; kdf: string; kdfMemoryMiB?: number; kdfIterations?: number; cipher: string; hasKeyFile: boolean } {

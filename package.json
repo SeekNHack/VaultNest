@@ -2,7 +2,7 @@
   "name": "vaultnest",
   "displayName": "VaultNest",
   "description": "A local-first vault for VS Code. Keep logins, API keys, tokens and 2FA codes in an encrypted KDBX file on your machine.",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "publisher": "hacknseek",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -255,6 +255,12 @@
         "icon": "$(key)"
       },
       {
+        "command": "vaultnest.setAutoLock",
+        "title": "Change Auto-Lock Time…",
+        "category": "VaultNest",
+        "icon": "$(watch)"
+      },
+      {
         "command": "vaultnest.import",
         "title": "Import…",
         "category": "VaultNest",
@@ -408,6 +414,10 @@
           "when": "vaultnest.hasUnlocked"
         },
         {
+          "command": "vaultnest.setAutoLock",
+          "when": "vaultnest.hasUnlocked"
+        },
+        {
           "command": "vaultnest.export",
           "when": "vaultnest.hasUnlocked"
         },
@@ -534,9 +544,14 @@
           "group": "2_vault@2"
         },
         {
-          "command": "vaultnest.backupNow",
+          "command": "vaultnest.setAutoLock",
           "when": "view == vaultnest.vaults && viewItem == vault-unlocked",
           "group": "2_vault@3"
+        },
+        {
+          "command": "vaultnest.backupNow",
+          "when": "view == vaultnest.vaults && viewItem == vault-unlocked",
+          "group": "2_vault@4"
         },
         {
           "command": "vaultnest.emptyTrash",
@@ -641,14 +656,6 @@
     "configuration": {
       "title": "VaultNest",
       "properties": {
-        "vaultnest.autoLock.minutes": {
-          "type": "number",
-          "default": 15,
-          "minimum": 0,
-          "maximum": 1440,
-          "markdownDescription": "Lock all vaults after this many minutes without activity in VS Code. `0` disables inactivity locking (not recommended).",
-          "scope": "application"
-        },
         "vaultnest.autoLock.onWindowBlur": {
           "type": "boolean",
           "default": false,

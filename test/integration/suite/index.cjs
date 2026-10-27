@@ -282,13 +282,16 @@ exports.run = async function run() {
     assert.ok(!manager.refs().some((r) => r.name === 'Weak Vault'));
   });
 
-  await test('per-vault auto-lock timeout overrides the global setting', async () => {
-    assert.equal(manager.autoLockMinutes(vaultId), 15);
-    await manager.updateRef(vaultId, { autoLockMinutes: 5 });
-    assert.equal(manager.autoLockMinutes(vaultId), 5);
-    assert.equal(manager.info(manager.ref(vaultId)).autoLockMinutes, 5);
-    await manager.updateRef(vaultId, { autoLockMinutes: undefined });
-    assert.equal(manager.autoLockMinutes(vaultId), 15);
+  await test('changing the auto-lock time requires the master password and is saved in the vault', async () => {
+    const choose = (minutes) => pick((items) => items.find((i) => i.minutes === minutes));
+    assert.equal(manager.doc(vaultId).autoLockMinutes, 15);
+    await withPrompts([choose(0), input('wrong password')], () => vscode.commands.executeCommand('vaultnest.setAutoLock', { vaultId }));
+    assert.equal(manager.doc(vaultId).autoLockMinutes, 15);
+    await withPrompts([choose(5), input('N3w-master-Passw0rd-2026!')], () => vscode.commands.executeCommand('vaultnest.setAutoLock', { vaultId }));
+    assert.equal(manager.info(manager.ref(vaultId)).details.autoLockMinutes, 5);
+    await manager.lockAll('test');
+    await withPrompts([input('N3w-master-Passw0rd-2026!')], () => vscode.commands.executeCommand('vaultnest.unlock', { vaultId }));
+    assert.equal(manager.doc(vaultId).autoLockMinutes, 5);
   });
 
   await test('removing the vault keeps the file', async () => {

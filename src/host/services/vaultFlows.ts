@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
+import { DEFAULT_AUTO_LOCK_MINUTES } from '../../core/vault/VaultDocument';
 import { VaultSession } from '../../core/vault/VaultSession';
 import { estimateStrength } from '../../core/security/strength';
 import { config } from '../config';
@@ -160,20 +161,58 @@ export async function openVaultFlow(manager: VaultManager, uri?: vscode.Uri): Pr
   return ref;
 }
 
+/**
+ * Asks again for the master password of an unlocked vault, so that an unlocked,
+ * unattended VS Code cannot be used to weaken it. Returns true if it matches.
+ */
+export async function confirmMasterPassword(manager: VaultManager, id: string, title: string, wrongMessage = 'Wrong master password.'): Promise<boolean> {
+  const ref = manager.ref(id);
+  const current = await vscode.window.showInputBox({ title, prompt: 'Current master password', password: true, ignoreFocusOut: true });
+  if (current === undefined) return false;
+  const probe = new kdbxweb.KdbxCredentials(kdbxweb.ProtectedValue.fromString(current), ref.keyFilePath ? new Uint8Array(await fs.readFile(ref.keyFilePath)) : null);
+  await probe.ready;
+  const [a, b] = await Promise.all([probe.getHash(), manager.doc(id).db.credentials.getHash()]);
+  if (!kdbxweb.ByteUtils.arrayBufferEquals(a, b)) {
+    void vscode.window.showErrorMessage(wrongMessage);
+    return false;
+  }
+  return true;
+}
+
+const AUTO_LOCK_CHOICES = [1, 5, 10, 15, 30, 60, 120, 240, 480, 0];
+
+export function autoLockLabel(minutes: number): string {
+  return minutes === 0 ? 'Never' : minutes < 60 ? `${minutes} min` : `${minutes / 60} h`;
+}
+
+/**
+ * Changes how long a vault stays unlocked without activity. The value is saved in
+ * the encrypted vault and changing it requires the master password.
+ */
+export async function autoLockFlow(manager: VaultManager, id: string): Promise<void> {
+  if (!(await manager.ensureUnlocked(id))) return;
+  const ref = manager.ref(id);
+  const current = manager.doc(id).autoLockMinutes;
+  const pick = await vscode.window.showQuickPick(AUTO_LOCK_CHOICES.map((m) => ({
+    label: m === 0 ? 'Never (only when VS Code closes)' : `After ${autoLockLabel(m)}`,
+    description: [m === current ? 'current' : '', m === DEFAULT_AUTO_LOCK_MINUTES ? 'default' : ''].filter(Boolean).join(', '),
+    detail: m === 0 ? 'Not recommended: the vault stays open while VS Code is running.' : undefined,
+    minutes: m,
+  })), { title: `Auto-lock: ${ref.name}`, placeHolder: 'Lock the vault after this long without activity in VS Code', ignoreFocusOut: true });
+  if (!pick || pick.minutes === current) return;
+  if (!(await confirmMasterPassword(manager, id, `Confirm master password to change auto-lock: ${ref.name}`))) return;
+  await manager.mutate(id, (d) => { d.autoLockMinutes = pick.minutes; });
+  void vscode.window.showInformationMessage(pick.minutes === 0
+    ? `"${ref.name}" will stay unlocked until you lock it or close VS Code.`
+    : `"${ref.name}" will lock after ${autoLockLabel(pick.minutes)} without activity.`);
+}
+
 export async function changeMasterPasswordFlow(manager: VaultManager, id: string): Promise<void> {
   if (!(await manager.ensureUnlocked(id))) return;
   const ref = manager.ref(id);
   // Re-authenticate: an unlocked, unattended VS Code must not allow a silent takeover.
-  const current = await vscode.window.showInputBox({ title: `Change master password: ${ref.name}`, prompt: 'Current master password', password: true, ignoreFocusOut: true });
-  if (current === undefined) return;
+  if (!(await confirmMasterPassword(manager, id, `Change master password: ${ref.name}`, 'The current master password is not correct.'))) return;
   const doc = manager.doc(id);
-  const probe = new kdbxweb.KdbxCredentials(kdbxweb.ProtectedValue.fromString(current), ref.keyFilePath ? new Uint8Array(await fs.readFile(ref.keyFilePath)) : null);
-  await probe.ready;
-  const [a, b] = await Promise.all([probe.getHash(), doc.db.credentials.getHash()]);
-  if (!kdbxweb.ByteUtils.arrayBufferEquals(a, b)) {
-    void vscode.window.showErrorMessage('The current master password is not correct.');
-    return;
-  }
   const password = await askNewMasterPassword(`New master password: ${ref.name}`);
   if (!password) return;
   const keyFile = ref.keyFilePath ? new Uint8Array(await fs.readFile(ref.keyFilePath)) : null;

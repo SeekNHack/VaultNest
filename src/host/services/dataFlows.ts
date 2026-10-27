@@ -7,6 +7,7 @@ import { IMPORT_FORMATS, ImportFormat, parseImport } from '../../core/io/importe
 import { makeCredentials, VaultDocument } from '../../core/vault/VaultDocument';
 import { readVaultFile, writeFileAtomic } from '../../core/vault/VaultStorage';
 import { describeError, VaultManager } from '../VaultManager';
+import { confirmMasterPassword } from './vaultFlows';
 
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 
@@ -78,14 +79,7 @@ export async function exportFlow(manager: VaultManager, vaultId: string): Promis
       { modal: true }, go);
     if (c !== go) return;
     // Re-authenticate before exporting secrets in clear.
-    const pw = await vscode.window.showInputBox({ title: 'Confirm master password to export', password: true, ignoreFocusOut: true });
-    if (pw === undefined) return;
-    const probe = await makeCredentials({ password: kdbxweb.ProtectedValue.fromString(pw), keyFile: ref.keyFilePath ? new Uint8Array(await fs.readFile(ref.keyFilePath)) : null });
-    const [a, b] = await Promise.all([probe.getHash(), manager.doc(vaultId).db.credentials.getHash()]);
-    if (!kdbxweb.ByteUtils.arrayBufferEquals(a, b)) {
-      void vscode.window.showErrorMessage('Wrong master password.');
-      return;
-    }
+    if (!(await confirmMasterPassword(manager, vaultId, 'Confirm master password to export'))) return;
   }
   const ext = pick.id === 'kdbx' ? 'kdbx' : 'csv';
   const target = await vscode.window.showSaveDialog({

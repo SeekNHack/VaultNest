@@ -14,7 +14,6 @@ function num(key: string, fallback: number, min: number, max: number): number {
 
 /** Typed, clamped accessors for the extension settings (see package.json). */
 export const config = {
-  autoLockMinutes: () => num('autoLock.minutes', 15, 0, 1440),
   lockOnWindowBlur: () => get('autoLock.onWindowBlur', false),
   blurGraceSeconds: () => num('autoLock.blurGraceSeconds', 0, 0, 3600),
   clipboardClearSeconds: () => num('clipboard.clearAfterSeconds', 30, 0, 600),

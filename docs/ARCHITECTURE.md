@@ -59,7 +59,7 @@ Entries created by other clients have no `VaultNest.Type`. Their type is inferre
 - **`VaultManager`** — registry of vault references (global ones in `globalState`, workspace ones in `workspaceState`; paths only, never secrets), lazily created `VaultSession`s, unlock prompts (3 attempts), lock/lockAll, `mutate()` (change + save + event), health-report cache, and conflict prompts. It fires `onDidChange` events (`registry`, `lock`, `content`) that the tree, status bar, context keys and dashboard listen to.
 - **`Actions`** — operations shared by commands and the dashboard (copy, open URL with a scheme allow-list, delete/restore with confirmation, folders, generator).
 - **`commands.ts`** — every contributed command. Commands accept a tree node, a `{vaultId, entryId}` reference (from the dashboard or other commands) or nothing; with nothing they ask through quick picks.
-- **`services/AutoLock`** — inactivity timer driven by editor, terminal and window events plus every VaultNest interaction; optional lock when the window loses focus.
+- **`services/AutoLock`** — inactivity timer driven by editor, terminal and window events plus every VaultNest interaction; each vault locks after its own timeout, stored in the vault's `Meta/CustomData` (`VaultNest.AutoLockMinutes`); optional lock when the window loses focus.
 - **`services/ClipboardService`** — copy + delayed clear if unchanged (compares hashes).
 - **`services/vaultFlows` / `dataFlows`** — guided multi-step flows (create/open vault, change master password, import, export).
 - **`views/VaultTreeProvider`**, **`views/StatusBar`**, **`views/DashboardPanel`** (+ `rpcValidation`).

@@ -84,11 +84,11 @@ export interface VaultInfo {
     hasKeyFile: boolean;
     entryCount: number;
     description: string;
+    /** Inactivity timeout stored in the vault, in minutes (0 = never). */
+    autoLockMinutes: number;
     lastSaved?: number;
   };
   keyFilePath?: string;
-  /** Per-vault inactivity timeout in minutes (0 = never); unset uses the global setting. */
-  autoLockMinutes?: number;
 }
 
 export interface FolderNode {

@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext): TestApi | undefined 
   clipboard = new ClipboardService();
   const tree = new VaultTreeProvider(manager);
   const m = manager;
-  const autoLock = new AutoLock(() => m.unlockedIds().map((id) => ({ id, minutes: m.autoLockMinutes(id) })), async (ids, reason) => {
+  const autoLock = new AutoLock(() => m.unlockedIds().map((id) => ({ id, minutes: m.doc(id).autoLockMinutes })), async (ids, reason) => {
     await Promise.all(ids.map((id) => m.lock(id, reason)));
     await clipboard?.clearIfOurs();
     vscode.window.setStatusBarMessage(`$(lock) VaultNest locked (${reason})`, 5000);

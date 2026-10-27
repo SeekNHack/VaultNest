@@ -96,7 +96,7 @@ export class DashboardPanel implements vscode.Disposable {
       folders: [],
       entries: [],
       tags: [],
-      prefs: { showPasswordStrength: config.showPasswordStrength(), clipboardClearSeconds: config.clipboardClearSeconds(), autoLockMinutes: config.autoLockMinutes() },
+      prefs: { showPasswordStrength: config.showPasswordStrength(), clipboardClearSeconds: config.clipboardClearSeconds() },
     };
     if (activeVaultId && this.manager.isUnlocked(activeVaultId)) {
       const doc = this.manager.doc(activeVaultId);
@@ -200,10 +200,6 @@ export class DashboardPanel implements vscode.Disposable {
       return this.manager.healthReport(vaultId);
     },
     vaultCommand: ({ vaultId, command }) => this.vaultCommand(vaultId, command),
-    setAutoLock: async ({ vaultId, minutes }) => {
-      this.requireUnlocked(vaultId); // the timeout can only be changed while the vault is unlocked
-      await this.manager.updateRef(vaultId, { autoLockMinutes: minutes ?? undefined });
-    },
     openSettings: async () => { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.vaultnest'); },
   };
 
@@ -229,6 +225,7 @@ export class DashboardPanel implements vscode.Disposable {
         if (value !== undefined) await this.manager.mutate(vaultId, (d) => { d.description = value; });
         break;
       }
+      case 'autoLock': await vscode.commands.executeCommand('vaultnest.setAutoLock', arg); break;
       case 'upgradeFormat': {
         this.requireUnlocked(vaultId);
         const ok = 'Upgrade';

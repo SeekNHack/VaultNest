@@ -29,6 +29,7 @@ const commands = [
   cmd('vaultnest.openGenerator', 'Open Password Generator', 'wand'),
   cmd('vaultnest.passwordHealth', 'Password Health Report', 'pulse'),
   cmd('vaultnest.changeMasterPassword', 'Change Master Password…', 'key'),
+  cmd('vaultnest.setAutoLock', 'Change Auto-Lock Time…', 'watch'),
   cmd('vaultnest.import', 'Import…', 'cloud-download'),
   cmd('vaultnest.export', 'Export…', 'cloud-upload'),
   cmd('vaultnest.backupNow', 'Back Up Vault Now', 'save-as'),
@@ -53,7 +54,7 @@ pkg.contributes = {
   menus: {
     commandPalette: [
       ...hidden.map((c) => ({ command: `vaultnest.${c}`, when: 'false' })),
-      ...['newItem', 'newFolder', 'search', 'copyUsername', 'copyPassword', 'copyTotp', 'copyUrl', 'openUrl', 'insertSecret', 'deleteItem', 'lock', 'changeMasterPassword', 'export', 'backupNow', 'syncVault', 'emptyTrash', 'passwordHealth'].map((c) => ({ command: `vaultnest.${c}`, when: 'vaultnest.hasUnlocked' })),
+      ...['newItem', 'newFolder', 'search', 'copyUsername', 'copyPassword', 'copyTotp', 'copyUrl', 'openUrl', 'insertSecret', 'deleteItem', 'lock', 'changeMasterPassword', 'setAutoLock', 'export', 'backupNow', 'syncVault', 'emptyTrash', 'passwordHealth'].map((c) => ({ command: `vaultnest.${c}`, when: 'vaultnest.hasUnlocked' })),
       { command: 'vaultnest.unlock', when: 'vaultnest.hasLocked' },
       { command: 'vaultnest.lockAll', when: 'vaultnest.hasUnlocked' },
       { command: 'vaultnest.import', when: 'vaultnest.hasUnlocked' },
@@ -79,7 +80,8 @@ pkg.contributes = {
       { command: 'vaultnest.newFolder', when: `${view} && viewItem =~ /^(vault-unlocked|folder)$/`, group: '1_new@2' },
       { command: 'vaultnest.syncVault', when: `${view} && viewItem == vault-unlocked`, group: '2_vault@1' },
       { command: 'vaultnest.changeMasterPassword', when: `${view} && viewItem == vault-unlocked`, group: '2_vault@2' },
-      { command: 'vaultnest.backupNow', when: `${view} && viewItem == vault-unlocked`, group: '2_vault@3' },
+      { command: 'vaultnest.setAutoLock', when: `${view} && viewItem == vault-unlocked`, group: '2_vault@3' },
+      { command: 'vaultnest.backupNow', when: `${view} && viewItem == vault-unlocked`, group: '2_vault@4' },
       { command: 'vaultnest.emptyTrash', when: `${view} && viewItem == trash`, group: '2_vault@4' },
       { command: 'vaultnest.revealVaultFile', when: `${view} && viewItem =~ /^vault-/`, group: '3_file@1' },
       { command: 'vaultnest.removeVault', when: `${view} && viewItem =~ /^vault-/`, group: '3_file@2' },
@@ -106,7 +108,6 @@ pkg.contributes = {
   configuration: {
     title: 'VaultNest',
     properties: {
-      'vaultnest.autoLock.minutes': { type: 'number', default: 15, minimum: 0, maximum: 1440, markdownDescription: 'Lock all vaults after this many minutes without activity in VS Code. `0` disables inactivity locking (not recommended).' },
       'vaultnest.autoLock.onWindowBlur': { type: 'boolean', default: false, description: 'Lock all vaults as soon as the VS Code window loses focus.' },
       'vaultnest.autoLock.blurGraceSeconds': { type: 'number', default: 0, minimum: 0, maximum: 3600, description: 'When locking on focus loss, wait this many seconds before locking (0 = immediately).' },
       'vaultnest.clipboard.clearAfterSeconds': { type: 'number', default: 30, minimum: 0, maximum: 600, markdownDescription: 'Clear copied secrets from the clipboard after this many seconds (only if the clipboard still contains the copied value). `0` disables clearing.' },
