@@ -200,15 +200,11 @@ export const DEFAULT_GENERATOR_OPTIONS: GeneratorOptions = {
 };
 
 export interface StrengthResult {
-  /** zxcvbn score 0..4 */
+  /** 0 (very weak) .. 4 (strong) */
   score: 0 | 1 | 2 | 3 | 4;
   label: string;
-  guessesLog10: number;
-  crackTime: string;
-  warning: string;
-  suggestions: string[];
-  /** Theoretical entropy in bits for generated values (if known). */
-  entropyBits?: number;
+  /** Estimated complexity in bits (the generator's exact entropy for generated values). */
+  entropyBits: number;
 }
 
 export interface HealthReport {

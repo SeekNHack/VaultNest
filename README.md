@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A secure, local-first password manager inside Visual Studio Code.</b><br>
-  Passwords, API keys, tokens, SSH keys and 2FA codes in an encrypted KeePass-compatible file that stays on your machine.
+  Passwords, API keys, tokens, SSH keys and 2FA codes in an encrypted file in the open KDBX format that stays on your machine.
 </p>
 
 <p align="center">
@@ -16,8 +16,8 @@
 
 ![PasswdManager dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
 
-- **Your file, your machine.** Vaults are standard **KDBX 4** files (AES-256 + Argon2id). There is no cloud, no account and no telemetry, and the same file opens in KeePassXC, KeePass, KeePassDX or Strongbox.
-- **Nothing else to install.** Every library is bundled in the extension. You don't need KeePass, Node.js or any other program.
+- **Your file, your machine.** Vaults are standard **KDBX 4** files (AES-256 + Argon2id). There is no cloud, no account and no telemetry, and the same file opens in any other app that supports KDBX 4.
+- **Nothing else to install.** Every library is bundled in the extension. You don't need any other program.
 - **Made for developers.** Keep API keys, tokens, SSH keys and `.env` values next to your code. Copy them in one keystroke, and they are cleared from the clipboard automatically.
 
 ---
@@ -38,7 +38,7 @@
 
 | | |
 |---|---|
-| 🔐 **Encrypted vaults** | KDBX 4 with AES-256 and Argon2id, unlocked with a master password and, optionally, a KeePass key file. You can have several vaults; each one is either *global* or tied to a workspace. |
+| 🔐 **Encrypted vaults** | KDBX 4 with AES-256 and Argon2id, unlocked with a master password and, optionally, a key file. You can have several vaults; each one is either *global* or tied to a workspace. |
 | 🔒 **Locked by default** | Vaults are locked when VS Code starts, after a configurable idle time, on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored. |
 | 🗂️ **Every kind of secret** | Logins, API keys, tokens, SSH keys, cards and secure notes. Items can have custom fields (plain or hidden), folders, tags, favorites, expiry dates and 2FA codes. |
 | 🛡️ **Two-factor codes (TOTP)** | Get 6- or 8-digit codes for any account: paste the setup key shown by the website into the item, and the current code is always one click away. |
@@ -48,7 +48,7 @@
 | 🩺 **Password health** | Finds weak, reused, old and expired passwords and `http://` logins. The analysis runs entirely on your machine. |
 | 📋 **Safe clipboard** | Copied secrets are cleared after 30 seconds, but only if the clipboard still holds them. |
 | 💾 **No data loss** | Saves are atomic and verified. Rotating encrypted backups are kept, changes made by other apps are merged automatically, and an encrypted recovery copy is written if a save fails. |
-| 🔁 **Import / export** | Import from KeePass `.kdbx`, Bitwarden (JSON/CSV), KeePassXC CSV and Chrome/Edge/Firefox/Safari CSV. Export to an encrypted `.kdbx` or to CSV; CSV export asks for re-authentication. |
+| 🔁 **Import / export** | Import from other `.kdbx` files and from the JSON/CSV exports of popular password managers and web browsers. Export to an encrypted `.kdbx` or to CSV; CSV export asks for re-authentication. |
 
 <table>
   <tr>
@@ -69,7 +69,7 @@ PasswdManager can be your authenticator app. When a website asks you to enable 2
 2. Paste the setup key (or an `otpauth://` link) into *Two-factor authentication*, then save.
 3. Copy the 6-digit code from the item, from quick search or with **PasswdManager: Copy TOTP Code**.
 
-Codes are stored in the KeePassXC format (an `otpauth://` URI in the `otp` field), so KeePassXC, KeePassDX and Strongbox show the same codes. The KeePass 2.x `TimeOtp-*` fields are read too.
+Codes are stored as an `otpauth://` URI in the `otp` field, the format most KDBX apps use, so they show the same codes. `TimeOtp-*` fields are read too.
 
 ## Getting started
 
@@ -95,7 +95,7 @@ Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · 
 
 ## Using the vault on other devices
 
-The vault is an ordinary KeePass file. Keep it in a folder you sync yourself (Syncthing, Nextcloud, Dropbox, a USB stick) and open it with KeePassXC, KeePassDX, Strongbox or another KeePass client. When the file changes on disk, PasswdManager merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
+The vault is an ordinary KDBX file. Keep it in a folder you sync yourself (a sync service, a network drive, a USB stick) and open it with any app that supports KDBX 4. When the file changes on disk, PasswdManager merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
 
 Metadata specific to PasswdManager (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
 
@@ -115,7 +115,7 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 | `passwdmanager.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.passwdmanager-backups/` next to the file) |
 | `passwdmanager.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
 | `passwdmanager.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
-| `passwdmanager.security.minMasterPasswordScore` | `2` | Minimum zxcvbn score (0–4) for a new master password before a warning |
+| `passwdmanager.security.minMasterPasswordScore` | `2` | Minimum strength score (0–4, from length and character variety) for a new master password before a warning |
 | `passwdmanager.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
 | `passwdmanager.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
 | `passwdmanager.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
@@ -132,7 +132,7 @@ Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (inc
 
 ## FAQ
 
-**Do I need KeePass installed?** No. PasswdManager reads and writes KeePass files by itself; KeePass apps are optional.
+**Do I need another program installed?** No. PasswdManager reads and writes KDBX files by itself.
 
 **I forgot my master password. Can you recover it?** No. Nobody can: that is what makes the encryption meaningful. Keep a written copy somewhere safe.
 

@@ -32,7 +32,7 @@ PasswdManager is split into three layers. Dependencies only point downwards.
 | `vault/VaultStorage.ts` | File I/O: KDBX signature check, SHA-256 fingerprint, atomic write (temp file → fsync → verify → rename → fsync dir), rotating backups. |
 | `vault/VaultSession.ts` | Lifecycle of one vault file: create, unlock, lock, and a **serialised save queue**. Each save: detect external change → merge → backup if due → encrypt → write atomically, after decrypting the temp file again to verify it. Locking with unsaved changes writes an encrypted recovery copy. |
 | `generator/` | Password and passphrase generation with `crypto.randomInt` (no modulo bias); EFF large wordlist. |
-| `security/strength.ts` | zxcvbn-ts wrapper (input capped at 100 chars). |
+| `security/strength.ts` | Complexity estimate: length × log2 of the character sets used, as bits and a 0–4 score. |
 | `security/totp.ts` | RFC 6238 TOTP (SHA-1/256/512), otpauth URI parsing, base32. |
 | `health/health.ts` | Weak / reused / old / expired / insecure-URL detection. Reuse detection compares salted SHA-256 hashes, and strength results are cached by hash. |
 | `io/` | RFC 4180 CSV, importers (Bitwarden JSON/CSV, KeePassXC CSV, browser CSV, PasswdManager CSV), exporters. |
@@ -81,7 +81,7 @@ Plain TypeScript with a small DOM helper (`dom.ts`), and no framework, to keep t
 
 esbuild produces two bundles:
 
-- `dist/extension.js` — CommonJS for Node 20. It includes kdbxweb, @xmldom/xmldom, hash-wasm (WASM inlined) and zxcvbn-ts. Its only external module is `vscode`, so the packaged extension needs no `node_modules`.
+- `dist/extension.js` — CommonJS for Node 20. It includes kdbxweb, @xmldom/xmldom, and hash-wasm (WASM inlined). Its only external module is `vscode`, so the packaged extension needs no `node_modules`.
 - `dist/webview.js` + `dist/webview.css` — IIFE for the browser; codicons are copied to `dist/media/`.
 
 ## Decisions

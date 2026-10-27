@@ -428,7 +428,7 @@ export class VaultDocument {
   }
 
   /** Iterates over passwords of active (non-trashed) entries, for health analysis. */
-  *passwords(): Generator<{ id: string; password: ProtectedValue | string; modified: number; expires: number | null; url: string; userInputs: string[] }> {
+  *passwords(): Generator<{ id: string; password: ProtectedValue | string; modified: number; expires: number | null; url: string }> {
     for (const e of this.allEntries(false)) {
       const pw = e.fields.get(STD_FIELDS.password);
       if (!pw || (pw instanceof ProtectedValue ? pw.byteLength === 0 : pw === '')) continue;
@@ -438,7 +438,6 @@ export class VaultDocument {
         modified: time(e.times.lastModTime),
         expires: e.times.expires && e.times.expiryTime ? e.times.expiryTime.getTime() : null,
         url: fieldText(e.fields.get(STD_FIELDS.url)),
-        userInputs: [fieldText(e.fields.get(STD_FIELDS.title)), fieldText(e.fields.get(STD_FIELDS.username))],
       };
     }
   }

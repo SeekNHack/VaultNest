@@ -1,41 +1,15 @@
 # Changelog
 
-## 1.2.1 — 2026-10-27
+## 1.2.2 — 2026-10-27
 
-- 2FA keys are now added only by typing or pasting the setup key (or an `otpauth://` link). Reading QR codes from the screen, image files or pasted images has been removed, together with the screen capture and the bundled image decoders.
-- The password strength meter no longer bundles zxcvbn's leaked-password list and large English word lists; it still detects keyboard patterns, sequences, repeats, dates, first names and diceware words.
+First Marketplace release.
 
-## 1.2.0 — 2026-10-27
-
-- Renamed to **PasswdManager** (extension ID `hacknseek.passwdmanager`). Commands, settings and views now use the `passwdmanager.` prefix. Vaults created with earlier versions open unchanged; item types and favorites saved under the old name are still read.
-
-## 1.1.2 — 2026-10-27
-
-- Shorter Marketplace description and keywords.
-
-## 1.1.1 — 2026-10-27
-
-- Published under the `hacknseek` Marketplace publisher (extension ID `hacknseek.passwdmanager`).
-
-## 1.1.0 — 2026-10-27
-
-- **2FA from QR codes:** set up authenticator codes by scanning the screen (with a cancellable countdown), choosing an image file, pasting a screenshot, or dropping an image onto the 2FA field. The editor fills in an empty name or username from the QR code.
-- **Google Authenticator export:** import every account from a *Transfer accounts* QR code as new items.
-- New commands: *Add 2FA Account from QR Code…* and *Set Up 2FA from QR Code…* (in the item context menu).
-- *With 2FA* filter in the dashboard, and a *Set up 2FA…* shortcut on items without codes.
-- Security: the bundled XML parser (`@xmldom/xmldom`) is upgraded to 0.8.15, which fixes several advisories.
-- README with screenshots.
-
-## 1.0.0 — 2026-10-27
-
-First release.
-
-- Encrypted, KeePass-compatible vaults (KDBX 4, Argon2id, AES-256) — create, open, lock/unlock, multiple vaults, global or per-workspace.
-- Auto-lock on inactivity and (optionally) when the window loses focus; everything locked on startup.
-- Items: logins, API keys, tokens, SSH keys, cards, secure notes; custom (hidden) fields, folders, tags, favorites, expiry, TOTP.
-- Dashboard with search, filters, item details/editor, password generator, password health report and vault settings.
-- Sidebar tree, status bar indicator, quick search (`Ctrl+Alt+P`), copy/insert commands.
-- Password & passphrase generator using the system CSPRNG; zxcvbn strength meter.
-- Clipboard auto-clear (only if the clipboard still holds the copied secret).
-- Crash-safe saving: atomic writes with verification, rotating encrypted backups, automatic merge of external changes (KeePassXC, sync clients), recovery copy on failure.
-- Import: KDBX, Bitwarden (JSON/CSV), KeePassXC CSV, browser CSV, PasswdManager CSV. Export: KDBX, PasswdManager CSV, Bitwarden CSV.
+- Encrypted vaults in the open KDBX format (KDBX 4, Argon2id, AES-256): create, open, lock and unlock, several vaults, global or per workspace.
+- Auto-lock on inactivity and, optionally, when the window loses focus; everything is locked on startup.
+- Items: logins, API keys, tokens, SSH keys, cards and secure notes, with custom (hidden) fields, folders, tags, favorites, expiry dates and 2FA codes (TOTP) from the website's setup key.
+- Dashboard with search, filters, item details and editor, password generator, password health report and vault settings.
+- Sidebar tree, status bar indicator, quick search (`Ctrl+Alt+P`) and copy/insert commands.
+- Password and passphrase generator using the system CSPRNG, with a complexity meter.
+- Clipboard auto-clear, only if the clipboard still holds the copied value.
+- Safe saving: atomic writes with verification, rotating encrypted backups, automatic merge of changes made by other apps or sync clients, and a recovery copy if a save fails.
+- Import from KDBX files, password-manager JSON/CSV exports and browser CSV; export to KDBX and CSV.

@@ -26,7 +26,7 @@ export async function askNewMasterPassword(title: string): Promise<kdbxweb.Prote
         if (!v) return undefined;
         if (v.length < MIN_MASTER_LENGTH) return { message: `At least ${MIN_MASTER_LENGTH} characters`, severity: vscode.InputBoxValidationSeverity.Error };
         const s = estimateStrength(v);
-        const text = `Strength: ${s.label} (${s.crackTime} to crack offline)${s.warning ? ` — ${s.warning}` : ''}`;
+        const text = `Strength: ${s.label} (~${s.entropyBits} bits)`;
         return { message: text, severity: s.score < minScore ? vscode.InputBoxValidationSeverity.Warning : vscode.InputBoxValidationSeverity.Info };
       },
     });
@@ -42,7 +42,7 @@ export async function askNewMasterPassword(title: string): Promise<kdbxweb.Prote
     if (strength.score < minScore) {
       const use = 'Use Anyway';
       const choice = await vscode.window.showWarningMessage(
-        `This master password is ${strength.label.toLowerCase()} (estimated ${strength.crackTime} to crack offline). Your whole vault depends on it.`,
+        `This master password is ${strength.label.toLowerCase()} (~${strength.entropyBits} bits). Your whole vault depends on it.`,
         { modal: true }, use, 'Choose Another');
       if (choice !== use) continue;
     }

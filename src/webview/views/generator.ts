@@ -18,7 +18,7 @@ export function renderGenerator(pane: HTMLElement): void {
       const r = await rpc('generate', { options });
       current = r.value;
       replace(output, colorizedSecret(r.value));
-      replace(strengthSlot, strengthMeter(r.strength.score, r.strength.label, r.strength.entropyBits ? `~${r.strength.entropyBits} bits of entropy` : r.strength.crackTime));
+      replace(strengthSlot, strengthMeter(r.strength.score, r.strength.label, `~${r.strength.entropyBits} bits of entropy`));
     } catch (err) {
       reportError(err);
     }

@@ -146,7 +146,7 @@ export class Actions {
 
   generate(options: GeneratorOptions = this.generatorOptions()): { value: string; strength: StrengthResult } {
     const r = generate(options);
-    return { value: r.value, strength: estimateStrength(r.value, [], r.entropyBits) };
+    return { value: r.value, strength: estimateStrength(r.value, r.entropyBits) };
   }
 
   async run<T>(what: string, fn: () => Promise<T>): Promise<T | undefined> {

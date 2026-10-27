@@ -390,7 +390,7 @@ export function registerCommands(
         { label: '$(refresh) Regenerate', id: 'again' },
         { label: options.mode === 'password' ? '$(whole-word) Switch to passphrase' : '$(symbol-key) Switch to random password', id: 'mode' },
         { label: '$(settings) Open full generator…', id: 'full' },
-      ], { title: `Generated: ${g.strength.label}${g.strength.entropyBits ? ` · ~${g.strength.entropyBits} bits` : ''}`, placeHolder: g.value });
+      ], { title: `Generated: ${g.strength.label} · ~${g.strength.entropyBits} bits`, placeHolder: g.value });
       if (!pick) return;
       if (pick.id === 'again') continue;
       if (pick.id === 'mode') {

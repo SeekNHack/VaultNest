@@ -1,5 +1,6 @@
 import * as kdbxweb from 'kdbxweb';
-import { argon2d, argon2id } from 'hash-wasm';
+// The Argon2-only build: the package entry point would also bundle the other 20+ hash functions.
+import { argon2d, argon2id } from 'hash-wasm/dist/argon2.umd.min.js';
 
 let installed = false;
 

@@ -9,7 +9,6 @@ export interface HealthInput {
   modified: number;
   expires: number | null;
   url: string;
-  userInputs: string[];
 }
 
 export interface HealthOptions {
@@ -42,7 +41,7 @@ export function analyzeHealth(vaultId: string, inputs: Iterable<HealthInput>, op
     groups.set(h, (groups.get(h) ?? 0) + 1);
     let score = scoreCache.get(h);
     if (score === undefined) {
-      score = estimateStrength(text, it.userInputs).score;
+      score = estimateStrength(text).score;
       if (scoreCache.size > 10_000) scoreCache.clear();
       scoreCache.set(h, score);
     }
@@ -76,7 +75,7 @@ export async function warmHealthCache(inputs: Iterable<HealthInput>, batch = 25)
     const text = typeof it.password === 'string' ? it.password : it.password.getText();
     const h = digest(text);
     if (scoreCache.has(h)) continue;
-    scoreCache.set(h, estimateStrength(text, it.userInputs).score);
+    scoreCache.set(h, estimateStrength(text).score);
     if (++n % batch === 0) await new Promise((r) => setImmediate(r));
   }
 }

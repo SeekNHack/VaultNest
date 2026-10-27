@@ -2,12 +2,9 @@
   "name": "passwdmanager",
   "displayName": "PasswdManager",
   "description": "A secure, local-first password manager for VS Code. Encrypted vaults, 2FA codes, password generator, API key storage and password health reports.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "publisher": "hacknseek",
   "license": "MIT",
-  "author": {
-    "name": "HackNSeek"
-  },
   "icon": "media/icon.png",
   "galleryBanner": {
     "color": "#1e2a3a",
@@ -54,9 +51,6 @@
     "wordlist": "node scripts/build-wordlist.mjs"
   },
   "dependencies": {
-    "@zxcvbn-ts/core": "^4.2.0",
-    "@zxcvbn-ts/language-common": "^4.1.3",
-    "@zxcvbn-ts/language-en": "^4.1.1",
     "hash-wasm": "^4.12.0",
     "kdbxweb": "^2.1.1"
   },
@@ -94,7 +88,7 @@
       {
         "view": "passwdmanager.vaults",
         "when": "!passwdmanager.hasVaults",
-        "contents": "PasswdManager keeps your passwords, API keys and tokens in an encrypted KeePass-compatible (KDBX 4) file, stored only on this machine.\n[Create New Vault](command:passwdmanager.createVault)\n[Open Existing .kdbx](command:passwdmanager.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)"
+        "contents": "PasswdManager keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:passwdmanager.createVault)\n[Open Existing .kdbx](command:passwdmanager.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)"
       }
     ],
     "commands": [
@@ -733,7 +727,7 @@
           "default": 2,
           "minimum": 0,
           "maximum": 4,
-          "markdownDescription": "Minimum zxcvbn strength score (0–4) required for a new master password. Weaker passwords require an explicit confirmation.",
+          "markdownDescription": "Minimum strength score (0 very weak – 4 strong, based on length and character variety) required for a new master password. Weaker passwords require an explicit confirmation.",
           "scope": "application"
         },
         "passwdmanager.ui.showPasswordStrength": {

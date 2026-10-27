@@ -47,7 +47,7 @@ pkg.contributes = {
   viewsContainers: { activitybar: [{ id: 'passwdmanager', title: 'PasswdManager', icon: 'media/activitybar.svg' }] },
   views: { passwdmanager: [{ id: 'passwdmanager.vaults', name: 'Vaults', icon: 'media/activitybar.svg', contextualTitle: 'PasswdManager' }] },
   viewsWelcome: [
-    { view: 'passwdmanager.vaults', when: '!passwdmanager.hasVaults', contents: 'PasswdManager keeps your passwords, API keys and tokens in an encrypted KeePass-compatible (KDBX 4) file, stored only on this machine.\n[Create New Vault](command:passwdmanager.createVault)\n[Open Existing .kdbx](command:passwdmanager.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)' },
+    { view: 'passwdmanager.vaults', when: '!passwdmanager.hasVaults', contents: 'PasswdManager keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:passwdmanager.createVault)\n[Open Existing .kdbx](command:passwdmanager.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)' },
   ],
   commands,
   menus: {
@@ -116,7 +116,7 @@ pkg.contributes = {
       'passwdmanager.backup.location': { type: 'string', enum: ['extensionStorage', 'besideVault'], default: 'extensionStorage', enumDescriptions: ['Store backups in the extension\'s private global storage folder.', 'Store backups in a `.passwdmanager-backups` folder next to the vault file (useful if the folder is itself backed up or synced).'] },
       'passwdmanager.security.kdfMemoryMiB': { type: 'number', default: 64, minimum: 8, maximum: 1024, description: 'Argon2id memory cost (MiB) used for newly created vaults and when changing the master password.' },
       'passwdmanager.security.kdfIterations': { type: 'number', default: 3, minimum: 1, maximum: 100, description: 'Argon2id iterations used for newly created vaults and when changing the master password.' },
-      'passwdmanager.security.minMasterPasswordScore': { type: 'number', default: 2, minimum: 0, maximum: 4, markdownDescription: 'Minimum zxcvbn strength score (0–4) required for a new master password. Weaker passwords require an explicit confirmation.' },
+      'passwdmanager.security.minMasterPasswordScore': { type: 'number', default: 2, minimum: 0, maximum: 4, markdownDescription: 'Minimum strength score (0 very weak – 4 strong, based on length and character variety) required for a new master password. Weaker passwords require an explicit confirmation.' },
       'passwdmanager.ui.showPasswordStrength': { type: 'boolean', default: true, description: 'Show password strength indicators in the item editor.' },
       'passwdmanager.ui.openDashboardOnUnlock': { type: 'boolean', default: false, description: 'Open the dashboard automatically after a vault is unlocked from the sidebar.' },
       'passwdmanager.ui.showStatusBar': { type: 'boolean', default: true, description: 'Show the vault lock status in the status bar.' },

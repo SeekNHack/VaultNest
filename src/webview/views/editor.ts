@@ -110,7 +110,7 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
   const updateStrength = debounce((v: string) => {
     if (!app.data?.prefs.showPasswordStrength) return;
     if (!v) return replace(strengthEl);
-    rpc('strength', { value: v }).then((s) => replace(strengthEl, strengthMeter(s.score, s.label, s.warning || `${s.crackTime} to crack`))).catch(() => undefined);
+    rpc('strength', { value: v }).then((s) => replace(strengthEl, strengthMeter(s.score, s.label, `~${s.entropyBits} bits`))).catch(() => undefined);
   }, 200);
 
   const generate = async () => {
