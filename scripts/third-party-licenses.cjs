@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const pkgs = ['kdbxweb', '@xmldom/xmldom', 'hash-wasm', '@vscode/codicons'];
-let out = 'PasswdManager bundles the following third-party software. Their licenses follow.\n';
+let out = 'VaultNest bundles the following third-party software. Their licenses follow.\n';
 for (const name of pkgs) {
   const dir = path.join('node_modules', name);
   const meta = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));

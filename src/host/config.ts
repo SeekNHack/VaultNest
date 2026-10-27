@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import type { KdfSettings } from '../core/vault/VaultDocument';
 
-const SECTION = 'passwdmanager';
+const SECTION = 'vaultnest';
 
 function get<T>(key: string, fallback: T): T {
   return vscode.workspace.getConfiguration(SECTION).get<T>(key, fallback);

@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="media/icon.png" width="96" alt="PasswdManager logo">
+  <img src="media/icon.png" width="96" alt="VaultNest logo">
 </p>
 
-<h1 align="center">PasswdManager</h1>
+<h1 align="center">VaultNest</h1>
 
 <p align="center">
-  <b>A secure, local-first password manager inside Visual Studio Code.</b><br>
+  <b>A secure, local-first vault inside Visual Studio Code.</b><br>
   Passwords, API keys, tokens, SSH keys and 2FA codes in an encrypted file in the open KDBX format that stays on your machine.
 </p>
 
@@ -14,7 +14,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
-![PasswdManager dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
+![VaultNest dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
 
 - **Your file, your machine.** Vaults are standard **KDBX 4** files (AES-256 + Argon2id). There is no cloud, no account and no telemetry, and the same file opens in any other app that supports KDBX 4.
 - **Nothing else to install.** Every library is bundled in the extension. You don't need any other program.
@@ -63,20 +63,20 @@
 
 ## Two-factor authentication (2FA)
 
-PasswdManager can be your authenticator app. When a website asks you to enable 2FA, it shows a QR code and, usually under *Can't scan it?*, a text **setup key**:
+VaultNest can be your authenticator app. When a website asks you to enable 2FA, it shows a QR code and, usually under *Can't scan it?*, a text **setup key**:
 
 1. Open the item in the dashboard and click **Edit** (or **Set up 2FA…** on items without a code).
 2. Paste the setup key (or an `otpauth://` link) into *Two-factor authentication*, then save.
-3. Copy the 6-digit code from the item, from quick search or with **PasswdManager: Copy TOTP Code**.
+3. Copy the 6-digit code from the item, from quick search or with **VaultNest: Copy TOTP Code**.
 
 Codes are stored as an `otpauth://` URI in the `otp` field, the format most KDBX apps use, so they show the same codes. `TimeOtp-*` fields are read too.
 
 ## Getting started
 
-1. Click the **PasswdManager** shield in the Activity Bar.
+1. Click the **VaultNest** shield in the Activity Bar.
 2. Choose **Create New Vault**, or **Open Existing .kdbx** to use a file you already have.
 3. Choose a name, a location and a strong master password. **A forgotten master password cannot be recovered.**
-4. Add items with the **+** button in the sidebar or in the dashboard (**PasswdManager: Open Dashboard**).
+4. Add items with the **+** button in the sidebar or in the dashboard (**VaultNest: Open Dashboard**).
 
 ## Everyday use
 
@@ -84,9 +84,9 @@ Codes are stored as an `otpauth://` URI in the `otp` field, the format most KDBX
 |---|---|
 | Search and copy | `Ctrl+Alt+P` / `Cmd+Alt+P`, type, then use the inline buttons (username, password, 2FA code, open URL) or press Enter for more actions |
 | Copy from the sidebar | Hover an item for the key/person icons, or right-click it |
-| Copy a 2FA code | The copy button next to the live code, or **PasswdManager: Copy TOTP Code** |
-| Insert a secret into a file | **PasswdManager: Insert Secret into Editor…** (for example into a local `.env`) |
-| Generate a password | **PasswdManager: Generate Password…** or the generator in the dashboard |
+| Copy a 2FA code | The copy button next to the live code, or **VaultNest: Copy TOTP Code** |
+| Insert a secret into a file | **VaultNest: Insert Secret into Editor…** (for example into a local `.env`) |
+| Generate a password | **VaultNest: Generate Password…** or the generator in the dashboard |
 | Lock everything | `Ctrl+Alt+L` / `Cmd+Alt+L`, the lock icon, or the status bar item |
 
 Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · `Ctrl+S` save · `Esc` cancel · `Ctrl+G` generator · `Ctrl+L` lock.
@@ -95,9 +95,9 @@ Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · 
 
 ## Using the vault on other devices
 
-The vault is an ordinary KDBX file. Keep it in a folder you sync yourself (a sync service, a network drive, a USB stick) and open it with any app that supports KDBX 4. When the file changes on disk, PasswdManager merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
+The vault is an ordinary KDBX file. Keep it in a folder you sync yourself (a sync service, a network drive, a USB stick) and open it with any app that supports KDBX 4. When the file changes on disk, VaultNest merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
 
-Metadata specific to PasswdManager (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
+Metadata specific to VaultNest (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
 
 ## Settings
 
@@ -105,21 +105,21 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 
 | Setting | Default | Description |
 |---|---|---|
-| `passwdmanager.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never) |
-| `passwdmanager.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
-| `passwdmanager.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
-| `passwdmanager.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |
-| `passwdmanager.backup.enabled` | `true` | Keep rotating encrypted backups |
-| `passwdmanager.backup.count` | `10` | Backups kept per vault |
-| `passwdmanager.backup.intervalMinutes` | `60` | Minimum minutes between automatic backups |
-| `passwdmanager.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.passwdmanager-backups/` next to the file) |
-| `passwdmanager.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
-| `passwdmanager.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
-| `passwdmanager.security.minMasterPasswordScore` | `2` | Minimum strength score (0–4, from length and character variety) for a new master password before a warning |
-| `passwdmanager.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
-| `passwdmanager.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
-| `passwdmanager.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
-| `passwdmanager.health.maxPasswordAgeDays` | `365` | Age after which a password is reported as old |
+| `vaultnest.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never) |
+| `vaultnest.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
+| `vaultnest.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
+| `vaultnest.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |
+| `vaultnest.backup.enabled` | `true` | Keep rotating encrypted backups |
+| `vaultnest.backup.count` | `10` | Backups kept per vault |
+| `vaultnest.backup.intervalMinutes` | `60` | Minimum minutes between automatic backups |
+| `vaultnest.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.vaultnest-backups/` next to the file) |
+| `vaultnest.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
+| `vaultnest.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
+| `vaultnest.security.minMasterPasswordScore` | `2` | Minimum strength score (0–4, from length and character variety) for a new master password before a warning |
+| `vaultnest.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
+| `vaultnest.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
+| `vaultnest.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
+| `vaultnest.health.maxPasswordAgeDays` | `365` | Age after which a password is reported as old |
 
 ## Security
 
@@ -132,13 +132,13 @@ Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (inc
 
 ## FAQ
 
-**Do I need another program installed?** No. PasswdManager reads and writes KDBX files by itself.
+**Do I need another program installed?** No. VaultNest reads and writes KDBX files by itself.
 
 **I forgot my master password. Can you recover it?** No. Nobody can: that is what makes the encryption meaningful. Keep a written copy somewhere safe.
 
 **Can other extensions read my passwords?** VS Code runs all extensions in one process without isolation from each other. While a vault is unlocked, install only extensions you trust. See [SECURITY.md](SECURITY.md).
 
-**Does it work in Remote / WSL / Codespaces?** PasswdManager runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there.
+**Does it work in Remote / WSL / Codespaces?** VaultNest runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there.
 
 ## Development
 
@@ -148,7 +148,7 @@ npm run build            # bundle to dist/ (esbuild)
 npm run typecheck        # TypeScript (host + webview)
 npm test                 # unit tests (vitest)
 npm run test:integration # runs the extension in a real VS Code (needs a display or xvfb-run)
-npm run package          # creates passwdmanager-<version>.vsix
+npm run package          # creates vaultnest-<version>.vsix
 ```
 
 Press `F5` in VS Code to start an Extension Development Host. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describes the design, and [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) describes testing and the release process.

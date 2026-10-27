@@ -9,7 +9,7 @@
 
 ```bash
 git clone git@github.com:SeekNHack/PasswdVault.git
-cd PasswdManager
+cd VaultNest
 npm install
 npm run build
 ```
@@ -47,7 +47,7 @@ To check that the packaged extension is self-contained (all libraries bundled, n
 
 ```bash
 npx vsce package
-mkdir -p /tmp/vsix && unzip -q passwdmanager-*.vsix -d /tmp/vsix
+mkdir -p /tmp/vsix && unzip -q vaultnest-*.vsix -d /tmp/vsix
 PV_EXTENSION_PATH=/tmp/vsix/extension xvfb-run -a node test/integration/runTests.mjs
 ```
 
@@ -62,7 +62,7 @@ The `contributes` section of `package.json` (commands, menus, settings) is gener
 1. Update the `version` in `package.json` and add an entry to `CHANGELOG.md`.
 2. `npm ci && npm run typecheck && npm test && xvfb-run -a npm run test:integration`
 3. `npx vsce package` — check the file list it prints (only `dist/`, `media/` and the docs should be included).
-4. Install the VSIX locally (`code --install-extension passwdmanager-x.y.z.vsix`) and smoke-test: create a vault, add an item, lock/unlock, open the file in KeePassXC.
+4. Install the VSIX locally (`code --install-extension vaultnest-x.y.z.vsix`) and smoke-test: create a vault, add an item, lock/unlock, open the file in KeePassXC.
 5. Commit, then tag and push: `git tag v1.2.3 && git push origin main v1.2.3`. The **Release** workflow (`.github/workflows/release.yml`) checks that the tag matches `package.json`, runs every test (including against the packaged VSIX), publishes to the Marketplace with the `VSCE_PAT` repository secret and attaches the `.vsix` to a GitHub release. The `publisher` field (`SeekNHack`) must match your Marketplace publisher ID.
 
 Bundled dependencies: after changing them, run `node scripts/third-party-licenses.cjs` and update `NOTICE.md`. `@xmldom/xmldom` is pinned through `overrides` in `package.json` (see SECURITY.md).

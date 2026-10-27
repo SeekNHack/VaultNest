@@ -1,4 +1,4 @@
-PasswdManager bundles the following third-party software. Their licenses follow.
+VaultNest bundles the following third-party software. Their licenses follow.
 
 ==============================================================================
 kdbxweb@2.1.1 (MIT)

@@ -54,6 +54,13 @@ describe('VaultDocument', () => {
     expect(raw.customData?.get(CUSTOM_DATA.type)?.value).toBe('apiKey');
   });
 
+  it('reads item type written under the old PasswdManager key', async () => {
+    const doc = await newDoc();
+    const id = doc.saveEntry(null, entryInput({ type: 'login' }));
+    doc.findEntry(id).customData = new Map([['PasswdManager.Type', { value: 'token' }]]);
+    expect((await roundtrip(doc)).getEntry(id).type).toBe('token');
+  });
+
   it('reads item type and favorite written under the old PasswdVault keys', async () => {
     const doc = await newDoc();
     const id = doc.saveEntry(null, entryInput({ type: 'login' }));

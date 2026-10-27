@@ -2,7 +2,7 @@ import type { ItemType } from '../../shared/model';
 import type { ImportedItem } from '../vault/VaultDocument';
 import { csvObjects, parseCsv } from './csv';
 
-export type ImportFormat = 'bitwardenCsv' | 'bitwardenJson' | 'keepassxcCsv' | 'browserCsv' | 'passwdmanagerCsv';
+export type ImportFormat = 'bitwardenCsv' | 'bitwardenJson' | 'keepassxcCsv' | 'browserCsv' | 'vaultnestCsv';
 
 export const IMPORT_FORMATS: { id: ImportFormat | 'kdbx'; label: string; detail: string; extensions: string[] }[] = [
   { id: 'kdbx', label: 'KeePass / KeePassXC database (.kdbx)', detail: 'Copies all entries and folders into a new folder', extensions: ['kdbx'] },
@@ -10,7 +10,7 @@ export const IMPORT_FORMATS: { id: ImportFormat | 'kdbx'; label: string; detail:
   { id: 'bitwardenCsv', label: 'Bitwarden (.csv)', detail: 'Logins and secure notes', extensions: ['csv'] },
   { id: 'keepassxcCsv', label: 'KeePassXC (.csv)', detail: 'Group, Title, Username, Password, URL, Notes, TOTP', extensions: ['csv'] },
   { id: 'browserCsv', label: 'Chrome / Edge / Firefox / Safari (.csv)', detail: 'name/url/username/password exports', extensions: ['csv'] },
-  { id: 'passwdmanagerCsv', label: 'PasswdManager (.csv)', detail: 'CSV previously exported by PasswdManager', extensions: ['csv'] },
+  { id: 'vaultnestCsv', label: 'VaultNest (.csv)', detail: 'CSV previously exported by VaultNest', extensions: ['csv'] },
 ];
 
 export class ImportError extends Error {}
@@ -46,7 +46,7 @@ export function parseImport(format: ImportFormat, text: string): ImportedItem[] 
     case 'bitwardenCsv': items = parseBitwardenCsv(text); break;
     case 'keepassxcCsv': items = parseKeepassxcCsv(text); break;
     case 'browserCsv': items = parseBrowserCsv(text); break;
-    case 'passwdmanagerCsv': items = parsePasswdManagerCsv(text); break;
+    case 'vaultnestCsv': items = parseVaultNestCsv(text); break;
     default: throw new ImportError('Unsupported format');
   }
   if (items.length > MAX_ITEMS) throw new ImportError('Too many items in the file');
@@ -178,9 +178,9 @@ export function parseBrowserCsv(text: string): ImportedItem[] {
   });
 }
 
-export const PASSWDMANAGER_CSV_HEADER = ['folder', 'favorite', 'type', 'name', 'username', 'password', 'url', 'notes', 'totp', 'tags', 'fields'];
+export const VAULTNEST_CSV_HEADER = ['folder', 'favorite', 'type', 'name', 'username', 'password', 'url', 'notes', 'totp', 'tags', 'fields'];
 
-export function parsePasswdManagerCsv(text: string): ImportedItem[] {
+export function parseVaultNestCsv(text: string): ImportedItem[] {
   const rows = parseCsv(text);
   requireColumns(rows, ['name'], ['password'], ['type']);
   return csvObjects(rows).map((o) => {

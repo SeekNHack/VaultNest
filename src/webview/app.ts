@@ -211,7 +211,7 @@ export function lockScreen(root: HTMLElement): void {
     replace(root, h('div', { class: 'lock-screen' },
       h('div', { class: 'lock-card' },
         h('div', { class: 'brand-mark' }, icon('shield')),
-        h('h1', null, 'Welcome to PasswdManager'),
+        h('h1', null, 'Welcome to VaultNest'),
         h('p', { class: 'muted' }, 'Store passwords, API keys, tokens and notes in an encrypted KeePass-compatible (KDBX 4) file that never leaves your machine.'),
         h('div', { class: 'stack' },
           button('Create a new vault', () => void rpc('createVault', {}).catch(reportError), { icon: 'add', variant: 'primary' }),
@@ -229,7 +229,7 @@ export function lockScreen(root: HTMLElement): void {
   replace(root, h('div', { class: 'lock-screen' },
     h('div', { class: 'lock-card' },
       h('div', { class: 'brand-mark locked' }, icon('lock')),
-      h('h1', null, active ? active.name : 'PasswdManager'),
+      h('h1', null, active ? active.name : 'VaultNest'),
       h('p', { class: 'muted path' }, active?.path ?? ''),
       vaults.length > 1 ? h('label', { class: 'field-label', for: 'vault-select' }, 'Vault') : null,
       vaults.length > 1 ? h('select', {

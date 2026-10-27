@@ -59,5 +59,5 @@ export function renderSettings(pane: HTMLElement): void {
     h('div', { class: 'card' },
       h('div', { class: 'card-title' }, 'Preferences'),
       h('p', { class: 'muted' }, 'Auto-lock timeout, clipboard clearing, backups, key derivation strength and more are regular VS Code settings.'),
-      button('Open PasswdManager settings', () => void rpc('openSettings', {}).catch(reportError), { icon: 'gear' }))));
+      button('Open VaultNest settings', () => void rpc('openSettings', {}).catch(reportError), { icon: 'gear' }))));
 }

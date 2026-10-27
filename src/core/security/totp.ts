@@ -103,5 +103,5 @@ export function normalizeTotpInput(value: string, label: string): string {
   parseTotp(text); // throws on invalid input
   if (/^otpauth:\/\//i.test(text)) return text;
   const secret = text.toUpperCase().replace(/[\s=-]/g, '');
-  return `otpauth://totp/${encodeURIComponent(label || 'PasswdManager')}?secret=${secret}&period=30&digits=6&algorithm=SHA1`;
+  return `otpauth://totp/${encodeURIComponent(label || 'VaultNest')}?secret=${secret}&period=30&digits=6&algorithm=SHA1`;
 }

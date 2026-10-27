@@ -1,6 +1,6 @@
 # Architecture
 
-PasswdManager is split into three layers. Dependencies only point downwards.
+VaultNest is split into three layers. Dependencies only point downwards.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -35,11 +35,11 @@ PasswdManager is split into three layers. Dependencies only point downwards.
 | `security/strength.ts` | Complexity estimate: length × log2 of the character sets used, as bits and a 0–4 score. |
 | `security/totp.ts` | RFC 6238 TOTP (SHA-1/256/512), otpauth URI parsing, base32. |
 | `health/health.ts` | Weak / reused / old / expired / insecure-URL detection. Reuse detection compares salted SHA-256 hashes, and strength results are cached by hash. |
-| `io/` | RFC 4180 CSV, importers (Bitwarden JSON/CSV, KeePassXC CSV, browser CSV, PasswdManager CSV), exporters. |
+| `io/` | RFC 4180 CSV, importers (Bitwarden JSON/CSV, KeePassXC CSV, browser CSV, VaultNest CSV), exporters. |
 
 ### KDBX mapping
 
-| PasswdManager | KDBX |
+| VaultNest | KDBX |
 |---|---|
 | Vault | Database file (`.kdbx`) |
 | Folder | Group (the root group is "No folder") |
@@ -48,18 +48,18 @@ PasswdManager is split into three layers. Dependencies only point downwards.
 | Custom field (hidden) | Extra string field (protected when hidden) |
 | TOTP | `otp` field with an `otpauth://` URI (KeePassXC convention) |
 | Tags | Entry tags |
-| Item type, favorite | Entry `CustomData`: `PasswdManager.Type`, `PasswdManager.Favorite` (KDBX 4 only) |
+| Item type, favorite | Entry `CustomData`: `VaultNest.Type`, `VaultNest.Favorite` (KDBX 4 only) |
 | Expiry | `Times.Expires` / `ExpiryTime` |
 | Edit history | Entry history (limited by `HistoryMaxItems`, default 10) |
 
-Entries created by other clients have no `PasswdManager.Type`. Their type is inferred: an entry with only notes is a secure note, anything else is a login.
+Entries created by other clients have no `VaultNest.Type`. Their type is inferred: an entry with only notes is a secure note, anything else is a login.
 
 ## Host
 
 - **`VaultManager`** — registry of vault references (global ones in `globalState`, workspace ones in `workspaceState`; paths only, never secrets), lazily created `VaultSession`s, unlock prompts (3 attempts), lock/lockAll, `mutate()` (change + save + event), health-report cache, and conflict prompts. It fires `onDidChange` events (`registry`, `lock`, `content`) that the tree, status bar, context keys and dashboard listen to.
 - **`Actions`** — operations shared by commands and the dashboard (copy, open URL with a scheme allow-list, delete/restore with confirmation, folders, generator).
 - **`commands.ts`** — every contributed command. Commands accept a tree node, a `{vaultId, entryId}` reference (from the dashboard or other commands) or nothing; with nothing they ask through quick picks.
-- **`services/AutoLock`** — inactivity timer driven by editor, terminal and window events plus every PasswdManager interaction; optional lock when the window loses focus.
+- **`services/AutoLock`** — inactivity timer driven by editor, terminal and window events plus every VaultNest interaction; optional lock when the window loses focus.
 - **`services/ClipboardService`** — copy + delayed clear if unchanged (compares hashes).
 - **`services/vaultFlows` / `dataFlows`** — guided multi-step flows (create/open vault, change master password, import, export).
 - **`views/VaultTreeProvider`**, **`views/StatusBar`**, **`views/DashboardPanel`** (+ `rpcValidation`).

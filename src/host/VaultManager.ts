@@ -23,9 +23,9 @@ export interface VaultChange {
   vaultId?: string;
 }
 
-const GLOBAL_KEY = 'passwdmanager.vaults';
-const WORKSPACE_KEY = 'passwdmanager.workspaceVaults';
-const ACTIVE_KEY = 'passwdmanager.activeVault';
+const GLOBAL_KEY = 'vaultnest.vaults';
+const WORKSPACE_KEY = 'vaultnest.workspaceVaults';
+const ACTIVE_KEY = 'vaultnest.activeVault';
 const MAX_UNLOCK_ATTEMPTS = 3;
 
 /** Human readable messages for kdbxweb errors. */
@@ -118,7 +118,7 @@ export class VaultManager implements vscode.Disposable {
   }
 
   backupDirectory(ref: VaultRef): string {
-    if (config.backupLocation() === 'besideVault') return path.join(path.dirname(ref.path), '.passwdmanager-backups');
+    if (config.backupLocation() === 'besideVault') return path.join(path.dirname(ref.path), '.vaultnest-backups');
     return path.join(this.context.globalStorageUri.fsPath, 'backups', ref.id);
   }
 

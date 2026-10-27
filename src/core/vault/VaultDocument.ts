@@ -15,14 +15,14 @@ type KdbxGroup = kdbxweb.KdbxGroup;
 
 /** Custom data keys stored on entries (KDBX 4 `CustomData`, ignored by other clients). */
 export const CUSTOM_DATA = {
-  type: 'PasswdManager.Type',
-  favorite: 'PasswdManager.Favorite',
+  type: 'VaultNest.Type',
+  favorite: 'VaultNest.Favorite',
 } as const;
 
-/** Keys written by versions published as PasswdVault; still read, and replaced on the next write. */
-const LEGACY_CUSTOM_DATA: Record<string, string> = {
-  [CUSTOM_DATA.type]: 'PasswdVault.Type',
-  [CUSTOM_DATA.favorite]: 'PasswdVault.Favorite',
+/** Keys written by earlier versions (named PasswdVault and PasswdManager); still read, and replaced on the next write. */
+const LEGACY_CUSTOM_DATA: Record<string, string[]> = {
+  [CUSTOM_DATA.type]: ['PasswdManager.Type', 'PasswdVault.Type'],
+  [CUSTOM_DATA.favorite]: ['PasswdManager.Favorite', 'PasswdVault.Favorite'],
 };
 
 /** Standard KDBX field names. */
@@ -324,13 +324,17 @@ export class VaultDocument {
   private setCustomData(e: KdbxEntry, key: string, value: string | undefined): void {
     if (this.db.versionMajor < 4) return; // KDBX 3.1 has no entry CustomData
     if (!e.customData) e.customData = new Map();
-    e.customData.delete(LEGACY_CUSTOM_DATA[key]);
+    for (const old of LEGACY_CUSTOM_DATA[key]) e.customData.delete(old);
     if (value === undefined) e.customData.delete(key);
     else e.customData.set(key, { value, lastModified: new Date() });
   }
 
   private getCustomData(e: KdbxEntry, key: string): string | undefined {
-    return (e.customData?.get(key) ?? e.customData?.get(LEGACY_CUSTOM_DATA[key]))?.value;
+    for (const k of [key, ...LEGACY_CUSTOM_DATA[key]]) {
+      const v = e.customData?.get(k)?.value;
+      if (v !== undefined) return v;
+    }
+    return undefined;
   }
 
   isFavorite(e: KdbxEntry): boolean {

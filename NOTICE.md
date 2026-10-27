@@ -1,6 +1,6 @@
 # Third-party notices
 
-PasswdManager bundles the following open-source components into `dist/extension.js` and `dist/webview.js`:
+VaultNest bundles the following open-source components into `dist/extension.js` and `dist/webview.js`:
 
 | Component | License | Use |
 |---|---|---|

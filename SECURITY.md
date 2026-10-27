@@ -6,7 +6,7 @@ Please **do not open a public issue** for security problems. Use GitHub's *Repor
 
 ## Threat model
 
-PasswdManager protects secrets **at rest** and limits their exposure **while in use** inside VS Code.
+VaultNest protects secrets **at rest** and limits their exposure **while in use** inside VS Code.
 
 **In scope**
 
@@ -33,17 +33,17 @@ PasswdManager protects secrets **at rest** and limits their exposure **while in 
 | Clipboard | Only a SHA-256 hash of the copied value is kept, to decide whether the clipboard may be cleared. |
 | Persistence | Vault paths and preferences are kept in VS Code global/workspace state; secrets never are. New files are created with mode `0600`. |
 | Network / AI | The extension makes no network requests and does not use the VS Code Language Model or Chat APIs. Secrets reach an editor only when you run *Insert into Editor*, and a warning is shown the first time. |
-| 2FA | The authenticator key is typed or pasted by the user (setup key or `otpauth://` URI) and stored as a protected field. PasswdManager does not read QR codes or capture the screen. |
+| 2FA | The authenticator key is typed or pasted by the user (setup key or `otpauth://` URI) and stored as a protected field. VaultNest does not read QR codes or capture the screen. |
 | Exports | Plain-text exports show a warning and require the master password again. CSV values are written exactly as stored, never altered. |
 
 ## Known limitations
 
 1. **JavaScript memory hygiene.** Strings in JavaScript are immutable and garbage-collected, so they cannot be wiped reliably. The master password (from the input box), revealed values and values being edited may stay in memory until the garbage collector reclaims them. This limitation applies to every JavaScript/Electron password manager.
 2. **Shared extension host.** See *Out of scope*: another installed extension could read process memory or wrap VS Code APIs.
-3. **Clipboard.** Clipboard managers, remote desktop or clipboard sync may keep copies that PasswdManager cannot clear. In web/remote VS Code setups, reading the clipboard can fail; then it is not cleared automatically.
+3. **Clipboard.** Clipboard managers, remote desktop or clipboard sync may keep copies that VaultNest cannot clear. In web/remote VS Code setups, reading the clipboard can fail; then it is not cleared automatically.
 4. **Inactivity detection** relies on editor, terminal and window events. Activity in some other views (for example a terminal running a long job with no input) may not count as activity.
 5. **Strength estimate.** The strength meter and the *weak* check of the health report only measure length and character variety. They do not recognize dictionary words, common or leaked passwords, names or keyboard patterns, so a password like `Password123!` (79 bits) is rated *Good*. Use the generator for new passwords.
-6. **Attachments** stored by other KDBX apps are kept and listed, but cannot be opened or edited in PasswdManager yet.
+6. **Attachments** stored by other KDBX apps are kept and listed, but cannot be opened or edited in VaultNest yet.
 7. **Merging** uses the standard KDBX merge semantics with 1-second timestamp resolution. Two edits of the *same item* within the same second on two devices resolve in favor of the local copy, and the overwritten version stays in the item history.
 8. **Argon2 v1.0 (0x10)** files are not supported (very rare; resave them in a current KDBX app).
 9. **Dependencies.** The bundled `@xmldom/xmldom` is pinned to 0.8.15 through an npm `overrides` entry (kdbxweb 2.1.1 asks for 0.7.x, which has known advisories). `npm audit --omit=dev` reports no vulnerabilities. The remaining advisory affects only the `@vscode/vsce` packaging tool, which is not part of the extension.

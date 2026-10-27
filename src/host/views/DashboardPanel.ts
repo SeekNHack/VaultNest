@@ -23,7 +23,7 @@ type Handler<M extends RpcMethod> = (params: RpcMethods[M][0]) => Promise<RpcMet
  */
 export class DashboardPanel implements vscode.Disposable {
   static current: DashboardPanel | undefined;
-  private static readonly viewType = 'passwdmanager.dashboard';
+  private static readonly viewType = 'vaultnest.dashboard';
 
   private readonly disposables: vscode.Disposable[] = [];
   private stateTimer: NodeJS.Timeout | undefined;
@@ -35,7 +35,7 @@ export class DashboardPanel implements vscode.Disposable {
       DashboardPanel.current.panel.reveal(vscode.ViewColumn.Active);
       return DashboardPanel.current;
     }
-    const panel = vscode.window.createWebviewPanel(DashboardPanel.viewType, 'PasswdManager', vscode.ViewColumn.Active, {
+    const panel = vscode.window.createWebviewPanel(DashboardPanel.viewType, 'VaultNest', vscode.ViewColumn.Active, {
       enableScripts: true,
       enableCommandUris: false,
       enableForms: false,
@@ -158,8 +158,8 @@ export class DashboardPanel implements vscode.Disposable {
       return ok;
     },
     lock: ({ vaultId }) => this.manager.lock(vaultId, 'manual'),
-    createVault: async () => { await vscode.commands.executeCommand('passwdmanager.createVault'); },
-    openVault: async () => { await vscode.commands.executeCommand('passwdmanager.openVault'); },
+    createVault: async () => { await vscode.commands.executeCommand('vaultnest.createVault'); },
+    openVault: async () => { await vscode.commands.executeCommand('vaultnest.openVault'); },
     getEntry: ({ vaultId, entryId }) => {
       this.requireUnlocked(vaultId);
       return { ...this.manager.doc(vaultId).getEntry(entryId), vaultId };
@@ -200,20 +200,20 @@ export class DashboardPanel implements vscode.Disposable {
       return this.manager.healthReport(vaultId);
     },
     vaultCommand: ({ vaultId, command }) => this.vaultCommand(vaultId, command),
-    openSettings: async () => { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.passwdmanager'); },
+    openSettings: async () => { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.vaultnest'); },
   };
 
   private async vaultCommand(vaultId: string, command: VaultCommand): Promise<void> {
     const arg = { vaultId };
     switch (command) {
-      case 'changeMasterPassword': await vscode.commands.executeCommand('passwdmanager.changeMasterPassword', arg); break;
-      case 'backupNow': await vscode.commands.executeCommand('passwdmanager.backupNow', arg); break;
-      case 'openBackupFolder': await vscode.commands.executeCommand('passwdmanager.openBackupFolder', arg); break;
-      case 'sync': await vscode.commands.executeCommand('passwdmanager.syncVault', arg); break;
-      case 'import': await vscode.commands.executeCommand('passwdmanager.import', arg); break;
-      case 'export': await vscode.commands.executeCommand('passwdmanager.export', arg); break;
-      case 'remove': await vscode.commands.executeCommand('passwdmanager.removeVault', arg); break;
-      case 'reveal': await vscode.commands.executeCommand('passwdmanager.revealVaultFile', arg); break;
+      case 'changeMasterPassword': await vscode.commands.executeCommand('vaultnest.changeMasterPassword', arg); break;
+      case 'backupNow': await vscode.commands.executeCommand('vaultnest.backupNow', arg); break;
+      case 'openBackupFolder': await vscode.commands.executeCommand('vaultnest.openBackupFolder', arg); break;
+      case 'sync': await vscode.commands.executeCommand('vaultnest.syncVault', arg); break;
+      case 'import': await vscode.commands.executeCommand('vaultnest.import', arg); break;
+      case 'export': await vscode.commands.executeCommand('vaultnest.export', arg); break;
+      case 'remove': await vscode.commands.executeCommand('vaultnest.removeVault', arg); break;
+      case 'reveal': await vscode.commands.executeCommand('vaultnest.revealVaultFile', arg); break;
       case 'rename': {
         this.requireUnlocked(vaultId);
         await this.actions.renameFolder(vaultId, this.manager.doc(vaultId).root.uuid.id);
@@ -257,10 +257,10 @@ export class DashboardPanel implements vscode.Disposable {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="${asset('media/codicon.css')}" nonce="${nonce}">
 <link rel="stylesheet" href="${asset('webview.css')}" nonce="${nonce}">
-<title>PasswdManager</title>
+<title>VaultNest</title>
 </head>
 <body>
-<div id="app" role="application" aria-label="PasswdManager"></div>
+<div id="app" role="application" aria-label="VaultNest"></div>
 <script nonce="${nonce}" src="${asset('webview.js')}"></script>
 </body>
 </html>`;

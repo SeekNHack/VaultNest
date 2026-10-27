@@ -6,7 +6,7 @@ import { DEFAULT_GENERATOR_OPTIONS, GeneratorOptions, ITEM_TYPE_INFO, StrengthRe
 import { ClipboardService } from './services/ClipboardService';
 import { describeError, VaultManager } from './VaultManager';
 
-const GENERATOR_KEY = 'passwdmanager.generatorOptions';
+const GENERATOR_KEY = 'vaultnest.generatorOptions';
 const SAFE_URL_SCHEMES = new Set(['http:', 'https:', 'ftp:', 'sftp:', 'ssh:', 'mailto:']);
 
 /**
@@ -64,7 +64,7 @@ export class Actions {
       return;
     }
     if (!SAFE_URL_SCHEMES.has(url.protocol)) {
-      void vscode.window.showWarningMessage(`For safety, PasswdManager only opens web, mail and SSH links (not "${url.protocol}").`);
+      void vscode.window.showWarningMessage(`For safety, VaultNest only opens web, mail and SSH links (not "${url.protocol}").`);
       return;
     }
     await vscode.env.openExternal(vscode.Uri.parse(url.toString(), true));

@@ -18,7 +18,7 @@ interface EntryRef {
   entryId: string;
 }
 
-const INSERT_WARNING_KEY = 'passwdmanager.insertWarningShown';
+const INSERT_WARNING_KEY = 'vaultnest.insertWarningShown';
 
 export function registerCommands(
   context: vscode.ExtensionContext,
@@ -179,19 +179,19 @@ export function registerCommands(
       try {
         await fn(arg);
       } catch (err) {
-        void vscode.window.showErrorMessage(`PasswdManager: ${describeError(err)}`);
+        void vscode.window.showErrorMessage(`VaultNest: ${describeError(err)}`);
       }
     }));
 
   // ------------------------------------------------------------ vaults
-  reg('passwdmanager.openDashboard', async (arg) => {
+  reg('vaultnest.openDashboard', async (arg) => {
     const id = vaultIdOf(arg);
     if (id) await manager.setActive(id);
     dashboard();
   });
-  reg('passwdmanager.createVault', () => createVaultFlow(manager));
-  reg('passwdmanager.openVault', (arg) => openVaultFlow(manager, arg instanceof vscode.Uri ? arg : undefined));
-  reg('passwdmanager.unlock', async (arg) => {
+  reg('vaultnest.createVault', () => createVaultFlow(manager));
+  reg('vaultnest.openVault', (arg) => openVaultFlow(manager, arg instanceof vscode.Uri ? arg : undefined));
+  reg('vaultnest.unlock', async (arg) => {
     const locked = manager.refs().filter((r) => !manager.isUnlocked(r.id));
     let id = vaultIdOf(arg);
     if (!id && locked.length === 1) id = locked[0].id;
@@ -202,32 +202,32 @@ export function registerCommands(
       if (config.openDashboardOnUnlock()) dashboard();
     }
   });
-  reg('passwdmanager.lock', async (arg) => {
+  reg('vaultnest.lock', async (arg) => {
     const id = vaultIdOf(arg) ?? (manager.unlockedIds().length === 1 ? manager.unlockedIds()[0] : await resolveVault(arg, { prompt: 'Lock vault' }));
     if (id) await manager.lock(id, 'manual');
   });
-  reg('passwdmanager.lockAll', async () => {
+  reg('vaultnest.lockAll', async () => {
     await manager.lockAll('manual');
     await actions.clipboard.clearIfOurs();
     vscode.window.setStatusBarMessage('$(lock) All vaults locked', 3000);
   });
-  reg('passwdmanager.removeVault', async (arg) => {
+  reg('vaultnest.removeVault', async (arg) => {
     const id = await resolveVault(arg, { prompt: 'Remove vault from list' });
     if (!id) return;
     const ref = manager.ref(id);
     const ok = 'Remove from List';
-    const c = await vscode.window.showWarningMessage(`Remove "${ref.name}" from PasswdManager? The file itself is NOT deleted:\n${ref.path}`, { modal: true }, ok);
+    const c = await vscode.window.showWarningMessage(`Remove "${ref.name}" from VaultNest? The file itself is NOT deleted:\n${ref.path}`, { modal: true }, ok);
     if (c === ok) await manager.removeRef(id);
   });
-  reg('passwdmanager.revealVaultFile', async (arg) => {
+  reg('vaultnest.revealVaultFile', async (arg) => {
     const id = await resolveVault(arg);
     if (id) await vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(manager.ref(id).path));
   });
-  reg('passwdmanager.changeMasterPassword', async (arg) => {
+  reg('vaultnest.changeMasterPassword', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (id) await changeMasterPasswordFlow(manager, id);
   });
-  reg('passwdmanager.backupNow', async (arg) => {
+  reg('vaultnest.backupNow', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (!id) return;
     const p = await manager.session(id).backupNow();
@@ -238,109 +238,109 @@ export function registerCommands(
       }
     }
   });
-  reg('passwdmanager.openBackupFolder', async (arg) => {
+  reg('vaultnest.openBackupFolder', async (arg) => {
     const id = await resolveVault(arg);
     if (!id) return;
     const dir = manager.backupDirectory(manager.ref(id));
     await vscode.workspace.fs.createDirectory(vscode.Uri.file(dir));
     await vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(dir));
   });
-  reg('passwdmanager.syncVault', async (arg) => {
+  reg('vaultnest.syncVault', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (!id) return;
     const changed = await manager.syncFromDisk(id);
     vscode.window.setStatusBarMessage(changed ? '$(sync) Merged changes from disk' : '$(check) Vault is up to date', 3000);
   });
-  reg('passwdmanager.import', async (arg) => {
+  reg('vaultnest.import', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true, prompt: 'Import into vault' });
     if (id) await importFlow(manager, id);
   });
-  reg('passwdmanager.export', async (arg) => {
+  reg('vaultnest.export', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true, prompt: 'Export vault' });
     if (id) await exportFlow(manager, id);
   });
-  reg('passwdmanager.emptyTrash', async (arg) => {
+  reg('vaultnest.emptyTrash', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (id) await actions.emptyTrash(id);
   });
-  reg('passwdmanager.passwordHealth', async (arg) => {
+  reg('vaultnest.passwordHealth', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (!id) return;
     await manager.setActive(id);
     dashboard().navigate({ view: 'health', vaultId: id });
   });
-  reg('passwdmanager.refresh', () => tree.refresh());
-  reg('passwdmanager.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.passwdmanager'));
-  reg('passwdmanager.clearClipboard', () => actions.clipboard.clearNow());
+  reg('vaultnest.refresh', () => tree.refresh());
+  reg('vaultnest.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.vaultnest'));
+  reg('vaultnest.clearClipboard', () => actions.clipboard.clearNow());
 
   // ------------------------------------------------------------ folders
-  reg('passwdmanager.newFolder', async (arg) => {
+  reg('vaultnest.newFolder', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true });
     if (id) await actions.createFolder(id, folderOf(arg));
   });
-  reg('passwdmanager.renameFolder', async (arg) => {
+  reg('vaultnest.renameFolder', async (arg) => {
     const folderId = folderOf(arg);
     const id = vaultIdOf(arg);
     if (id && folderId) await actions.renameFolder(id, folderId);
   });
-  reg('passwdmanager.deleteFolder', async (arg) => {
+  reg('vaultnest.deleteFolder', async (arg) => {
     const folderId = folderOf(arg);
     const id = vaultIdOf(arg);
     if (id && folderId) await actions.deleteFolder(id, folderId);
   });
 
   // ------------------------------------------------------------ items
-  reg('passwdmanager.newItem', async (arg) => {
+  reg('vaultnest.newItem', async (arg) => {
     const id = await resolveVault(arg, { unlocked: true, prompt: 'Add item to vault' });
     if (!id) return;
     await manager.setActive(id);
     dashboard().navigate({ view: 'items', vaultId: id, newItem: { folderId: folderOf(arg) ?? undefined } });
   });
-  reg('passwdmanager.openItem', async (arg) => {
+  reg('vaultnest.openItem', async (arg) => {
     const ref = await resolveEntry(arg, 'Open item');
     if (!ref) return;
     await manager.setActive(ref.vaultId);
     dashboard().navigate({ view: 'items', vaultId: ref.vaultId, entryId: ref.entryId });
   });
-  reg('passwdmanager.editItem', async (arg) => {
+  reg('vaultnest.editItem', async (arg) => {
     const ref = await resolveEntry(arg, 'Edit item');
     if (!ref) return;
     await manager.setActive(ref.vaultId);
     dashboard().navigate({ view: 'items', vaultId: ref.vaultId, entryId: ref.entryId, edit: true });
   });
-  reg('passwdmanager.deleteItem', async (arg) => {
+  reg('vaultnest.deleteItem', async (arg) => {
     const ref = await resolveEntry(arg, 'Delete item');
     if (ref) await actions.deleteEntry(ref.vaultId, ref.entryId);
   });
-  reg('passwdmanager.restoreItem', async (arg) => {
+  reg('vaultnest.restoreItem', async (arg) => {
     const ref = await resolveEntry(arg, 'Restore item');
     if (ref) await actions.restoreEntry(ref.vaultId, ref.entryId);
   });
-  reg('passwdmanager.toggleFavorite', async (arg) => {
+  reg('vaultnest.toggleFavorite', async (arg) => {
     const ref = await resolveEntry(arg, 'Toggle favorite');
     if (ref) await actions.toggleFavorite(ref.vaultId, ref.entryId);
   });
-  reg('passwdmanager.copyUsername', async (arg) => {
+  reg('vaultnest.copyUsername', async (arg) => {
     const ref = await resolveEntry(arg, 'Copy username', (e) => !!e.username);
     if (ref) await actions.copyField(ref.vaultId, ref.entryId, 'UserName');
   });
-  reg('passwdmanager.copyPassword', async (arg) => {
+  reg('vaultnest.copyPassword', async (arg) => {
     const ref = await resolveEntry(arg, 'Copy password / secret', (e) => e.hasPassword);
     if (ref) await actions.copyField(ref.vaultId, ref.entryId, 'Password');
   });
-  reg('passwdmanager.copyTotp', async (arg) => {
+  reg('vaultnest.copyTotp', async (arg) => {
     const ref = await resolveEntry(arg, 'Copy verification code', (e) => e.hasTotp);
     if (ref) await actions.copyField(ref.vaultId, ref.entryId, 'otp');
   });
-  reg('passwdmanager.copyUrl', async (arg) => {
+  reg('vaultnest.copyUrl', async (arg) => {
     const ref = await resolveEntry(arg, 'Copy URL', (e) => !!e.url);
     if (ref) await actions.copyField(ref.vaultId, ref.entryId, 'URL');
   });
-  reg('passwdmanager.openUrl', async (arg) => {
+  reg('vaultnest.openUrl', async (arg) => {
     const ref = await resolveEntry(arg, 'Open URL', (e) => !!e.url);
     if (ref) await actions.openUrl(manager.doc(ref.vaultId).getEntry(ref.entryId).url);
   });
-  reg('passwdmanager.insertSecret', async (arg) => {
+  reg('vaultnest.insertSecret', async (arg) => {
     const ref = await resolveEntry(arg, 'Insert into editor');
     if (!ref) return;
     const doc = manager.doc(ref.vaultId);
@@ -359,8 +359,8 @@ export function registerCommands(
     const value = pick.field === 'otp' ? actions.getTotp(ref.vaultId, ref.entryId)?.code ?? '' : doc.revealField(ref.entryId, pick.field);
     await insertIntoEditor(value);
   });
-  reg('passwdmanager.search', async () => {
-    const ref = await pickEntry('PasswdManager: search items');
+  reg('vaultnest.search', async () => {
+    const ref = await pickEntry('VaultNest: search items');
     if (!ref) return;
     const e = manager.doc(ref.vaultId).getEntry(ref.entryId);
     const info = ITEM_TYPE_INFO[e.type];
@@ -369,17 +369,17 @@ export function registerCommands(
       e.username ? { label: `$(person) Copy ${info.usernameLabel ?? 'username'}`, run: () => actions.copyField(ref.vaultId, ref.entryId, 'UserName') } : undefined,
       e.hasTotp ? { label: '$(watch) Copy verification code', run: () => actions.copyField(ref.vaultId, ref.entryId, 'otp') } : undefined,
       e.url ? { label: '$(link-external) Open URL', run: () => actions.openUrl(e.url) } : undefined,
-      { label: '$(insert) Insert into editor…', run: () => vscode.commands.executeCommand('passwdmanager.insertSecret', ref) },
-      { label: '$(go-to-file) Open in dashboard', run: () => vscode.commands.executeCommand('passwdmanager.openItem', ref) },
-      { label: '$(edit) Edit', run: () => vscode.commands.executeCommand('passwdmanager.editItem', ref) },
+      { label: '$(insert) Insert into editor…', run: () => vscode.commands.executeCommand('vaultnest.insertSecret', ref) },
+      { label: '$(go-to-file) Open in dashboard', run: () => vscode.commands.executeCommand('vaultnest.openItem', ref) },
+      { label: '$(edit) Edit', run: () => vscode.commands.executeCommand('vaultnest.editItem', ref) },
     ].filter((x): x is { label: string; run: () => Thenable<unknown> | Promise<unknown> } => !!x);
     const action = await vscode.window.showQuickPick(choices, { title: e.title });
     await action?.run();
   });
 
   // ------------------------------------------------------------ generator
-  reg('passwdmanager.openGenerator', () => dashboard().navigate({ view: 'generator' }));
-  reg('passwdmanager.generatePassword', async () => {
+  reg('vaultnest.openGenerator', () => dashboard().navigate({ view: 'generator' }));
+  reg('vaultnest.generatePassword', async () => {
     let options = actions.generatorOptions();
     for (;;) {
       const g = actions.generate(options);
@@ -410,7 +410,7 @@ export function registerCommands(
       return;
     }
   });
-  reg('passwdmanager.insertGeneratedPassword', async () => {
+  reg('vaultnest.insertGeneratedPassword', async () => {
     const g = actions.generate();
     await insertIntoEditor(g.value);
   });

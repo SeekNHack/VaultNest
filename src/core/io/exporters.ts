@@ -1,10 +1,10 @@
 import type { ImportedItem } from '../vault/VaultDocument';
 import { toCsv } from './csv';
-import { PASSWDMANAGER_CSV_HEADER } from './importers';
+import { VAULTNEST_CSV_HEADER } from './importers';
 
-/** Serialises items to the PasswdManager CSV format (UNENCRYPTED – contains plaintext secrets). */
-export function exportPasswdManagerCsv(items: ImportedItem[]): string {
-  const rows = [PASSWDMANAGER_CSV_HEADER];
+/** Serialises items to the VaultNest CSV format (UNENCRYPTED – contains plaintext secrets). */
+export function exportVaultNestCsv(items: ImportedItem[]): string {
+  const rows = [VAULTNEST_CSV_HEADER];
   for (const it of items) {
     rows.push([
       it.folder, it.favorite ? '1' : '', it.type, it.title, it.username, it.password, it.url, it.notes, it.totp,

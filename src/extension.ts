@@ -28,7 +28,7 @@ export interface TestApi {
 }
 
 export function activate(context: vscode.ExtensionContext): TestApi | undefined {
-  const log = vscode.window.createOutputChannel('PasswdManager', { log: true });
+  const log = vscode.window.createOutputChannel('VaultNest', { log: true });
   manager = new VaultManager(context, log);
   clipboard = new ClipboardService();
   const tree = new VaultTreeProvider(manager);
@@ -36,15 +36,15 @@ export function activate(context: vscode.ExtensionContext): TestApi | undefined 
   const autoLock = new AutoLock(() => m.hasUnlocked(), async (reason) => {
     await m.lockAll(reason);
     await clipboard?.clearIfOurs();
-    vscode.window.setStatusBarMessage(`$(lock) PasswdManager locked (${reason})`, 5000);
+    vscode.window.setStatusBarMessage(`$(lock) VaultNest locked (${reason})`, 5000);
   });
   const actions = new Actions(context, manager, clipboard);
 
-  const treeView = vscode.window.createTreeView('passwdmanager.vaults', { treeDataProvider: tree, showCollapseAll: true });
+  const treeView = vscode.window.createTreeView('vaultnest.vaults', { treeDataProvider: tree, showCollapseAll: true });
   const updateContext = () => {
-    void vscode.commands.executeCommand('setContext', 'passwdmanager.hasVaults', m.refs().length > 0);
-    void vscode.commands.executeCommand('setContext', 'passwdmanager.hasUnlocked', m.hasUnlocked());
-    void vscode.commands.executeCommand('setContext', 'passwdmanager.hasLocked', m.refs().some((r) => !m.isUnlocked(r.id)));
+    void vscode.commands.executeCommand('setContext', 'vaultnest.hasVaults', m.refs().length > 0);
+    void vscode.commands.executeCommand('setContext', 'vaultnest.hasUnlocked', m.hasUnlocked());
+    void vscode.commands.executeCommand('setContext', 'vaultnest.hasLocked', m.refs().some((r) => !m.isUnlocked(r.id)));
     treeView.message = undefined;
   };
   updateContext();
@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext): TestApi | undefined 
     treeView.onDidChangeSelection(() => autoLock.touch()),
   );
   registerCommands(context, manager, actions, tree, () => autoLock.touch());
-  log.info('PasswdManager activated. All vaults are locked.');
+  log.info('VaultNest activated. All vaults are locked.');
   // Internals are exposed to the integration tests only; never to other extensions in production.
   return context.extensionMode === vscode.ExtensionMode.Test ? { manager, actions, tree, autoLock, kdbxweb, VaultSession, dashboard: () => DashboardPanel.current } : undefined;
 }

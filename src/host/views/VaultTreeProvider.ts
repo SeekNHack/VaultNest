@@ -70,7 +70,7 @@ export class VaultTreeProvider implements vscode.TreeDataProvider<TreeNode>, vsc
         item.description = `${unlocked ? 'unlocked' : 'locked'}${ref.scope === 'workspace' ? ' · workspace' : ''}`;
         item.tooltip = new vscode.MarkdownString(`**${ref.name}**\n\n\`${ref.path}\`${ref.keyFilePath ? '\n\nKey file: `' + ref.keyFilePath + '`' : ''}`);
         item.contextValue = unlocked ? 'vault-unlocked' : 'vault-locked';
-        if (!unlocked) item.command = { command: 'passwdmanager.unlock', title: 'Unlock', arguments: [node] };
+        if (!unlocked) item.command = { command: 'vaultnest.unlock', title: 'Unlock', arguments: [node] };
         return item;
       }
       case 'favorites': {
@@ -106,7 +106,7 @@ export class VaultTreeProvider implements vscode.TreeDataProvider<TreeNode>, vsc
         md.isTrusted = false;
         item.tooltip = md;
         item.contextValue = `entry-${e.trashed ? 'trashed' : 'active'}${e.url ? '-url' : ''}${e.hasTotp ? '-totp' : ''}`;
-        item.command = { command: 'passwdmanager.openItem', title: 'Open', arguments: [node] };
+        item.command = { command: 'vaultnest.openItem', title: 'Open', arguments: [node] };
         return item;
       }
     }
