@@ -2,7 +2,7 @@
   "name": "vaultnest",
   "displayName": "VaultNest",
   "description": "A local-first vault for VS Code. Keep logins, API keys, tokens and 2FA codes in an encrypted KDBX file on your machine.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "publisher": "hacknseek",
   "license": "MIT",
   "icon": "media/icon.png",

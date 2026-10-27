@@ -69,7 +69,7 @@ describe('VaultDocument', () => {
     doc.autoLockMinutes = 5;
     const bytes = new Uint8Array(await doc.save());
     bytes[bytes.length - 40] ^= 0x01;
-    await expect(VaultDocument.load(bytes.buffer, await makeCredentials({ password: pv('master') }))).rejects.toBeTruthy();
+    await expect(VaultDocument.load(bytes, await makeCredentials({ password: pv('master') }))).rejects.toBeTruthy();
   });
 
   it('reads item type written under the old PasswdManager key', async () => {
