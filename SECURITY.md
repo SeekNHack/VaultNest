@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Please **do not open a public issue** for security problems. Use GitHub's *Report a vulnerability* (private security advisory) on <https://github.com/SeekNHack/PasswdVault/security>. Include a description, the affected version and reproduction steps.
+Please **do not open a public issue** for security problems. Use GitHub's *Report a vulnerability* (private security advisory) on <https://github.com/SeekNHack/VaultNest/security>. Include a description, the affected version and reproduction steps.
 
 ## Threat model
 

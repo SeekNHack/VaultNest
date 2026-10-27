@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/SeekNHack/PasswdVault/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/SeekNHack/PasswdVault/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/SeekNHack/VaultNest/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/SeekNHack/VaultNest/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 

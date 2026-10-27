@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SeekNHack/PasswdVault.git"
+    "url": "https://github.com/SeekNHack/VaultNest.git"
   },
   "bugs": {
-    "url": "https://github.com/SeekNHack/PasswdVault/issues"
+    "url": "https://github.com/SeekNHack/VaultNest/issues"
   },
-  "homepage": "https://github.com/SeekNHack/PasswdVault#readme",
+  "homepage": "https://github.com/SeekNHack/VaultNest#readme",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -88,7 +88,7 @@
       {
         "view": "vaultnest.vaults",
         "when": "!vaultnest.hasVaults",
-        "contents": "VaultNest keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:vaultnest.createVault)\n[Open Existing .kdbx](command:vaultnest.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)"
+        "contents": "VaultNest keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:vaultnest.createVault)\n[Open Existing .kdbx](command:vaultnest.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/VaultNest#readme)"
       }
     ],
     "commands": [

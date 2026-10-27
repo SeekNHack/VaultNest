@@ -47,7 +47,7 @@ pkg.contributes = {
   viewsContainers: { activitybar: [{ id: 'vaultnest', title: 'VaultNest', icon: 'media/activitybar.svg' }] },
   views: { vaultnest: [{ id: 'vaultnest.vaults', name: 'Vaults', icon: 'media/activitybar.svg', contextualTitle: 'VaultNest' }] },
   viewsWelcome: [
-    { view: 'vaultnest.vaults', when: '!vaultnest.hasVaults', contents: 'VaultNest keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:vaultnest.createVault)\n[Open Existing .kdbx](command:vaultnest.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)' },
+    { view: 'vaultnest.vaults', when: '!vaultnest.hasVaults', contents: 'VaultNest keeps your passwords, API keys and tokens in an encrypted KDBX 4 file, stored only on this machine.\n[Create New Vault](command:vaultnest.createVault)\n[Open Existing .kdbx](command:vaultnest.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/VaultNest#readme)' },
   ],
   commands,
   menus: {

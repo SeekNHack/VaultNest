@@ -8,7 +8,7 @@
 ## Setup
 
 ```bash
-git clone git@github.com:SeekNHack/PasswdVault.git
+git clone git@github.com:SeekNHack/VaultNest.git
 cd VaultNest
 npm install
 npm run build
