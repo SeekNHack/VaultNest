@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 — 2026-10-27
+
+- Published under the `hacknseek` Marketplace publisher (extension ID `hacknseek.passwdvault`).
+
 ## 1.1.0 — 2026-10-27
 
 - **2FA from QR codes:** set up authenticator codes by scanning the screen (with a cancellable countdown), choosing an image file, pasting a screenshot, or dropping an image onto the 2FA field. The editor fills in an empty name or username from the QR code.

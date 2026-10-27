@@ -2,8 +2,8 @@
   "name": "passwdvault",
   "displayName": "PasswdVault",
   "description": "A secure, local-first password manager for VS Code. Encrypted KeePass-compatible (KDBX 4) vaults, 2FA/TOTP codes with QR scanning, password generator, API key & token storage, health reports.",
-  "version": "1.1.0",
-  "publisher": "SeekNHack",
+  "version": "1.1.1",
+  "publisher": "hacknseek",
   "license": "MIT",
   "author": {
     "name": "HackNSeek"

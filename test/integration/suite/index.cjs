@@ -51,7 +51,7 @@ async function test(name, fn) {
 }
 
 exports.run = async function run() {
-  const ext = vscode.extensions.getExtension('SeekNHack.passwdvault');
+  const ext = vscode.extensions.getExtension('hacknseek.passwdvault');
   assert.ok(ext, 'extension is installed');
   console.log('activating PasswdVault…');
   const api = await ext.activate();

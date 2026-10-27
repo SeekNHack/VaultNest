@@ -270,7 +270,7 @@ export function registerCommands(
     dashboard().navigate({ view: 'health', vaultId: id });
   });
   reg('passwdvault.refresh', () => tree.refresh());
-  reg('passwdvault.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:SeekNHack.passwdvault'));
+  reg('passwdvault.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hacknseek.passwdvault'));
   reg('passwdvault.clearClipboard', () => actions.clipboard.clearNow());
 
   // ------------------------------------------------------------ folders
