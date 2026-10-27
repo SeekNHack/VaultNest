@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2 — 2026-10-27
+
+- Shorter Marketplace description and keywords.
+
 ## 1.1.1 — 2026-10-27
 
 - Published under the `hacknseek` Marketplace publisher (extension ID `hacknseek.passwdvault`).

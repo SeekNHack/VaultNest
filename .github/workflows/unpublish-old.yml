@@ -1,0 +1,9 @@
+name: Remove old SeekNHack upload
+on: workflow_dispatch
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npx --yes @vscode/vsce unpublish SeekNHack.passwdvault --force
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}

@@ -1,8 +1,8 @@
 {
   "name": "passwdvault",
   "displayName": "PasswdVault",
-  "description": "A secure, local-first password manager for VS Code. Encrypted KeePass-compatible (KDBX 4) vaults, 2FA/TOTP codes with QR scanning, password generator, API key & token storage, health reports.",
-  "version": "1.1.1",
+  "description": "A secure, local-first password manager for VS Code. Encrypted vaults, 2FA codes, password generator, API key storage and password health reports.",
+  "version": "1.1.2",
   "publisher": "hacknseek",
   "license": "MIT",
   "author": {
@@ -30,16 +30,9 @@
   "keywords": [
     "password",
     "password manager",
-    "keepass",
-    "kdbx",
-    "secrets",
     "vault",
-    "api key",
-    "totp",
-    "generator",
-    "2fa",
-    "authenticator",
-    "otp"
+    "secrets",
+    "2fa"
   ],
   "main": "./dist/extension.js",
   "capabilities": {
