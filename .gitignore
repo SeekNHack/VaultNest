@@ -1,0 +1,11 @@
+node_modules/
+dist/
+out/
+*.vsix
+.vscode-test/
+coverage/
+*.log
+.DS_Store
+# never commit real vaults
+*.kdbx
+!test/fixtures/*.kdbx
