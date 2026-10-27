@@ -54,6 +54,19 @@ describe('VaultDocument', () => {
     expect(raw.customData?.get(CUSTOM_DATA.type)?.value).toBe('apiKey');
   });
 
+  it('reads item type and favorite written under the old PasswdVault keys', async () => {
+    const doc = await newDoc();
+    const id = doc.saveEntry(null, entryInput({ type: 'login' }));
+    const raw = doc.findEntry(id);
+    raw.customData = new Map([['PasswdVault.Type', { value: 'apiKey' }], ['PasswdVault.Favorite', { value: 'true' }]]);
+    const d = (await roundtrip(doc)).getEntry(id);
+    expect(d.type).toBe('apiKey');
+    expect(d.favorite).toBe(true);
+    doc.setFavorite(id, false);
+    expect(doc.findEntry(id).customData?.has('PasswdVault.Favorite')).toBe(false);
+    expect(doc.getEntry(id).type).toBe('apiKey');
+  });
+
   it('keeps unchanged secrets, pushes history and supports custom fields', async () => {
     const doc = await newDoc();
     const id = doc.saveEntry(null, entryInput({ customFields: [{ name: 'API secret', value: 'abc', protected: true }, { name: 'Region', value: 'eu', protected: false }] }));

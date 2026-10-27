@@ -15,9 +15,15 @@ type KdbxGroup = kdbxweb.KdbxGroup;
 
 /** Custom data keys stored on entries (KDBX 4 `CustomData`, ignored by other clients). */
 export const CUSTOM_DATA = {
-  type: 'PasswdVault.Type',
-  favorite: 'PasswdVault.Favorite',
+  type: 'PasswdManager.Type',
+  favorite: 'PasswdManager.Favorite',
 } as const;
+
+/** Keys written by versions published as PasswdVault; still read, and replaced on the next write. */
+const LEGACY_CUSTOM_DATA: Record<string, string> = {
+  [CUSTOM_DATA.type]: 'PasswdVault.Type',
+  [CUSTOM_DATA.favorite]: 'PasswdVault.Favorite',
+};
 
 /** Standard KDBX field names. */
 export const STD_FIELDS = {
@@ -307,7 +313,7 @@ export class VaultDocument {
   }
 
   entryType(e: KdbxEntry): ItemType {
-    const t = e.customData?.get(CUSTOM_DATA.type)?.value;
+    const t = this.getCustomData(e, CUSTOM_DATA.type);
     if (isItemType(t)) return t;
     // Infer a sensible type for entries created by other KeePass clients.
     const hasCreds = !!fieldText(e.fields.get(STD_FIELDS.password)) || !!fieldText(e.fields.get(STD_FIELDS.username)) || !!fieldText(e.fields.get(STD_FIELDS.url));
@@ -318,12 +324,17 @@ export class VaultDocument {
   private setCustomData(e: KdbxEntry, key: string, value: string | undefined): void {
     if (this.db.versionMajor < 4) return; // KDBX 3.1 has no entry CustomData
     if (!e.customData) e.customData = new Map();
+    e.customData.delete(LEGACY_CUSTOM_DATA[key]);
     if (value === undefined) e.customData.delete(key);
     else e.customData.set(key, { value, lastModified: new Date() });
   }
 
+  private getCustomData(e: KdbxEntry, key: string): string | undefined {
+    return (e.customData?.get(key) ?? e.customData?.get(LEGACY_CUSTOM_DATA[key]))?.value;
+  }
+
   isFavorite(e: KdbxEntry): boolean {
-    return e.customData?.get(CUSTOM_DATA.favorite)?.value === 'true';
+    return this.getCustomData(e, CUSTOM_DATA.favorite) === 'true';
   }
 
   private totpParams(e: KdbxEntry): TotpParams | undefined {

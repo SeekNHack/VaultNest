@@ -1,12 +1,16 @@
 # Changelog
 
+## 1.2.0 — 2026-10-27
+
+- Renamed to **PasswdManager** (extension ID `hacknseek.passwdmanager`). Commands, settings and views now use the `passwdmanager.` prefix. Vaults created with earlier versions open unchanged; item types and favorites saved under the old name are still read.
+
 ## 1.1.2 — 2026-10-27
 
 - Shorter Marketplace description and keywords.
 
 ## 1.1.1 — 2026-10-27
 
-- Published under the `hacknseek` Marketplace publisher (extension ID `hacknseek.passwdvault`).
+- Published under the `hacknseek` Marketplace publisher (extension ID `hacknseek.passwdmanager`).
 
 ## 1.1.0 — 2026-10-27
 
@@ -29,4 +33,4 @@ First release.
 - Password & passphrase generator using the system CSPRNG; zxcvbn strength meter.
 - Clipboard auto-clear (only if the clipboard still holds the copied secret).
 - Crash-safe saving: atomic writes with verification, rotating encrypted backups, automatic merge of external changes (KeePassXC, sync clients), recovery copy on failure.
-- Import: KDBX, Bitwarden (JSON/CSV), KeePassXC CSV, browser CSV, PasswdVault CSV. Export: KDBX, PasswdVault CSV, Bitwarden CSV.
+- Import: KDBX, Bitwarden (JSON/CSV), KeePassXC CSV, browser CSV, PasswdManager CSV. Export: KDBX, PasswdManager CSV, Bitwarden CSV.

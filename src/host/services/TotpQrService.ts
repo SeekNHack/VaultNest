@@ -44,11 +44,11 @@ export class TotpQrService {
     let text: string | null;
     try {
       text = await vscode.window.withProgress(
-        { location: vscode.ProgressLocation.Notification, title: 'PasswdVault: looking for a QR code…' },
+        { location: vscode.ProgressLocation.Notification, title: 'PasswdManager: looking for a QR code…' },
         () => scanImagesForQr(this.extensionPath, images),
       );
     } catch (err) {
-      void vscode.window.showErrorMessage(`PasswdVault: ${(err as Error).message}`);
+      void vscode.window.showErrorMessage(`PasswdManager: ${(err as Error).message}`);
       return undefined;
     }
     if (!text) {
@@ -60,15 +60,15 @@ export class TotpQrService {
       payload = parseOtpPayload(text);
     } catch (err) {
       const msg = err instanceof TotpError ? err.message : `The QR code is not a valid authenticator key (${(err as Error).message}).`;
-      void vscode.window.showErrorMessage(`PasswdVault: ${msg}`);
+      void vscode.window.showErrorMessage(`PasswdManager: ${msg}`);
       return undefined;
     }
     if (!payload.accounts.length) {
-      void vscode.window.showWarningMessage('PasswdVault: the QR code contains no time-based (TOTP) account that can be imported.');
+      void vscode.window.showWarningMessage('PasswdManager: the QR code contains no time-based (TOTP) account that can be imported.');
       return undefined;
     }
     if (payload.skipped) {
-      void vscode.window.showWarningMessage(`PasswdVault: ${payload.skipped} account(s) in the QR code were skipped (counter-based HOTP or unsupported algorithm).`);
+      void vscode.window.showWarningMessage(`PasswdManager: ${payload.skipped} account(s) in the QR code were skipped (counter-based HOTP or unsupported algorithm).`);
     }
     return payload;
   }
@@ -88,7 +88,7 @@ export class TotpQrService {
     // The user is expected to switch to another window: do not lock on focus loss meanwhile.
     this.suspendBlurLock((this.countdownSeconds + 30) * 1000);
     const go = await vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: 'PasswdVault: capturing the screen', cancellable: true },
+      { location: vscode.ProgressLocation.Notification, title: 'PasswdManager: capturing the screen', cancellable: true },
       async (progress, token) => {
         for (let s = this.countdownSeconds; s > 0; s--) {
           progress.report({ message: `make the QR code visible… ${s}` });
@@ -107,7 +107,7 @@ export class TotpQrService {
       const message = err instanceof CaptureUnavailableError
         ? err.message
         : `The screen could not be captured (${(err as Error).message}). You can save the QR code as an image, or paste it into the authenticator key field of the item editor.`;
-      if ((await vscode.window.showErrorMessage(`PasswdVault: ${message}`, fileOption)) === fileOption) return this.readImageFile();
+      if ((await vscode.window.showErrorMessage(`PasswdManager: ${message}`, fileOption)) === fileOption) return this.readImageFile();
       return undefined;
     }
   }
@@ -121,7 +121,7 @@ export class TotpQrService {
     const file = uris[0].fsPath;
     const stat = await fs.stat(file);
     if (stat.size > MAX_IMAGE_BYTES) {
-      void vscode.window.showErrorMessage('PasswdVault: the image is too large.');
+      void vscode.window.showErrorMessage('PasswdManager: the image is too large.');
       return undefined;
     }
     return [new Uint8Array(await fs.readFile(file))];
@@ -134,7 +134,7 @@ export class TotpQrService {
     }
     if (source === 'screen') tips.push('Alternatively, copy the QR image and paste it into the authenticator key field of the item editor, or type the setup key shown below the QR code.');
     else tips.push('If the website shows a text "setup key", you can type it in the authenticator key field instead.');
-    void vscode.window.showWarningMessage(`PasswdVault: no QR code found. ${tips.join(' ')}`);
+    void vscode.window.showWarningMessage(`PasswdManager: no QR code found. ${tips.join(' ')}`);
   }
 }
 

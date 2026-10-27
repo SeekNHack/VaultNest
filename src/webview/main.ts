@@ -72,7 +72,7 @@ function topbar(): HTMLElement {
       persist();
       shell?.classList.toggle('nav-collapsed', app.navCollapsed);
     }, { class: 'nav-toggle' }),
-    h('div', { class: 'brand' }, icon('shield'), h('span', null, 'PasswdVault')),
+    h('div', { class: 'brand' }, icon('shield'), h('span', null, 'PasswdManager')),
     vaultSelect,
     h('div', { class: 'search' }, icon('search'), searchInput),
     h('div', { class: 'topbar-actions' },

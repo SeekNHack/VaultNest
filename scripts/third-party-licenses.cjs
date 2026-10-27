@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const pkgs = ['kdbxweb', '@xmldom/xmldom', 'hash-wasm', '@zxcvbn-ts/core', '@zxcvbn-ts/language-common', '@zxcvbn-ts/language-en', '@vscode/codicons', 'jsqr', 'pngjs', 'jpeg-js'];
-let out = 'PasswdVault bundles the following third-party software. Their licenses follow.\n';
+let out = 'PasswdManager bundles the following third-party software. Their licenses follow.\n';
 for (const name of pkgs) {
   const dir = path.join('node_modules', name);
   const meta = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));

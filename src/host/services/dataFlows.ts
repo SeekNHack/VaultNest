@@ -2,7 +2,7 @@ import * as kdbxweb from 'kdbxweb';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { exportBitwardenCsv, exportPasswdVaultCsv } from '../../core/io/exporters';
+import { exportBitwardenCsv, exportPasswdManagerCsv } from '../../core/io/exporters';
 import { IMPORT_FORMATS, ImportFormat, parseImport } from '../../core/io/importers';
 import { makeCredentials, VaultDocument } from '../../core/vault/VaultDocument';
 import { readVaultFile, writeFileAtomic } from '../../core/vault/VaultStorage';
@@ -67,7 +67,7 @@ export async function exportFlow(manager: VaultManager, vaultId: string): Promis
   const ref = manager.ref(vaultId);
   const pick = await vscode.window.showQuickPick([
     { label: '$(lock) KeePass database (.kdbx)', detail: 'Encrypted copy with the same master password — recommended', id: 'kdbx' },
-    { label: '$(warning) PasswdVault CSV (unencrypted)', detail: 'All fields, folders and tags in plain text', id: 'pvcsv' },
+    { label: '$(warning) PasswdManager CSV (unencrypted)', detail: 'All fields, folders and tags in plain text', id: 'pvcsv' },
     { label: '$(warning) Bitwarden CSV (unencrypted)', detail: 'For importing into Bitwarden or other managers', id: 'bwcsv' },
   ], { title: `Export "${ref.name}"`, ignoreFocusOut: true });
   if (!pick) return;
@@ -102,7 +102,7 @@ export async function exportFlow(manager: VaultManager, vaultId: string): Promis
       await manager.session(vaultId).saveCopyTo(target.fsPath);
     } else {
       const items = manager.doc(vaultId).exportItems();
-      const csv = pick.id === 'pvcsv' ? exportPasswdVaultCsv(items) : exportBitwardenCsv(items);
+      const csv = pick.id === 'pvcsv' ? exportPasswdManagerCsv(items) : exportBitwardenCsv(items);
       await writeFileAtomic(target.fsPath, new TextEncoder().encode(csv));
     }
     void vscode.window.showInformationMessage(`Exported "${ref.name}" to ${target.fsPath}.`);

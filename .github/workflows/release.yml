@@ -34,16 +34,16 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: xvfb-run -a node test/integration/runTests.mjs
-      - run: npx vsce package --out passwdvault.vsix
+      - run: npx vsce package --out passwdmanager.vsix
       - name: Integration tests against the packaged VSIX
         run: |
-          mkdir -p /tmp/vsix && unzip -q passwdvault.vsix -d /tmp/vsix
+          mkdir -p /tmp/vsix && unzip -q passwdmanager.vsix -d /tmp/vsix
           PV_EXTENSION_PATH=/tmp/vsix/extension xvfb-run -a node test/integration/runTests.mjs
       - name: Publish to the VS Code Marketplace
-        run: npx vsce publish --packagePath passwdvault.vsix
+        run: npx vsce publish --packagePath passwdmanager.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
       - name: GitHub release
-        run: gh release create "$GITHUB_REF_NAME" passwdvault.vsix --title "PasswdVault $GITHUB_REF_NAME" --notes "See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_REF_NAME/CHANGELOG.md)."
+        run: gh release create "$GITHUB_REF_NAME" passwdmanager.vsix --title "PasswdManager $GITHUB_REF_NAME" --notes "See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_REF_NAME/CHANGELOG.md)."
         env:
           GH_TOKEN: ${{ github.token }}

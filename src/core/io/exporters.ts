@@ -1,10 +1,10 @@
 import type { ImportedItem } from '../vault/VaultDocument';
 import { toCsv } from './csv';
-import { PASSWDVAULT_CSV_HEADER } from './importers';
+import { PASSWDMANAGER_CSV_HEADER } from './importers';
 
-/** Serialises items to the PasswdVault CSV format (UNENCRYPTED – contains plaintext secrets). */
-export function exportPasswdVaultCsv(items: ImportedItem[]): string {
-  const rows = [PASSWDVAULT_CSV_HEADER];
+/** Serialises items to the PasswdManager CSV format (UNENCRYPTED – contains plaintext secrets). */
+export function exportPasswdManagerCsv(items: ImportedItem[]): string {
+  const rows = [PASSWDMANAGER_CSV_HEADER];
   for (const it of items) {
     rows.push([
       it.folder, it.favorite ? '1' : '', it.type, it.title, it.username, it.password, it.url, it.notes, it.totp,

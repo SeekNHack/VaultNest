@@ -51,9 +51,9 @@ async function test(name, fn) {
 }
 
 exports.run = async function run() {
-  const ext = vscode.extensions.getExtension('hacknseek.passwdvault');
+  const ext = vscode.extensions.getExtension('hacknseek.passwdmanager');
   assert.ok(ext, 'extension is installed');
-  console.log('activating PasswdVault…');
+  console.log('activating PasswdManager…');
   const api = await ext.activate();
   console.log('activated');
   assert.ok(api && api.manager, 'test API is available in test mode');
@@ -102,31 +102,31 @@ exports.run = async function run() {
   });
 
   await test('copy password command writes clipboard and clears it', async () => {
-    await vscode.workspace.getConfiguration('passwdvault').update('clipboard.clearAfterSeconds', 1, vscode.ConfigurationTarget.Global);
-    await vscode.commands.executeCommand('passwdvault.copyPassword', { vaultId, entryId });
+    await vscode.workspace.getConfiguration('passwdmanager').update('clipboard.clearAfterSeconds', 1, vscode.ConfigurationTarget.Global);
+    await vscode.commands.executeCommand('passwdmanager.copyPassword', { vaultId, entryId });
     assert.equal(await vscode.env.clipboard.readText(), 'Sup3r$ecret!');
     await new Promise((r) => setTimeout(r, 1600));
     assert.equal(await vscode.env.clipboard.readText(), '');
   });
 
   await test('clipboard is not cleared if the user copied something else', async () => {
-    await vscode.commands.executeCommand('passwdvault.copyUsername', { vaultId, entryId });
-    await vscode.commands.executeCommand('passwdvault.copyPassword', { vaultId, entryId });
+    await vscode.commands.executeCommand('passwdmanager.copyUsername', { vaultId, entryId });
+    await vscode.commands.executeCommand('passwdmanager.copyPassword', { vaultId, entryId });
     await vscode.env.clipboard.writeText('user content');
     await new Promise((r) => setTimeout(r, 1600));
     assert.equal(await vscode.env.clipboard.readText(), 'user content');
   });
 
   await test('TOTP copy produces a 6-digit code', async () => {
-    await vscode.commands.executeCommand('passwdvault.copyTotp', { vaultId, entryId });
+    await vscode.commands.executeCommand('passwdmanager.copyTotp', { vaultId, entryId });
     assert.match(await vscode.env.clipboard.readText(), /^\d{6}$/);
   });
 
   await test('dashboard opens and builds a secret-free state', async () => {
-    await vscode.commands.executeCommand('passwdvault.openDashboard', { vaultId });
+    await vscode.commands.executeCommand('passwdmanager.openDashboard', { vaultId });
     await new Promise((r) => setTimeout(r, 500));
     const tab = vscode.window.tabGroups.all.flatMap((g) => g.tabs)
-      .find((t) => t.input instanceof vscode.TabInputWebview && t.input.viewType.includes('passwdvault.dashboard'));
+      .find((t) => t.input instanceof vscode.TabInputWebview && t.input.viewType.includes('passwdmanager.dashboard'));
     assert.ok(tab, 'dashboard tab is open');
     const state = manager.info(manager.ref(vaultId));
     assert.equal(state.locked, false);
@@ -189,7 +189,7 @@ exports.run = async function run() {
   });
 
   await test('lockAll drops decrypted data and re-unlock is required', async () => {
-    await vscode.commands.executeCommand('passwdvault.lockAll');
+    await vscode.commands.executeCommand('passwdmanager.lockAll');
     assert.equal(manager.isUnlocked(vaultId), false);
     assert.throws(() => manager.doc(vaultId), /locked/);
     const vaultNode = tree.getChildren().find((n) => n.vaultId === vaultId);
@@ -213,7 +213,7 @@ exports.run = async function run() {
 
   await test('unlock command asks for the master password and retries after a wrong one', async () => {
     await withPrompts([input('wrong password'), input('correct horse battery staple')], async () => {
-      await vscode.commands.executeCommand('passwdvault.unlock', { vaultId });
+      await vscode.commands.executeCommand('passwdmanager.unlock', { vaultId });
     });
     assert.equal(manager.isUnlocked(vaultId), true);
   });
@@ -221,29 +221,29 @@ exports.run = async function run() {
   await test('cancelling the unlock prompt keeps the vault locked', async () => {
     await manager.lockAll('test');
     await withPrompts([input(undefined)], async () => {
-      await vscode.commands.executeCommand('passwdvault.unlock', { vaultId });
+      await vscode.commands.executeCommand('passwdmanager.unlock', { vaultId });
     });
     assert.equal(manager.isUnlocked(vaultId), false);
   });
 
   await test('change master password flow re-authenticates and re-encrypts', async () => {
-    await withPrompts([input('correct horse battery staple')], () => vscode.commands.executeCommand('passwdvault.unlock', { vaultId }));
-    await withPrompts([input('not the current one')], () => vscode.commands.executeCommand('passwdvault.changeMasterPassword', { vaultId }));
+    await withPrompts([input('correct horse battery staple')], () => vscode.commands.executeCommand('passwdmanager.unlock', { vaultId }));
+    await withPrompts([input('not the current one')], () => vscode.commands.executeCommand('passwdmanager.changeMasterPassword', { vaultId }));
     await withPrompts([input('correct horse battery staple'), input('N3w-master-Passw0rd-2026!'), input('N3w-master-Passw0rd-2026!')],
-      () => vscode.commands.executeCommand('passwdvault.changeMasterPassword', { vaultId }));
+      () => vscode.commands.executeCommand('passwdmanager.changeMasterPassword', { vaultId }));
     await manager.lockAll('test');
-    await withPrompts([input('correct horse battery staple'), input('N3w-master-Passw0rd-2026!')], () => vscode.commands.executeCommand('passwdvault.unlock', { vaultId }));
+    await withPrompts([input('correct horse battery staple'), input('N3w-master-Passw0rd-2026!')], () => vscode.commands.executeCommand('passwdmanager.unlock', { vaultId }));
     assert.equal(manager.isUnlocked(vaultId), true);
     assert.equal(manager.doc(vaultId).revealField(entryId, 'Password'), 'Sup3r$ecret!');
   });
 
-  await test('PasswdVault CSV export requires confirmation and the master password', async () => {
+  await test('PasswdManager CSV export requires confirmation and the master password', async () => {
     const target = path.join(tmp, 'export.csv');
     const origSave = vscode.window.showSaveDialog;
     vscode.window.showSaveDialog = async () => vscode.Uri.file(target);
     try {
       await withPrompts([pick((items) => items[1]), { kind: 'warn', value: 'Export Unencrypted' }, input('N3w-master-Passw0rd-2026!')],
-        () => vscode.commands.executeCommand('passwdvault.export', { vaultId }));
+        () => vscode.commands.executeCommand('passwdmanager.export', { vaultId }));
     } finally {
       vscode.window.showSaveDialog = origSave;
     }
@@ -263,7 +263,7 @@ exports.run = async function run() {
 
   await test('2FA: set up an item from a QR image file (replacing the old key)', async () => {
     await withOpenDialog(fixture('totp.png'), () => withPrompts([pick((items) => items[1]), { kind: 'warn', value: 'Replace' }],
-      () => vscode.commands.executeCommand('passwdvault.setupTotpFromQr', { vaultId, entryId })));
+      () => vscode.commands.executeCommand('passwdmanager.setupTotpFromQr', { vaultId, entryId })));
     const doc = manager.doc(vaultId);
     assert.match(doc.revealField(entryId, 'otp'), new RegExp(`secret=${ACME_SECRET}`));
     assert.match(actions.getTotp(vaultId, entryId).code, /^\d{6}$/);
@@ -273,7 +273,7 @@ exports.run = async function run() {
   await test('2FA: import a Google Authenticator export as new items', async () => {
     const before = manager.doc(vaultId).listEntries().length;
     await withOpenDialog(fixture('migration.png'), () => withPrompts([pick((items) => items[1]), pick((items) => items)],
-      () => vscode.commands.executeCommand('passwdvault.addTotpFromQr')));
+      () => vscode.commands.executeCommand('passwdmanager.addTotpFromQr')));
     const entries = manager.doc(vaultId).listEntries().filter((e) => e.tags.includes('2fa'));
     assert.equal(manager.doc(vaultId).listEntries().length, before + 2);
     const gitlab = entries.find((e) => e.title === 'GitLab');
@@ -315,7 +315,7 @@ exports.run = async function run() {
       await new Promise((r) => setTimeout(r, 2000));
       actions.totpQr.countdownSeconds = 0;
       try {
-        await withPrompts([pick((items) => items[0])], () => vscode.commands.executeCommand('passwdvault.setupTotpFromQr', { vaultId, entryId }));
+        await withPrompts([pick((items) => items[0])], () => vscode.commands.executeCommand('passwdmanager.setupTotpFromQr', { vaultId, entryId }));
       } finally {
         actions.totpQr.countdownSeconds = 5;
         await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
@@ -333,7 +333,7 @@ exports.run = async function run() {
       pick((items) => items[0]), // private extension storage
       input('Tr0ub4dor&3-horse-Battery-staple'),
       input('Tr0ub4dor&3-horse-Battery-staple'),
-    ], () => vscode.commands.executeCommand('passwdvault.createVault'));
+    ], () => vscode.commands.executeCommand('passwdmanager.createVault'));
     const ref = manager.refs().find((r) => r.name === 'Flow Vault');
     assert.ok(ref, 'vault registered');
     assert.equal(manager.refs().length, before + 1);
@@ -352,7 +352,7 @@ exports.run = async function run() {
       input('password1'),
       { kind: 'warn', value: 'Choose Another' },
       input(undefined),
-    ], () => vscode.commands.executeCommand('passwdvault.createVault'));
+    ], () => vscode.commands.executeCommand('passwdmanager.createVault'));
     assert.ok(!manager.refs().some((r) => r.name === 'Weak Vault'));
   });
 
@@ -362,7 +362,7 @@ exports.run = async function run() {
     assert.equal(manager.refs().length, 0);
   });
 
-  await vscode.workspace.getConfiguration('passwdvault').update('clipboard.clearAfterSeconds', undefined, vscode.ConfigurationTarget.Global);
+  await vscode.workspace.getConfiguration('passwdmanager').update('clipboard.clearAfterSeconds', undefined, vscode.ConfigurationTarget.Global);
   fs.rmSync(tmp, { recursive: true, force: true });
   const failed = results.filter((r) => r[0] === 'FAIL').length;
   console.log(`\n${results.length - failed} passed, ${failed} failed`);

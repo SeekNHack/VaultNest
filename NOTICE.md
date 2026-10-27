@@ -1,6 +1,6 @@
 # Third-party notices
 
-PasswdVault bundles the following open-source components into `dist/extension.js`, `dist/qrWorker.js` and `dist/webview.js`:
+PasswdManager bundles the following open-source components into `dist/extension.js`, `dist/qrWorker.js` and `dist/webview.js`:
 
 | Component | License | Use |
 |---|---|---|

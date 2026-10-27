@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="media/icon.png" width="96" alt="PasswdVault logo">
+  <img src="media/icon.png" width="96" alt="PasswdManager logo">
 </p>
 
-<h1 align="center">PasswdVault</h1>
+<h1 align="center">PasswdManager</h1>
 
 <p align="center">
   <b>A secure, local-first password manager inside Visual Studio Code.</b><br>
@@ -14,7 +14,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
-![PasswdVault dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
+![PasswdManager dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
 
 - **Your file, your machine.** Vaults are standard **KDBX 4** files (AES-256 + Argon2id). There is no cloud, no account and no telemetry, and the same file opens in KeePassXC, KeePass, KeePassDX or Strongbox.
 - **Nothing else to install.** Every library is bundled in the extension. You don't need KeePass, Node.js or any other program.
@@ -63,16 +63,16 @@
 
 ## Two-factor authentication (2FA)
 
-PasswdVault can be your authenticator app. When a website shows a QR code to enable 2FA, you can add it in any of these ways:
+PasswdManager can be your authenticator app. When a website shows a QR code to enable 2FA, you can add it in any of these ways:
 
 | Method | How |
 |---|---|
-| **Scan the screen** | In the item editor, click the 🖥️ button next to *Two-factor authentication* (or run **PasswdVault: Add 2FA Account from QR Code…**). You then have 5 seconds to bring the QR code into view, for example in your browser. |
+| **Scan the screen** | In the item editor, click the 🖥️ button next to *Two-factor authentication* (or run **PasswdManager: Add 2FA Account from QR Code…**). You then have 5 seconds to bring the QR code into view, for example in your browser. |
 | **Paste a screenshot** | Copy the QR code image (for example with your OS screenshot tool to the clipboard) and press `Ctrl+V` / `Cmd+V` in the item editor. |
 | **Drop or pick an image** | Drag a PNG/JPEG file onto the 2FA field, or click 🖼️ to choose a file. |
 | **Type the key** | Paste the text *setup key* or an `otpauth://` link into the field. |
 
-The editor fills in the item name and username from the QR code if they are empty. **PasswdVault: Add 2FA Account from QR Code…** can also read a **Google Authenticator export** QR code (*Transfer accounts*) and import every account as a new item at once.
+The editor fills in the item name and username from the QR code if they are empty. **PasswdManager: Add 2FA Account from QR Code…** can also read a **Google Authenticator export** QR code (*Transfer accounts*) and import every account as a new item at once.
 
 ![Choosing how to read a 2FA QR code](docs/images/qr.png)
 
@@ -84,10 +84,10 @@ Codes are stored in the KeePassXC format (an `otpauth://` URI in the `otp` field
 
 ## Getting started
 
-1. Click the **PasswdVault** shield in the Activity Bar.
+1. Click the **PasswdManager** shield in the Activity Bar.
 2. Choose **Create New Vault**, or **Open Existing .kdbx** to use a file you already have.
 3. Choose a name, a location and a strong master password. **A forgotten master password cannot be recovered.**
-4. Add items with the **+** button in the sidebar or in the dashboard (**PasswdVault: Open Dashboard**).
+4. Add items with the **+** button in the sidebar or in the dashboard (**PasswdManager: Open Dashboard**).
 
 ## Everyday use
 
@@ -95,9 +95,9 @@ Codes are stored in the KeePassXC format (an `otpauth://` URI in the `otp` field
 |---|---|
 | Search and copy | `Ctrl+Alt+P` / `Cmd+Alt+P`, type, then use the inline buttons (username, password, 2FA code, open URL) or press Enter for more actions |
 | Copy from the sidebar | Hover an item for the key/person icons, or right-click it |
-| Copy a 2FA code | The copy button next to the live code, or **PasswdVault: Copy TOTP Code** |
-| Insert a secret into a file | **PasswdVault: Insert Secret into Editor…** (for example into a local `.env`) |
-| Generate a password | **PasswdVault: Generate Password…** or the generator in the dashboard |
+| Copy a 2FA code | The copy button next to the live code, or **PasswdManager: Copy TOTP Code** |
+| Insert a secret into a file | **PasswdManager: Insert Secret into Editor…** (for example into a local `.env`) |
+| Generate a password | **PasswdManager: Generate Password…** or the generator in the dashboard |
 | Lock everything | `Ctrl+Alt+L` / `Cmd+Alt+L`, the lock icon, or the status bar item |
 
 Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · `Ctrl+S` save · `Esc` cancel · `Ctrl+G` generator · `Ctrl+L` lock.
@@ -106,9 +106,9 @@ Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · 
 
 ## Using the vault on other devices
 
-The vault is an ordinary KeePass file. Keep it in a folder you sync yourself (Syncthing, Nextcloud, Dropbox, a USB stick) and open it with KeePassXC, KeePassDX, Strongbox or another KeePass client. When the file changes on disk, PasswdVault merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
+The vault is an ordinary KeePass file. Keep it in a folder you sync yourself (Syncthing, Nextcloud, Dropbox, a USB stick) and open it with KeePassXC, KeePassDX, Strongbox or another KeePass client. When the file changes on disk, PasswdManager merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
 
-Metadata specific to PasswdVault (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
+Metadata specific to PasswdManager (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
 
 ## Settings
 
@@ -116,21 +116,21 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 
 | Setting | Default | Description |
 |---|---|---|
-| `passwdvault.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never) |
-| `passwdvault.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
-| `passwdvault.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
-| `passwdvault.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |
-| `passwdvault.backup.enabled` | `true` | Keep rotating encrypted backups |
-| `passwdvault.backup.count` | `10` | Backups kept per vault |
-| `passwdvault.backup.intervalMinutes` | `60` | Minimum minutes between automatic backups |
-| `passwdvault.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.passwdvault-backups/` next to the file) |
-| `passwdvault.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
-| `passwdvault.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
-| `passwdvault.security.minMasterPasswordScore` | `2` | Minimum zxcvbn score (0–4) for a new master password before a warning |
-| `passwdvault.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
-| `passwdvault.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
-| `passwdvault.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
-| `passwdvault.health.maxPasswordAgeDays` | `365` | Age after which a password is reported as old |
+| `passwdmanager.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never) |
+| `passwdmanager.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
+| `passwdmanager.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
+| `passwdmanager.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |
+| `passwdmanager.backup.enabled` | `true` | Keep rotating encrypted backups |
+| `passwdmanager.backup.count` | `10` | Backups kept per vault |
+| `passwdmanager.backup.intervalMinutes` | `60` | Minimum minutes between automatic backups |
+| `passwdmanager.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.passwdmanager-backups/` next to the file) |
+| `passwdmanager.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
+| `passwdmanager.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
+| `passwdmanager.security.minMasterPasswordScore` | `2` | Minimum zxcvbn score (0–4) for a new master password before a warning |
+| `passwdmanager.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
+| `passwdmanager.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
+| `passwdmanager.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
+| `passwdmanager.health.maxPasswordAgeDays` | `365` | Age after which a password is reported as old |
 
 ## Security
 
@@ -143,13 +143,13 @@ Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (inc
 
 ## FAQ
 
-**Do I need KeePass installed?** No. PasswdVault reads and writes KeePass files by itself; KeePass apps are optional.
+**Do I need KeePass installed?** No. PasswdManager reads and writes KeePass files by itself; KeePass apps are optional.
 
 **I forgot my master password. Can you recover it?** No. Nobody can: that is what makes the encryption meaningful. Keep a written copy somewhere safe.
 
 **Can other extensions read my passwords?** VS Code runs all extensions in one process without isolation from each other. While a vault is unlocked, install only extensions you trust. See [SECURITY.md](SECURITY.md).
 
-**Does it work in Remote / WSL / Codespaces?** PasswdVault runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there. Screen capture needs a local desktop session.
+**Does it work in Remote / WSL / Codespaces?** PasswdManager runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there. Screen capture needs a local desktop session.
 
 ## Development
 
@@ -159,7 +159,7 @@ npm run build            # bundle to dist/ (esbuild)
 npm run typecheck        # TypeScript (host + webview)
 npm test                 # unit tests (vitest)
 npm run test:integration # runs the extension in a real VS Code (needs a display or xvfb-run)
-npm run package          # creates passwdvault-<version>.vsix
+npm run package          # creates passwdmanager-<version>.vsix
 ```
 
 Press `F5` in VS Code to start an Extension Development Host. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describes the design, and [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) describes testing and the release process.

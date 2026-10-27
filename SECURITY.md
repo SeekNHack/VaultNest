@@ -6,7 +6,7 @@ Please **do not open a public issue** for security problems. Use GitHub's *Repor
 
 ## Threat model
 
-PasswdVault protects secrets **at rest** and limits their exposure **while in use** inside VS Code.
+PasswdManager protects secrets **at rest** and limits their exposure **while in use** inside VS Code.
 
 **In scope**
 
@@ -40,10 +40,10 @@ PasswdVault protects secrets **at rest** and limits their exposure **while in us
 
 1. **JavaScript memory hygiene.** Strings in JavaScript are immutable and garbage-collected, so they cannot be wiped reliably. The master password (from the input box), revealed values and values being edited may stay in memory until the garbage collector reclaims them. This limitation applies to every JavaScript/Electron password manager.
 2. **Shared extension host.** See *Out of scope*: another installed extension could read process memory or wrap VS Code APIs.
-3. **Clipboard.** Clipboard managers, remote desktop or clipboard sync may keep copies that PasswdVault cannot clear. In web/remote VS Code setups, reading the clipboard can fail; then it is not cleared automatically.
+3. **Clipboard.** Clipboard managers, remote desktop or clipboard sync may keep copies that PasswdManager cannot clear. In web/remote VS Code setups, reading the clipboard can fail; then it is not cleared automatically.
 4. **Inactivity detection** relies on editor, terminal and window events. Activity in some other views (for example a terminal running a long job with no input) may not count as activity.
 5. **Screen capture** grabs the whole desktop (all monitors) for a moment, so anything visible is briefly held in memory. A macOS capture without the Screen Recording permission only shows the wallpaper, so no QR code is found. During the countdown, locking on focus loss is suspended for about 35 seconds, so you can switch to the browser.
-6. **Attachments** stored by other KeePass clients are kept and listed, but cannot be opened or edited in PasswdVault yet.
+6. **Attachments** stored by other KeePass clients are kept and listed, but cannot be opened or edited in PasswdManager yet.
 7. **Merging** uses KeePass merge semantics with 1-second timestamp resolution. Two edits of the *same item* within the same second on two devices resolve in favor of the local copy, and the overwritten version stays in the item history.
 8. **Argon2 v1.0 (0x10)** files are not supported (very rare; resave them in a current KeePass client).
 9. **Dependencies.** The bundled `@xmldom/xmldom` is pinned to 0.8.15 through an npm `overrides` entry (kdbxweb 2.1.1 asks for 0.7.x, which has known advisories). `npm audit --omit=dev` reports no vulnerabilities. The remaining advisory affects only the `@vscode/vsce` packaging tool, which is not part of the extension.

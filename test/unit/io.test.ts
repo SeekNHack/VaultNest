@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseCsv, toCsv } from '../../src/core/io/csv';
-import { exportBitwardenCsv, exportPasswdVaultCsv } from '../../src/core/io/exporters';
+import { exportBitwardenCsv, exportPasswdManagerCsv } from '../../src/core/io/exporters';
 import { ImportError, parseImport } from '../../src/core/io/importers';
 import type { ImportedItem } from '../../src/core/vault/VaultDocument';
 
@@ -57,9 +57,9 @@ describe('importers', () => {
     expect(() => parseImport('browserCsv', 'foo,bar\n1,2')).toThrow(ImportError);
   });
 
-  it('round-trips the PasswdVault CSV format', () => {
+  it('round-trips the PasswdManager CSV format', () => {
     const items: ImportedItem[] = [{ type: 'apiKey', title: 'AWS', username: 'AKIA', password: '-secret', url: '', notes: 'n', folder: 'Cloud/Prod', tags: ['aws', 'prod'], favorite: true, totp: '', customFields: [{ name: 'Region', value: 'eu', protected: false }] }];
-    expect(parseImport('passwdvaultCsv', exportPasswdVaultCsv(items))).toEqual(items);
+    expect(parseImport('passwdmanagerCsv', exportPasswdManagerCsv(items))).toEqual(items);
     expect(parseImport('bitwardenCsv', exportBitwardenCsv(items))[0]).toMatchObject({ title: 'AWS', password: '-secret', folder: 'Cloud/Prod' });
   });
 });

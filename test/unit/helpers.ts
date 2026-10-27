@@ -14,7 +14,7 @@ export const pv = (s: string) => kdbxweb.ProtectedValue.fromString(s);
 
 const dirs: string[] = [];
 export function tempDir(): string {
-  const d = mkdtempSync(path.join(tmpdir(), 'passwdvault-test-'));
+  const d = mkdtempSync(path.join(tmpdir(), 'passwdmanager-test-'));
   dirs.push(d);
   return d;
 }

@@ -4,7 +4,7 @@ import { config } from '../config';
 /**
  * Locks all vaults after a period of inactivity in VS Code and, optionally,
  * when the window loses focus. "Activity" is any interaction with editors,
- * terminals, the window, or PasswdVault itself.
+ * terminals, the window, or PasswdManager itself.
  */
 export class AutoLock implements vscode.Disposable {
   private lastActivity = Date.now();

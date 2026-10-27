@@ -1,8 +1,8 @@
 {
-  "name": "passwdvault",
-  "displayName": "PasswdVault",
+  "name": "passwdmanager",
+  "displayName": "PasswdManager",
   "description": "A secure, local-first password manager for VS Code. Encrypted vaults, 2FA codes, password generator, API key storage and password health reports.",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "publisher": "hacknseek",
   "license": "MIT",
   "author": {
@@ -80,615 +80,615 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "passwdvault",
-          "title": "PasswdVault",
+          "id": "passwdmanager",
+          "title": "PasswdManager",
           "icon": "media/activitybar.svg"
         }
       ]
     },
     "views": {
-      "passwdvault": [
+      "passwdmanager": [
         {
-          "id": "passwdvault.vaults",
+          "id": "passwdmanager.vaults",
           "name": "Vaults",
           "icon": "media/activitybar.svg",
-          "contextualTitle": "PasswdVault"
+          "contextualTitle": "PasswdManager"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "passwdvault.vaults",
-        "when": "!passwdvault.hasVaults",
-        "contents": "PasswdVault keeps your passwords, API keys and tokens in an encrypted KeePass-compatible (KDBX 4) file, stored only on this machine.\n[Create New Vault](command:passwdvault.createVault)\n[Open Existing .kdbx](command:passwdvault.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)"
+        "view": "passwdmanager.vaults",
+        "when": "!passwdmanager.hasVaults",
+        "contents": "PasswdManager keeps your passwords, API keys and tokens in an encrypted KeePass-compatible (KDBX 4) file, stored only on this machine.\n[Create New Vault](command:passwdmanager.createVault)\n[Open Existing .kdbx](command:passwdmanager.openVault)\nNothing is ever sent to a server. [Learn more](https://github.com/SeekNHack/PasswdVault#readme)"
       }
     ],
     "commands": [
       {
-        "command": "passwdvault.openDashboard",
+        "command": "passwdmanager.openDashboard",
         "title": "Open Dashboard",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(layout)"
       },
       {
-        "command": "passwdvault.search",
+        "command": "passwdmanager.search",
         "title": "Search Items…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(search)"
       },
       {
-        "command": "passwdvault.createVault",
+        "command": "passwdmanager.createVault",
         "title": "Create New Vault…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(new-file)"
       },
       {
-        "command": "passwdvault.openVault",
+        "command": "passwdmanager.openVault",
         "title": "Open Existing Vault (.kdbx)…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(folder-opened)"
       },
       {
-        "command": "passwdvault.unlock",
+        "command": "passwdmanager.unlock",
         "title": "Unlock Vault",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(unlock)"
       },
       {
-        "command": "passwdvault.lock",
+        "command": "passwdmanager.lock",
         "title": "Lock Vault",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(lock)"
       },
       {
-        "command": "passwdvault.lockAll",
+        "command": "passwdmanager.lockAll",
         "title": "Lock All Vaults",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(lock)"
       },
       {
-        "command": "passwdvault.newItem",
+        "command": "passwdmanager.newItem",
         "title": "New Item",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(add)"
       },
       {
-        "command": "passwdvault.newFolder",
+        "command": "passwdmanager.newFolder",
         "title": "New Folder",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(new-folder)"
       },
       {
-        "command": "passwdvault.renameFolder",
+        "command": "passwdmanager.renameFolder",
         "title": "Rename Folder",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(edit)"
       },
       {
-        "command": "passwdvault.deleteFolder",
+        "command": "passwdmanager.deleteFolder",
         "title": "Delete Folder",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(trash)"
       },
       {
-        "command": "passwdvault.openItem",
+        "command": "passwdmanager.openItem",
         "title": "Open Item",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "passwdvault.editItem",
+        "command": "passwdmanager.editItem",
         "title": "Edit Item",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(edit)"
       },
       {
-        "command": "passwdvault.deleteItem",
+        "command": "passwdmanager.deleteItem",
         "title": "Delete Item",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(trash)"
       },
       {
-        "command": "passwdvault.restoreItem",
+        "command": "passwdmanager.restoreItem",
         "title": "Restore Item",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(discard)"
       },
       {
-        "command": "passwdvault.toggleFavorite",
+        "command": "passwdmanager.toggleFavorite",
         "title": "Toggle Favorite",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(star-empty)"
       },
       {
-        "command": "passwdvault.copyUsername",
+        "command": "passwdmanager.copyUsername",
         "title": "Copy Username",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(person)"
       },
       {
-        "command": "passwdvault.copyPassword",
+        "command": "passwdmanager.copyPassword",
         "title": "Copy Password / Secret",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(key)"
       },
       {
-        "command": "passwdvault.copyTotp",
+        "command": "passwdmanager.copyTotp",
         "title": "Copy TOTP Code",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(watch)"
       },
       {
-        "command": "passwdvault.addTotpFromQr",
+        "command": "passwdmanager.addTotpFromQr",
         "title": "Add 2FA Account from QR Code…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(shield)"
       },
       {
-        "command": "passwdvault.setupTotpFromQr",
+        "command": "passwdmanager.setupTotpFromQr",
         "title": "Set Up 2FA from QR Code…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(shield)"
       },
       {
-        "command": "passwdvault.copyUrl",
+        "command": "passwdmanager.copyUrl",
         "title": "Copy URL",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(link)"
       },
       {
-        "command": "passwdvault.openUrl",
+        "command": "passwdmanager.openUrl",
         "title": "Open URL",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(link-external)"
       },
       {
-        "command": "passwdvault.insertSecret",
+        "command": "passwdmanager.insertSecret",
         "title": "Insert Secret into Editor…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(insert)"
       },
       {
-        "command": "passwdvault.generatePassword",
+        "command": "passwdmanager.generatePassword",
         "title": "Generate Password…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(wand)"
       },
       {
-        "command": "passwdvault.insertGeneratedPassword",
+        "command": "passwdmanager.insertGeneratedPassword",
         "title": "Insert Generated Password into Editor",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(insert)"
       },
       {
-        "command": "passwdvault.openGenerator",
+        "command": "passwdmanager.openGenerator",
         "title": "Open Password Generator",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(wand)"
       },
       {
-        "command": "passwdvault.passwordHealth",
+        "command": "passwdmanager.passwordHealth",
         "title": "Password Health Report",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(pulse)"
       },
       {
-        "command": "passwdvault.changeMasterPassword",
+        "command": "passwdmanager.changeMasterPassword",
         "title": "Change Master Password…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(key)"
       },
       {
-        "command": "passwdvault.import",
+        "command": "passwdmanager.import",
         "title": "Import…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(cloud-download)"
       },
       {
-        "command": "passwdvault.export",
+        "command": "passwdmanager.export",
         "title": "Export…",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(cloud-upload)"
       },
       {
-        "command": "passwdvault.backupNow",
+        "command": "passwdmanager.backupNow",
         "title": "Back Up Vault Now",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(save-as)"
       },
       {
-        "command": "passwdvault.openBackupFolder",
+        "command": "passwdmanager.openBackupFolder",
         "title": "Reveal Backup Folder",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(folder)"
       },
       {
-        "command": "passwdvault.syncVault",
+        "command": "passwdmanager.syncVault",
         "title": "Reload / Merge Changes from Disk",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(sync)"
       },
       {
-        "command": "passwdvault.removeVault",
+        "command": "passwdmanager.removeVault",
         "title": "Remove Vault from List",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(close)"
       },
       {
-        "command": "passwdvault.revealVaultFile",
+        "command": "passwdmanager.revealVaultFile",
         "title": "Reveal Vault File",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(file)"
       },
       {
-        "command": "passwdvault.emptyTrash",
+        "command": "passwdmanager.emptyTrash",
         "title": "Empty Trash",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(trash)"
       },
       {
-        "command": "passwdvault.clearClipboard",
+        "command": "passwdmanager.clearClipboard",
         "title": "Clear Clipboard Now",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(clear-all)"
       },
       {
-        "command": "passwdvault.refresh",
+        "command": "passwdmanager.refresh",
         "title": "Refresh",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(refresh)"
       },
       {
-        "command": "passwdvault.openSettings",
+        "command": "passwdmanager.openSettings",
         "title": "Open Settings",
-        "category": "PasswdVault",
+        "category": "PasswdManager",
         "icon": "$(gear)"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "passwdvault.openItem",
+          "command": "passwdmanager.openItem",
           "when": "false"
         },
         {
-          "command": "passwdvault.editItem",
+          "command": "passwdmanager.editItem",
           "when": "false"
         },
         {
-          "command": "passwdvault.renameFolder",
+          "command": "passwdmanager.renameFolder",
           "when": "false"
         },
         {
-          "command": "passwdvault.deleteFolder",
+          "command": "passwdmanager.deleteFolder",
           "when": "false"
         },
         {
-          "command": "passwdvault.restoreItem",
+          "command": "passwdmanager.restoreItem",
           "when": "false"
         },
         {
-          "command": "passwdvault.toggleFavorite",
+          "command": "passwdmanager.toggleFavorite",
           "when": "false"
         },
         {
-          "command": "passwdvault.refresh",
+          "command": "passwdmanager.refresh",
           "when": "false"
         },
         {
-          "command": "passwdvault.removeVault",
+          "command": "passwdmanager.removeVault",
           "when": "false"
         },
         {
-          "command": "passwdvault.revealVaultFile",
+          "command": "passwdmanager.revealVaultFile",
           "when": "false"
         },
         {
-          "command": "passwdvault.newItem",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.newItem",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.newFolder",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.newFolder",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.search",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.search",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.copyUsername",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.copyUsername",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.copyPassword",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.copyPassword",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.copyTotp",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.copyTotp",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.copyUrl",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.copyUrl",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.openUrl",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.openUrl",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.insertSecret",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.insertSecret",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.deleteItem",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.deleteItem",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.addTotpFromQr",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.addTotpFromQr",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.setupTotpFromQr",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.setupTotpFromQr",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.lock",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.lock",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.changeMasterPassword",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.changeMasterPassword",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.export",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.export",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.backupNow",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.backupNow",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.syncVault",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.syncVault",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.emptyTrash",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.emptyTrash",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.passwordHealth",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.passwordHealth",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.unlock",
-          "when": "passwdvault.hasLocked"
+          "command": "passwdmanager.unlock",
+          "when": "passwdmanager.hasLocked"
         },
         {
-          "command": "passwdvault.lockAll",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.lockAll",
+          "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdvault.import",
-          "when": "passwdvault.hasUnlocked"
+          "command": "passwdmanager.import",
+          "when": "passwdmanager.hasUnlocked"
         }
       ],
       "view/title": [
         {
-          "command": "passwdvault.newItem",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.newItem",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "navigation@1"
         },
         {
-          "command": "passwdvault.search",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.search",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "navigation@2"
         },
         {
-          "command": "passwdvault.openGenerator",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.openGenerator",
+          "when": "view == passwdmanager.vaults",
           "group": "navigation@3"
         },
         {
-          "command": "passwdvault.openDashboard",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.openDashboard",
+          "when": "view == passwdmanager.vaults",
           "group": "navigation@4"
         },
         {
-          "command": "passwdvault.lockAll",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.lockAll",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "navigation@5"
         },
         {
-          "command": "passwdvault.createVault",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.createVault",
+          "when": "view == passwdmanager.vaults",
           "group": "1_vault@1"
         },
         {
-          "command": "passwdvault.openVault",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.openVault",
+          "when": "view == passwdmanager.vaults",
           "group": "1_vault@2"
         },
         {
-          "command": "passwdvault.addTotpFromQr",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.addTotpFromQr",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "1_vault@3"
         },
         {
-          "command": "passwdvault.import",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.import",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "2_data@1"
         },
         {
-          "command": "passwdvault.export",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.export",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "2_data@2"
         },
         {
-          "command": "passwdvault.passwordHealth",
-          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "command": "passwdmanager.passwordHealth",
+          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "2_data@3"
         },
         {
-          "command": "passwdvault.refresh",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.refresh",
+          "when": "view == passwdmanager.vaults",
           "group": "3_misc@1"
         },
         {
-          "command": "passwdvault.openSettings",
-          "when": "view == passwdvault.vaults",
+          "command": "passwdmanager.openSettings",
+          "when": "view == passwdmanager.vaults",
           "group": "3_misc@2"
         }
       ],
       "view/item/context": [
         {
-          "command": "passwdvault.unlock",
-          "when": "view == passwdvault.vaults && viewItem == vault-locked",
+          "command": "passwdmanager.unlock",
+          "when": "view == passwdmanager.vaults && viewItem == vault-locked",
           "group": "inline@1"
         },
         {
-          "command": "passwdvault.lock",
-          "when": "view == passwdvault.vaults && viewItem == vault-unlocked",
+          "command": "passwdmanager.lock",
+          "when": "view == passwdmanager.vaults && viewItem == vault-unlocked",
           "group": "inline@2"
         },
         {
-          "command": "passwdvault.newItem",
-          "when": "view == passwdvault.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
+          "command": "passwdmanager.newItem",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
           "group": "1_new@1"
         },
         {
-          "command": "passwdvault.newFolder",
-          "when": "view == passwdvault.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
+          "command": "passwdmanager.newFolder",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
           "group": "1_new@2"
         },
         {
-          "command": "passwdvault.addTotpFromQr",
-          "when": "view == passwdvault.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
+          "command": "passwdmanager.addTotpFromQr",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
           "group": "1_new@3"
         },
         {
-          "command": "passwdvault.syncVault",
-          "when": "view == passwdvault.vaults && viewItem == vault-unlocked",
+          "command": "passwdmanager.syncVault",
+          "when": "view == passwdmanager.vaults && viewItem == vault-unlocked",
           "group": "2_vault@1"
         },
         {
-          "command": "passwdvault.changeMasterPassword",
-          "when": "view == passwdvault.vaults && viewItem == vault-unlocked",
+          "command": "passwdmanager.changeMasterPassword",
+          "when": "view == passwdmanager.vaults && viewItem == vault-unlocked",
           "group": "2_vault@2"
         },
         {
-          "command": "passwdvault.backupNow",
-          "when": "view == passwdvault.vaults && viewItem == vault-unlocked",
+          "command": "passwdmanager.backupNow",
+          "when": "view == passwdmanager.vaults && viewItem == vault-unlocked",
           "group": "2_vault@3"
         },
         {
-          "command": "passwdvault.emptyTrash",
-          "when": "view == passwdvault.vaults && viewItem == trash",
+          "command": "passwdmanager.emptyTrash",
+          "when": "view == passwdmanager.vaults && viewItem == trash",
           "group": "2_vault@4"
         },
         {
-          "command": "passwdvault.revealVaultFile",
-          "when": "view == passwdvault.vaults && viewItem =~ /^vault-/",
+          "command": "passwdmanager.revealVaultFile",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^vault-/",
           "group": "3_file@1"
         },
         {
-          "command": "passwdvault.removeVault",
-          "when": "view == passwdvault.vaults && viewItem =~ /^vault-/",
+          "command": "passwdmanager.removeVault",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^vault-/",
           "group": "3_file@2"
         },
         {
-          "command": "passwdvault.renameFolder",
-          "when": "view == passwdvault.vaults && viewItem == folder",
+          "command": "passwdmanager.renameFolder",
+          "when": "view == passwdmanager.vaults && viewItem == folder",
           "group": "3_folder@1"
         },
         {
-          "command": "passwdvault.deleteFolder",
-          "when": "view == passwdvault.vaults && viewItem == folder",
+          "command": "passwdmanager.deleteFolder",
+          "when": "view == passwdmanager.vaults && viewItem == folder",
           "group": "3_folder@2"
         },
         {
-          "command": "passwdvault.copyPassword",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.copyPassword",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "inline@1"
         },
         {
-          "command": "passwdvault.copyUsername",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.copyUsername",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "inline@2"
         },
         {
-          "command": "passwdvault.copyUsername",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.copyUsername",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "1_copy@1"
         },
         {
-          "command": "passwdvault.copyPassword",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.copyPassword",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "1_copy@2"
         },
         {
-          "command": "passwdvault.copyTotp",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry.*-totp/",
+          "command": "passwdmanager.copyTotp",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry.*-totp/",
           "group": "1_copy@3"
         },
         {
-          "command": "passwdvault.copyUrl",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry.*-url/",
+          "command": "passwdmanager.copyUrl",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry.*-url/",
           "group": "1_copy@4"
         },
         {
-          "command": "passwdvault.openUrl",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry.*-url/",
+          "command": "passwdmanager.openUrl",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry.*-url/",
           "group": "1_copy@5"
         },
         {
-          "command": "passwdvault.insertSecret",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.insertSecret",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "1_copy@6"
         },
         {
-          "command": "passwdvault.editItem",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry-active/",
+          "command": "passwdmanager.editItem",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry-active/",
           "group": "2_edit@1"
         },
         {
-          "command": "passwdvault.setupTotpFromQr",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry-active/",
+          "command": "passwdmanager.setupTotpFromQr",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry-active/",
           "group": "2_edit@2"
         },
         {
-          "command": "passwdvault.toggleFavorite",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry-active/",
+          "command": "passwdmanager.toggleFavorite",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry-active/",
           "group": "2_edit@2"
         },
         {
-          "command": "passwdvault.restoreItem",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry-trashed/",
+          "command": "passwdmanager.restoreItem",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry-trashed/",
           "group": "2_edit@3"
         },
         {
-          "command": "passwdvault.deleteItem",
-          "when": "view == passwdvault.vaults && viewItem =~ /^entry/",
+          "command": "passwdmanager.deleteItem",
+          "when": "view == passwdmanager.vaults && viewItem =~ /^entry/",
           "group": "2_edit@4"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "passwdvault.search",
+        "command": "passwdmanager.search",
         "key": "ctrl+alt+p",
         "mac": "cmd+alt+p"
       },
       {
-        "command": "passwdvault.lockAll",
+        "command": "passwdmanager.lockAll",
         "key": "ctrl+alt+l",
         "mac": "cmd+alt+l",
-        "when": "passwdvault.hasUnlocked"
+        "when": "passwdmanager.hasUnlocked"
       }
     ],
     "configuration": {
-      "title": "PasswdVault",
+      "title": "PasswdManager",
       "properties": {
-        "passwdvault.autoLock.minutes": {
+        "passwdmanager.autoLock.minutes": {
           "type": "number",
           "default": 15,
           "minimum": 0,
@@ -696,13 +696,13 @@
           "markdownDescription": "Lock all vaults after this many minutes without activity in VS Code. `0` disables inactivity locking (not recommended).",
           "scope": "application"
         },
-        "passwdvault.autoLock.onWindowBlur": {
+        "passwdmanager.autoLock.onWindowBlur": {
           "type": "boolean",
           "default": false,
           "description": "Lock all vaults as soon as the VS Code window loses focus.",
           "scope": "application"
         },
-        "passwdvault.autoLock.blurGraceSeconds": {
+        "passwdmanager.autoLock.blurGraceSeconds": {
           "type": "number",
           "default": 0,
           "minimum": 0,
@@ -710,7 +710,7 @@
           "description": "When locking on focus loss, wait this many seconds before locking (0 = immediately).",
           "scope": "application"
         },
-        "passwdvault.clipboard.clearAfterSeconds": {
+        "passwdmanager.clipboard.clearAfterSeconds": {
           "type": "number",
           "default": 30,
           "minimum": 0,
@@ -718,13 +718,13 @@
           "markdownDescription": "Clear copied secrets from the clipboard after this many seconds (only if the clipboard still contains the copied value). `0` disables clearing.",
           "scope": "application"
         },
-        "passwdvault.backup.enabled": {
+        "passwdmanager.backup.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Keep rotating encrypted backups of each vault file before it is overwritten.",
           "scope": "application"
         },
-        "passwdvault.backup.count": {
+        "passwdmanager.backup.count": {
           "type": "number",
           "default": 10,
           "minimum": 1,
@@ -732,7 +732,7 @@
           "description": "Number of backup copies to keep per vault.",
           "scope": "application"
         },
-        "passwdvault.backup.intervalMinutes": {
+        "passwdmanager.backup.intervalMinutes": {
           "type": "number",
           "default": 60,
           "minimum": 0,
@@ -740,7 +740,7 @@
           "description": "Minimum minutes between automatic backups of the same vault (a backup is always taken on the first save after unlocking). 0 = back up on every save.",
           "scope": "application"
         },
-        "passwdvault.backup.location": {
+        "passwdmanager.backup.location": {
           "type": "string",
           "enum": [
             "extensionStorage",
@@ -749,11 +749,11 @@
           "default": "extensionStorage",
           "enumDescriptions": [
             "Store backups in the extension's private global storage folder.",
-            "Store backups in a `.passwdvault-backups` folder next to the vault file (useful if the folder is itself backed up or synced)."
+            "Store backups in a `.passwdmanager-backups` folder next to the vault file (useful if the folder is itself backed up or synced)."
           ],
           "scope": "application"
         },
-        "passwdvault.security.kdfMemoryMiB": {
+        "passwdmanager.security.kdfMemoryMiB": {
           "type": "number",
           "default": 64,
           "minimum": 8,
@@ -761,7 +761,7 @@
           "description": "Argon2id memory cost (MiB) used for newly created vaults and when changing the master password.",
           "scope": "application"
         },
-        "passwdvault.security.kdfIterations": {
+        "passwdmanager.security.kdfIterations": {
           "type": "number",
           "default": 3,
           "minimum": 1,
@@ -769,7 +769,7 @@
           "description": "Argon2id iterations used for newly created vaults and when changing the master password.",
           "scope": "application"
         },
-        "passwdvault.security.minMasterPasswordScore": {
+        "passwdmanager.security.minMasterPasswordScore": {
           "type": "number",
           "default": 2,
           "minimum": 0,
@@ -777,25 +777,25 @@
           "markdownDescription": "Minimum zxcvbn strength score (0–4) required for a new master password. Weaker passwords require an explicit confirmation.",
           "scope": "application"
         },
-        "passwdvault.ui.showPasswordStrength": {
+        "passwdmanager.ui.showPasswordStrength": {
           "type": "boolean",
           "default": true,
           "description": "Show password strength indicators in the item editor.",
           "scope": "application"
         },
-        "passwdvault.ui.openDashboardOnUnlock": {
+        "passwdmanager.ui.openDashboardOnUnlock": {
           "type": "boolean",
           "default": false,
           "description": "Open the dashboard automatically after a vault is unlocked from the sidebar.",
           "scope": "application"
         },
-        "passwdvault.ui.showStatusBar": {
+        "passwdmanager.ui.showStatusBar": {
           "type": "boolean",
           "default": true,
           "description": "Show the vault lock status in the status bar.",
           "scope": "application"
         },
-        "passwdvault.health.maxPasswordAgeDays": {
+        "passwdmanager.health.maxPasswordAgeDays": {
           "type": "number",
           "default": 365,
           "minimum": 0,
