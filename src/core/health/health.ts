@@ -65,6 +65,22 @@ export function analyzeHealth(vaultId: string, inputs: Iterable<HealthInput>, op
   return { vaultId, generatedAt: now, total: list.length, counts, items };
 }
 
+/**
+ * Scores passwords that are not cached yet, yielding to the event loop between
+ * small batches so the extension host stays responsive on large vaults.
+ * Afterwards {@link analyzeHealth} only hits the cache.
+ */
+export async function warmHealthCache(inputs: Iterable<HealthInput>, batch = 25): Promise<void> {
+  let n = 0;
+  for (const it of inputs) {
+    const text = typeof it.password === 'string' ? it.password : it.password.getText();
+    const h = digest(text);
+    if (scoreCache.has(h)) continue;
+    scoreCache.set(h, estimateStrength(text, it.userInputs).score);
+    if (++n % batch === 0) await new Promise((r) => setImmediate(r));
+  }
+}
+
 export function clearHealthCache(): void {
   scoreCache.clear();
 }

@@ -18,7 +18,7 @@ export class VaultTreeProvider implements vscode.TreeDataProvider<TreeNode>, vsc
   private readonly sub: vscode.Disposable;
 
   constructor(private readonly manager: VaultManager) {
-    this.sub = manager.onDidChange(() => this.refresh());
+    this.sub = manager.onDidChange((c) => { if (c.kind !== 'health') this.refresh(); });
   }
 
   refresh(): void {

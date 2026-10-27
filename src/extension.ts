@@ -1,4 +1,6 @@
+import * as kdbxweb from 'kdbxweb';
 import * as vscode from 'vscode';
+import { VaultSession } from './core/vault/VaultSession';
 import { Actions } from './host/Actions';
 import { registerCommands } from './host/commands';
 import { AutoLock } from './host/services/AutoLock';
@@ -14,7 +16,16 @@ let clipboard: ClipboardService | undefined;
  * Entry point. Every vault starts locked: decrypted data only ever lives in
  * the memory of this extension host process, and is dropped on lock/exit.
  */
-export function activate(context: vscode.ExtensionContext): void {
+export interface TestApi {
+  manager: VaultManager;
+  actions: Actions;
+  tree: VaultTreeProvider;
+  autoLock: AutoLock;
+  kdbxweb: typeof kdbxweb;
+  VaultSession: typeof VaultSession;
+}
+
+export function activate(context: vscode.ExtensionContext): TestApi | undefined {
   const log = vscode.window.createOutputChannel('PasswdVault', { log: true });
   manager = new VaultManager(context, log);
   clipboard = new ClipboardService();
@@ -44,6 +55,8 @@ export function activate(context: vscode.ExtensionContext): void {
   );
   registerCommands(context, manager, actions, tree, () => autoLock.touch());
   log.info('PasswdVault activated. All vaults are locked.');
+  // Internals are exposed to the integration tests only; never to other extensions in production.
+  return context.extensionMode === vscode.ExtensionMode.Test ? { manager, actions, tree, autoLock, kdbxweb, VaultSession } : undefined;
 }
 
 export async function deactivate(): Promise<void> {

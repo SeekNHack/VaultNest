@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeHealth } from '../../src/core/health/health';
+import { analyzeHealth, warmHealthCache } from '../../src/core/health/health';
 import { estimateStrength } from '../../src/core/security/strength';
 import { pv } from './helpers';
 
@@ -25,5 +25,15 @@ describe('health report', () => {
     expect(r.items.find((i) => i.id === 'b')!.issues.sort()).toEqual(['expired', 'insecureUrl', 'old', 'reused', 'weak']);
     expect(r.items.find((i) => i.id === 'c')).toBeUndefined();
     expect(JSON.stringify(r)).not.toContain('password"');
+  });
+});
+
+describe('warmHealthCache', () => {
+  it('pre-computes scores so the report is consistent', async () => {
+    const inputs = Array.from({ length: 60 }, (_, i) => ({ id: `i${i}`, password: `pw-${i}-qwerty`, modified: 0, expires: null, url: '', userInputs: [] }));
+    await warmHealthCache(inputs, 10);
+    const r = analyzeHealth('v', inputs, { maxAgeDays: 0 });
+    expect(r.total).toBe(60);
+    expect(r.counts.reused).toBe(0);
   });
 });

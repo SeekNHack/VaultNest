@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import * as vscode from 'vscode';
+import { warmHealthCache } from '../../core/health/health';
 import { estimateStrength } from '../../core/security/strength';
 import type { EntrySummary } from '../../shared/model';
 import type { DashboardState, HostEvent, HostMessage, RpcMethod, RpcMethods, RpcRequest, VaultCommand } from '../../shared/protocol';
@@ -66,6 +67,8 @@ export class DashboardPanel implements vscode.Disposable {
   }
 
   navigate(event: Omit<Extract<HostEvent, { type: 'navigate' }>, 'kind' | 'type'>): void {
+    // Send fresh state first so the webview knows the target vault/entry.
+    if (this.ready) this.post({ kind: 'event', type: 'state', state: this.buildState() });
     this.post({ kind: 'event', type: 'navigate', ...event });
   }
 
@@ -99,7 +102,8 @@ export class DashboardPanel implements vscode.Disposable {
       const doc = this.manager.doc(activeVaultId);
       let issues = new Map<string, EntrySummary['issues']>();
       try {
-        issues = new Map(this.manager.healthReport(activeVaultId).items.map((i) => [i.id, i.issues]));
+        const report = this.manager.healthReportIfReady(activeVaultId); // computed in the background
+        if (report) issues = new Map(report.items.map((i) => [i.id, i.issues]));
       } catch {
         // health is best-effort
       }
@@ -190,8 +194,9 @@ export class DashboardPanel implements vscode.Disposable {
     getGeneratorOptions: () => this.actions.generatorOptions(),
     saveGeneratorOptions: ({ options }) => this.actions.saveGeneratorOptions(options),
     strength: ({ value }) => estimateStrength(value),
-    health: ({ vaultId }) => {
+    health: async ({ vaultId }) => {
       this.requireUnlocked(vaultId);
+      await warmHealthCache(this.manager.doc(vaultId).passwords());
       return this.manager.healthReport(vaultId);
     },
     vaultCommand: ({ vaultId, command }) => this.vaultCommand(vaultId, command),

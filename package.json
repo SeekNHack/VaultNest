@@ -238,7 +238,7 @@
         "command": "passwdvault.generatePassword",
         "title": "Generate Password…",
         "category": "PasswdVault",
-        "icon": "$(symbol-key)"
+        "icon": "$(wand)"
       },
       {
         "command": "passwdvault.insertGeneratedPassword",
@@ -250,7 +250,7 @@
         "command": "passwdvault.openGenerator",
         "title": "Open Password Generator",
         "category": "PasswdVault",
-        "icon": "$(symbol-key)"
+        "icon": "$(wand)"
       },
       {
         "command": "passwdvault.passwordHealth",
@@ -656,45 +656,52 @@
           "default": 15,
           "minimum": 0,
           "maximum": 1440,
-          "markdownDescription": "Lock all vaults after this many minutes without activity in VS Code. `0` disables inactivity locking (not recommended)."
+          "markdownDescription": "Lock all vaults after this many minutes without activity in VS Code. `0` disables inactivity locking (not recommended).",
+          "scope": "application"
         },
         "passwdvault.autoLock.onWindowBlur": {
           "type": "boolean",
           "default": false,
-          "description": "Lock all vaults as soon as the VS Code window loses focus."
+          "description": "Lock all vaults as soon as the VS Code window loses focus.",
+          "scope": "application"
         },
         "passwdvault.autoLock.blurGraceSeconds": {
           "type": "number",
           "default": 0,
           "minimum": 0,
           "maximum": 3600,
-          "description": "When locking on focus loss, wait this many seconds before locking (0 = immediately)."
+          "description": "When locking on focus loss, wait this many seconds before locking (0 = immediately).",
+          "scope": "application"
         },
         "passwdvault.clipboard.clearAfterSeconds": {
           "type": "number",
           "default": 30,
           "minimum": 0,
           "maximum": 600,
-          "markdownDescription": "Clear copied secrets from the clipboard after this many seconds (only if the clipboard still contains the copied value). `0` disables clearing."
+          "markdownDescription": "Clear copied secrets from the clipboard after this many seconds (only if the clipboard still contains the copied value). `0` disables clearing.",
+          "scope": "application"
         },
         "passwdvault.backup.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Keep rotating encrypted backups of each vault file before it is overwritten."
+          "description": "Keep rotating encrypted backups of each vault file before it is overwritten.",
+          "scope": "application"
         },
         "passwdvault.backup.count": {
           "type": "number",
           "default": 10,
           "minimum": 1,
           "maximum": 100,
-          "description": "Number of backup copies to keep per vault."
+          "description": "Number of backup copies to keep per vault.",
+          "scope": "application"
         },
         "passwdvault.backup.intervalMinutes": {
           "type": "number",
           "default": 60,
           "minimum": 0,
           "maximum": 10080,
-          "description": "Minimum minutes between automatic backups of the same vault (a backup is always taken on the first save after unlocking). 0 = back up on every save."
+          "description": "Minimum minutes between automatic backups of the same vault (a backup is always taken on the first save after unlocking). 0 = back up on every save.",
+          "scope": "application"
         },
         "passwdvault.backup.location": {
           "type": "string",
@@ -706,50 +713,58 @@
           "enumDescriptions": [
             "Store backups in the extension's private global storage folder.",
             "Store backups in a `.passwdvault-backups` folder next to the vault file (useful if the folder is itself backed up or synced)."
-          ]
+          ],
+          "scope": "application"
         },
         "passwdvault.security.kdfMemoryMiB": {
           "type": "number",
           "default": 64,
           "minimum": 8,
           "maximum": 1024,
-          "description": "Argon2id memory cost (MiB) used for newly created vaults and when changing the master password."
+          "description": "Argon2id memory cost (MiB) used for newly created vaults and when changing the master password.",
+          "scope": "application"
         },
         "passwdvault.security.kdfIterations": {
           "type": "number",
           "default": 3,
           "minimum": 1,
           "maximum": 100,
-          "description": "Argon2id iterations used for newly created vaults and when changing the master password."
+          "description": "Argon2id iterations used for newly created vaults and when changing the master password.",
+          "scope": "application"
         },
         "passwdvault.security.minMasterPasswordScore": {
           "type": "number",
           "default": 2,
           "minimum": 0,
           "maximum": 4,
-          "markdownDescription": "Minimum zxcvbn strength score (0–4) required for a new master password. Weaker passwords require an explicit confirmation."
+          "markdownDescription": "Minimum zxcvbn strength score (0–4) required for a new master password. Weaker passwords require an explicit confirmation.",
+          "scope": "application"
         },
         "passwdvault.ui.showPasswordStrength": {
           "type": "boolean",
           "default": true,
-          "description": "Show password strength indicators in the item editor."
+          "description": "Show password strength indicators in the item editor.",
+          "scope": "application"
         },
         "passwdvault.ui.openDashboardOnUnlock": {
           "type": "boolean",
           "default": false,
-          "description": "Open the dashboard automatically after a vault is unlocked from the sidebar."
+          "description": "Open the dashboard automatically after a vault is unlocked from the sidebar.",
+          "scope": "application"
         },
         "passwdvault.ui.showStatusBar": {
           "type": "boolean",
           "default": true,
-          "description": "Show the vault lock status in the status bar."
+          "description": "Show the vault lock status in the status bar.",
+          "scope": "application"
         },
         "passwdvault.health.maxPasswordAgeDays": {
           "type": "number",
           "default": 365,
           "minimum": 0,
           "maximum": 3650,
-          "description": "Passwords older than this are reported as old in the health report (0 = disabled)."
+          "description": "Passwords older than this are reported as old in the health report (0 = disabled).",
+          "scope": "application"
         }
       }
     }

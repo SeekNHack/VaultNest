@@ -1,0 +1,15 @@
+# Changelog
+
+## 1.0.0 — 2026-10-27
+
+First release.
+
+- Encrypted, KeePass-compatible vaults (KDBX 4, Argon2id, AES-256) — create, open, lock/unlock, multiple vaults, global or per-workspace.
+- Auto-lock on inactivity and (optionally) when the window loses focus; everything locked on startup.
+- Items: logins, API keys, tokens, SSH keys, cards, secure notes; custom (hidden) fields, folders, tags, favorites, expiry, TOTP.
+- Dashboard with search, filters, item details/editor, password generator, password health report and vault settings.
+- Sidebar tree, status bar indicator, quick search (`Ctrl+Alt+P`), copy/insert commands.
+- Password & passphrase generator using the system CSPRNG; zxcvbn strength meter.
+- Clipboard auto-clear (only if the clipboard still holds the copied secret).
+- Crash-safe saving: atomic writes with verification, rotating encrypted backups, automatic merge of external changes (KeePassXC, sync clients), recovery copy on failure.
+- Import: KDBX, Bitwarden (JSON/CSV), KeePassXC CSV, browser CSV, PasswdVault CSV. Export: KDBX, PasswdVault CSV, Bitwarden CSV.

@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { analyzeHealth } from '../core/health/health';
+import { analyzeHealth, warmHealthCache } from '../core/health/health';
 import { VaultDocument } from '../core/vault/VaultDocument';
 import { ConflictKind, ConflictResolution, VaultSession } from '../core/vault/VaultSession';
 import type { HealthReport, VaultInfo } from '../shared/model';
@@ -17,7 +17,7 @@ export interface VaultRef {
   keyFilePath?: string;
 }
 
-export type ChangeKind = 'registry' | 'lock' | 'content';
+export type ChangeKind = 'registry' | 'lock' | 'content' | 'health';
 export interface VaultChange {
   kind: ChangeKind;
   vaultId?: string;
@@ -108,7 +108,9 @@ export class VaultManager implements vscode.Disposable {
   }
 
   async setActive(id: string | null): Promise<void> {
+    if (id === this.context.workspaceState.get<string | null>(ACTIVE_KEY, null)) return;
     await this.context.workspaceState.update(ACTIVE_KEY, id);
+    this.emitter.fire({ kind: 'registry' });
   }
 
   defaultVaultDirectory(): string {
@@ -214,7 +216,15 @@ export class VaultManager implements vscode.Disposable {
         this.emitter.fire({ kind: 'lock', vaultId: id });
         if (!session.doc.formatInfo.kdbxVersion.startsWith('4')) {
           void vscode.window.showInformationMessage(`"${ref.name}" uses the older KDBX 3.1 format. Favorites and item types require KDBX 4.`, 'Upgrade to KDBX 4')
-            .then(async (c) => { if (c) await this.mutate(id, (d) => d.upgradeFormat(config.kdf())); });
+            .then(async (c) => {
+              if (!c) return;
+              try {
+                await this.mutate(id, (d) => d.upgradeFormat(config.kdf()));
+                void vscode.window.showInformationMessage(`"${ref.name}" was upgraded to KDBX 4.`);
+              } catch (err) {
+                void vscode.window.showErrorMessage(`Upgrade failed: ${describeError(err)}`);
+              }
+            });
         }
         return true;
       } catch (err) {
@@ -272,6 +282,29 @@ export class VaultManager implements vscode.Disposable {
       this.emitter.fire({ kind: 'content', vaultId: id });
     }
     return changed;
+  }
+
+  private readonly warming = new Set<string>();
+
+  /**
+   * Returns the cached health report, or undefined while it is being computed
+   * in the background (a 'health' change event fires when it is ready).
+   */
+  healthReportIfReady(id: string): HealthReport | undefined {
+    const cached = this.health.get(id);
+    if (cached) return cached;
+    if (!this.warming.has(id)) {
+      this.warming.add(id);
+      void warmHealthCache(this.doc(id).passwords())
+        .then(() => {
+          if (!this.isUnlocked(id)) return;
+          this.healthReport(id);
+          this.emitter.fire({ kind: 'health', vaultId: id });
+        })
+        .catch((err) => this.log.warn(`Health analysis failed: ${describeError(err)}`))
+        .finally(() => this.warming.delete(id));
+    }
+    return undefined;
   }
 
   healthReport(id: string): HealthReport {

@@ -24,9 +24,9 @@ const commands = [
   cmd('passwdvault.copyUrl', 'Copy URL', 'link'),
   cmd('passwdvault.openUrl', 'Open URL', 'link-external'),
   cmd('passwdvault.insertSecret', 'Insert Secret into Editor…', 'insert'),
-  cmd('passwdvault.generatePassword', 'Generate Password…', 'symbol-key'),
+  cmd('passwdvault.generatePassword', 'Generate Password…', 'wand'),
   cmd('passwdvault.insertGeneratedPassword', 'Insert Generated Password into Editor', 'insert'),
-  cmd('passwdvault.openGenerator', 'Open Password Generator', 'symbol-key'),
+  cmd('passwdvault.openGenerator', 'Open Password Generator', 'wand'),
   cmd('passwdvault.passwordHealth', 'Password Health Report', 'pulse'),
   cmd('passwdvault.changeMasterPassword', 'Change Master Password…', 'key'),
   cmd('passwdvault.import', 'Import…', 'cloud-download'),
@@ -124,5 +124,8 @@ pkg.contributes = {
     },
   },
 };
+// Security: settings are application-scoped so that a (possibly malicious) workspace's
+// .vscode/settings.json cannot disable auto-lock, weaken the KDF or redirect backups.
+for (const prop of Object.values(pkg.contributes.configuration.properties)) prop.scope = 'application';
 pkg.activationEvents = ['onStartupFinished'];
 fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');

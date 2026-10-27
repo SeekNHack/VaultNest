@@ -33,7 +33,7 @@ export const ITEM_TYPE_INFO: Record<ItemType, ItemTypeInfo> = {
     templateFields: [],
   },
   apiKey: {
-    label: 'API Key', plural: 'API Keys', icon: 'symbol-key',
+    label: 'API Key', plural: 'API Keys', icon: 'key',
     usernameLabel: 'Key ID / Client ID', passwordLabel: 'Secret key', urlLabel: 'Endpoint / Console URL',
     templateFields: [],
   },

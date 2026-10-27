@@ -24,6 +24,9 @@ const common = {
   legalComments: 'linked',
 };
 
+// Start from a clean output folder so stale files (e.g. dev source maps) never get packaged.
+fs.rmSync('dist', { recursive: true, force: true });
+
 const contexts = await Promise.all([
   esbuild.context({
     ...common,
