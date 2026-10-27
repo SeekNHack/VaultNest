@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
 import { generate } from '../core/generator/passwordGenerator';
 import { estimateStrength } from '../core/security/strength';
-import { totpCode, type OtpAccount } from '../core/security/totp';
+import { totpCode } from '../core/security/totp';
 import { DEFAULT_GENERATOR_OPTIONS, GeneratorOptions, ITEM_TYPE_INFO, StrengthResult } from '../shared/model';
 import { ClipboardService } from './services/ClipboardService';
-import { accountLabel, type QrSource, type TotpQrService } from './services/TotpQrService';
 import { describeError, VaultManager } from './VaultManager';
 
 const GENERATOR_KEY = 'passwdmanager.generatorOptions';
@@ -19,7 +18,6 @@ export class Actions {
     private readonly context: vscode.ExtensionContext,
     private readonly manager: VaultManager,
     readonly clipboard: ClipboardService,
-    readonly totpQr: TotpQrService,
   ) {}
 
   // ------------------------------------------------------------ clipboard
@@ -50,33 +48,6 @@ export class Actions {
   getTotp(vaultId: string, entryId: string): { code: string; period: number; remaining: number } | null {
     const params = this.manager.doc(vaultId).getTotpParams(entryId);
     return params ? totpCode(params) : null;
-  }
-
-  /** Sets the TOTP key of an existing item, confirming before replacing a different one. */
-  async setTotp(vaultId: string, entryId: string, account: OtpAccount): Promise<boolean> {
-    const doc = this.manager.doc(vaultId);
-    const e = doc.getEntry(entryId);
-    if (e.hasTotp) {
-      const ok = 'Replace';
-      const c = await vscode.window.showWarningMessage(`"${e.title}" already has an authenticator key. Replace it with the one for ${accountLabel(account)}? The old key is kept in the item history.`, { modal: true }, ok);
-      if (c !== ok) return false;
-    }
-    await this.manager.mutate(vaultId, (d) => d.setTotp(entryId, account.uri));
-    return true;
-  }
-
-  /** Creates new login items from scanned 2FA accounts. Returns the new ids. */
-  async createTotpItems(vaultId: string, accounts: OtpAccount[], folderId: string | null = null): Promise<string[]> {
-    return this.manager.mutate(vaultId, (d) => accounts.map((a) => d.saveEntry(null, {
-      type: 'login', title: accountLabel(a), username: a.issuer ? a.account : '', password: '', url: '', notes: '',
-      tags: ['2fa'], favorite: false, folderId, expires: null, totp: a.uri, customFields: [],
-    })));
-  }
-
-  /** Lets the user scan a QR code and returns the single account it holds. */
-  async scanTotpAccount(source?: QrSource | Uint8Array): Promise<OtpAccount | undefined> {
-    const s = source ?? (await this.totpQr.pickSource());
-    return s ? this.totpQr.scanOne(s) : undefined;
   }
 
   // ------------------------------------------------------------ urls

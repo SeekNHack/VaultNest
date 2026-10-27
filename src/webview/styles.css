@@ -327,5 +327,3 @@ body.vscode-high-contrast .card, body.vscode-high-contrast .item.selected { outl
 
 /* 2FA field */
 .field-hint { font-size: 0.9em; margin-top: 4px; }
-.input-group.drop-target { outline: 2px dashed var(--vscode-focusBorder); outline-offset: 2px; border-radius: 3px; }
-.input-group.busy { opacity: 0.6; pointer-events: none; }

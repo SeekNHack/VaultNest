@@ -5,7 +5,6 @@ import { Actions } from './host/Actions';
 import { registerCommands } from './host/commands';
 import { AutoLock } from './host/services/AutoLock';
 import { ClipboardService } from './host/services/ClipboardService';
-import { TotpQrService } from './host/services/TotpQrService';
 import { DashboardPanel } from './host/views/DashboardPanel';
 import { StatusBar } from './host/views/StatusBar';
 import { VaultTreeProvider } from './host/views/VaultTreeProvider';
@@ -39,7 +38,7 @@ export function activate(context: vscode.ExtensionContext): TestApi | undefined 
     await clipboard?.clearIfOurs();
     vscode.window.setStatusBarMessage(`$(lock) PasswdManager locked (${reason})`, 5000);
   });
-  const actions = new Actions(context, manager, clipboard, new TotpQrService(context.extensionPath, (ms) => autoLock.suspendBlurLock(ms)));
+  const actions = new Actions(context, manager, clipboard);
 
   const treeView = vscode.window.createTreeView('passwdmanager.vaults', { treeDataProvider: tree, showCollapseAll: true });
   const updateContext = () => {

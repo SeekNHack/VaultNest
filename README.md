@@ -41,7 +41,7 @@
 | 🔐 **Encrypted vaults** | KDBX 4 with AES-256 and Argon2id, unlocked with a master password and, optionally, a KeePass key file. You can have several vaults; each one is either *global* or tied to a workspace. |
 | 🔒 **Locked by default** | Vaults are locked when VS Code starts, after a configurable idle time, on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored. |
 | 🗂️ **Every kind of secret** | Logins, API keys, tokens, SSH keys, cards and secure notes. Items can have custom fields (plain or hidden), folders, tags, favorites, expiry dates and 2FA codes. |
-| 🛡️ **Two-factor codes (TOTP)** | Get 6- or 8-digit codes for any account. Set them up by scanning the QR code on your screen, from an image, from a pasted screenshot, or by typing the setup key. You can also import a whole Google Authenticator export. |
+| 🛡️ **Two-factor codes (TOTP)** | Get 6- or 8-digit codes for any account: paste the setup key shown by the website into the item, and the current code is always one click away. |
 | 🧭 **Dashboard** | Search, filters (type, folder, tag, favorites, *with 2FA*), item details and editor, password generator, health report and vault settings. It follows your light, dark or high-contrast theme. |
 | ⚡ **Quick access** | `Ctrl+Alt+P` (`Cmd+Alt+P`) searches every unlocked vault. A sidebar tree and inline copy buttons are always one click away. |
 | 🎲 **Generator** | Random passwords or EFF-wordlist passphrases from the OS cryptographic random generator, with a strength meter. |
@@ -63,24 +63,13 @@
 
 ## Two-factor authentication (2FA)
 
-PasswdManager can be your authenticator app. When a website shows a QR code to enable 2FA, you can add it in any of these ways:
+PasswdManager can be your authenticator app. When a website asks you to enable 2FA, it shows a QR code and, usually under *Can't scan it?*, a text **setup key**:
 
-| Method | How |
-|---|---|
-| **Scan the screen** | In the item editor, click the 🖥️ button next to *Two-factor authentication* (or run **PasswdManager: Add 2FA Account from QR Code…**). You then have 5 seconds to bring the QR code into view, for example in your browser. |
-| **Paste a screenshot** | Copy the QR code image (for example with your OS screenshot tool to the clipboard) and press `Ctrl+V` / `Cmd+V` in the item editor. |
-| **Drop or pick an image** | Drag a PNG/JPEG file onto the 2FA field, or click 🖼️ to choose a file. |
-| **Type the key** | Paste the text *setup key* or an `otpauth://` link into the field. |
-
-The editor fills in the item name and username from the QR code if they are empty. **PasswdManager: Add 2FA Account from QR Code…** can also read a **Google Authenticator export** QR code (*Transfer accounts*) and import every account as a new item at once.
-
-![Choosing how to read a 2FA QR code](docs/images/qr.png)
+1. Open the item in the dashboard and click **Edit** (or **Set up 2FA…** on items without a code).
+2. Paste the setup key (or an `otpauth://` link) into *Two-factor authentication*, then save.
+3. Copy the 6-digit code from the item, from quick search or with **PasswdManager: Copy TOTP Code**.
 
 Codes are stored in the KeePassXC format (an `otpauth://` URI in the `otp` field), so KeePassXC, KeePassDX and Strongbox show the same codes. The KeePass 2.x `TimeOtp-*` fields are read too.
-
-> **Privacy.** QR codes are decoded on your computer, in a background thread, by a bundled JavaScript decoder. Screenshots are never sent anywhere, logged or kept. On Linux, the capture is written to a private temporary folder (mode `0700`) and deleted at once.
->
-> **Screen capture needs:** macOS — the *Screen Recording* permission for VS Code (System Settings → Privacy & Security). Windows — nothing. Linux — one of the usual screenshot tools (`gnome-screenshot`, `spectacle`, `grim`, ImageMagick `import`, `scrot`, `maim`, …). If none is available, paste or drop the image instead.
 
 ## Getting started
 
@@ -137,7 +126,7 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 - **No custom cryptography.** The format and the encryption come from [kdbxweb](https://github.com/keeweb/kdbxweb); Argon2 comes from [hash-wasm](https://github.com/Daninet/hash-wasm); random numbers come from the operating system's CSPRNG.
 - **Decrypted data stays in memory**, only in the VS Code extension host and only while a vault is unlocked. Protected fields stay XOR-masked until they are used.
 - **The dashboard is sandboxed.** It runs under a strict Content Security Policy, every message it sends is schema-validated, and it never receives a secret unless you click *reveal* or *edit*. Copying happens in the extension host.
-- **Nothing leaves your machine.** The extension makes no network requests, collects no telemetry and has no AI integration. Secrets and screenshots are never logged.
+- **Nothing leaves your machine.** The extension makes no network requests, collects no telemetry and has no AI integration. Secrets are never logged.
 
 Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (including that the project **has not been independently audited**) and how to report a vulnerability privately.
 
@@ -149,7 +138,7 @@ Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (inc
 
 **Can other extensions read my passwords?** VS Code runs all extensions in one process without isolation from each other. While a vault is unlocked, install only extensions you trust. See [SECURITY.md](SECURITY.md).
 
-**Does it work in Remote / WSL / Codespaces?** PasswdManager runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there. Screen capture needs a local desktop session.
+**Does it work in Remote / WSL / Codespaces?** PasswdManager runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there.
 
 ## Development
 

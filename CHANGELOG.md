@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1 — 2026-10-27
+
+- 2FA keys are now added only by typing or pasting the setup key (or an `otpauth://` link). Reading QR codes from the screen, image files or pasted images has been removed, together with the screen capture and the bundled image decoders.
+- The password strength meter no longer bundles zxcvbn's leaked-password list and large English word lists; it still detects keyboard patterns, sequences, repeats, dates, first names and diceware words.
+
 ## 1.2.0 — 2026-10-27
 
 - Renamed to **PasswdManager** (extension ID `hacknseek.passwdmanager`). Commands, settings and views now use the `passwdmanager.` prefix. Vaults created with earlier versions open unchanged; item types and favorites saved under the old name are still read.

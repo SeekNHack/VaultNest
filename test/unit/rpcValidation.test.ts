@@ -21,13 +21,6 @@ describe('webview message validation', () => {
     expect(() => validateRequest(null)).toThrow(ValidationError);
   });
 
-  it('validates QR scan requests', () => {
-    expect(() => validateRequest(req('scanQr', { source: 'screen' }))).not.toThrow();
-    expect(() => validateRequest(req('scanQr', { source: 'camera' }))).toThrow(ValidationError);
-    expect(() => validateRequest(req('decodeQrImage', { image: 'iVBORw0KGgo=' }))).not.toThrow();
-    expect(() => validateRequest(req('decodeQrImage', { image: 'data:image/png;base64,AAAA' }))).toThrow(/base64/);
-    expect(() => validateRequest(req('decodeQrImage', { image: 'A'.repeat(20_000_001) }))).toThrow(/at most/);
-  });
 
   it('rejects unknown or mistyped properties', () => {
     expect(() => validateRequest(req('ready', { extra: 1 }))).toThrow(/unknown property/);

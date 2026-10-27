@@ -3,7 +3,6 @@ import { activeVault, app, render, selectEntry, strengthMeter, type NewItemPrese
 import { confirmDialog } from '../dialog';
 import { button, debounce, h, icon, iconButton, replace } from '../dom';
 import { rpc } from '../rpc';
-import type { ScannedOtp } from '../../shared/protocol';
 import { reportError, toast } from '../toast';
 
 /**
@@ -20,7 +19,7 @@ interface SecretInput {
 
 function secretInput(opts: {
   id: string; existing: boolean; reveal?: () => Promise<string>; multiline?: boolean; placeholder?: string;
-  onInput?: (v: string) => void; generate?: () => Promise<string>; actions?: HTMLElement[];
+  onInput?: (v: string) => void; generate?: () => Promise<string>;
 }): SecretInput {
   let keep = opts.existing;
   let loaded = !opts.existing;
@@ -68,7 +67,7 @@ function secretInput(opts: {
       reportError(err);
     }
   }) : null;
-  const el = h('div', { class: 'input-group' }, input, h('div', { class: 'input-actions' }, eye, gen, opts.actions ?? null));
+  const el = h('div', { class: 'input-group' }, input, h('div', { class: 'input-actions' }, eye, gen));
   return {
     el, input,
     value: () => (keep ? { keep: true } : input.value),
@@ -124,46 +123,10 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
     onInput: (v) => { markDirty(); updateStrength(v); }, generate,
   });
   if (preset.password) password.set(preset.password);
-  // ---- 2FA: the key can be typed, or read from a QR code on screen, in a file, or pasted/dropped as an image
-  let scanning = false;
-  const applyScan = async (scan: () => Promise<ScannedOtp | null>) => {
-    if (scanning) return;
-    scanning = true;
-    totp.el.classList.add('busy');
-    try {
-      const r = await scan();
-      if (!r) return;
-      totp.set(r.uri);
-      if (!title.value.trim()) title.value = r.issuer || r.account;
-      if (!username.value && r.account) username.value = r.account;
-      markDirty();
-      toast(`2FA key for ${r.issuer || r.account || 'the account'} added — save the item to keep it`, 'success');
-    } catch (err) {
-      reportError(err);
-    } finally {
-      scanning = false;
-      totp.el.classList.remove('busy');
-    }
-  };
-  const scanImage = (file: File) => applyScan(async () => rpc('decodeQrImage', { image: await imageToBase64(file) }));
+  // ---- 2FA: the setup key (or an otpauth:// link) shown by the website
   const totp = secretInput({
-    id: uid('totp'), existing: !!detail?.hasTotp, placeholder: 'Setup key, otpauth:// URI, or paste/drop a QR code image',
+    id: uid('totp'), existing: !!detail?.hasTotp, placeholder: 'Setup key or otpauth:// URI',
     reveal: () => rpc('reveal', { vaultId: vault.id, entryId: detail!.id, field: 'otp' }), onInput: markDirty,
-    actions: [
-      iconButton('device-desktop', 'Scan QR code on screen', () => void applyScan(() => rpc('scanQr', { source: 'screen' }))),
-      iconButton('file-media', 'Read QR code from image file', () => void applyScan(() => rpc('scanQr', { source: 'file' }))),
-    ],
-  });
-  totp.el.addEventListener('dragover', (e) => {
-    if (e.dataTransfer?.types.includes('Files')) { e.preventDefault(); totp.el.classList.add('drop-target'); }
-  });
-  totp.el.addEventListener('dragleave', () => totp.el.classList.remove('drop-target'));
-  totp.el.addEventListener('drop', (e) => {
-    totp.el.classList.remove('drop-target');
-    const file = [...(e.dataTransfer?.files ?? [])].find((f) => f.type.startsWith('image/'));
-    if (!file) return;
-    e.preventDefault();
-    void scanImage(file);
   });
 
   // ---- custom fields
@@ -339,14 +302,6 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
 
   const form = h('form', {
     class: 'editor', 'aria-label': isNew ? 'New item' : `Edit ${detail.title}`,
-    // Pasting an image anywhere in the editor reads it as a 2FA QR code (no field accepts images otherwise).
-    onPaste: (e: ClipboardEvent) => {
-      const item = [...(e.clipboardData?.items ?? [])].find((i) => i.kind === 'file' && i.type.startsWith('image/'));
-      const file = item?.getAsFile();
-      if (!file) return;
-      e.preventDefault();
-      void scanImage(file);
-    },
     onSubmit: (e: Event) => { e.preventDefault(); void save(); },
     onKeydown: (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); void save(); }
@@ -367,7 +322,7 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
     button('Add field', () => { addRow({ name: '', protected: false }); markDirty(); rows[rows.length - 1].name.focus(); }, { icon: 'add' })),
   h('div', { class: 'card' },
     field('Two-factor authentication (TOTP)', uid('totp'), totp.el,
-      h('div', { class: 'field-hint muted' }, 'Scan the QR code shown by the website (on screen or from an image), paste a copied QR image, or type the setup key.')),
+      h('div', { class: 'field-hint muted' }, 'Type or paste the setup key shown by the website when you enable two-factor authentication (usually under "Can\'t scan the QR code?").')),
     field('Notes', uid('notes'), notes)),
   h('div', { class: 'card grid-2' },
     field('Folder', uid('folder'), folder),
@@ -378,20 +333,4 @@ export function renderEditor(pane: HTMLElement, detail: EntryDetail | null, pres
   replace(pane, form);
   title.focus();
   if (isNew && preset.password) updateStrength(preset.password);
-}
-
-/** Reads an image as base64 PNG/JPEG; other formats (WebP, GIF, BMP…) are converted to PNG locally. */
-async function imageToBase64(file: File): Promise<string> {
-  let blob: Blob = file;
-  if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
-    const bitmap = await createImageBitmap(file);
-    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    canvas.getContext('2d')!.drawImage(bitmap, 0, 0);
-    bitmap.close();
-    blob = await canvas.convertToBlob({ type: 'image/png' });
-  }
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  let bin = '';
-  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  return btoa(bin);
 }

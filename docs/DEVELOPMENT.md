@@ -51,8 +51,6 @@ mkdir -p /tmp/vsix && unzip -q passwdmanager-*.vsix -d /tmp/vsix
 PV_EXTENSION_PATH=/tmp/vsix/extension xvfb-run -a node test/integration/runTests.mjs
 ```
 
-The suite also tests 2FA: QR images (a single account and a Google Authenticator export, fixtures in `test/integration/suite/fixtures/`), the dashboard paste endpoint and, on Linux with an X11 screenshot tool, a real screen capture of a QR code opened in VS Code.
-
 The integration suite drives the real commands (unlock with retries, vault creation, master-password change, export), the tree view, the clipboard and the dashboard RPC endpoint. The VS Code prompts are replaced with scripted answers.
 
 ## Manifest

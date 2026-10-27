@@ -1,7 +1,7 @@
 // Writes THIRD_PARTY_LICENSES.txt with the full license text of every bundled dependency.
 const fs = require('fs');
 const path = require('path');
-const pkgs = ['kdbxweb', '@xmldom/xmldom', 'hash-wasm', '@zxcvbn-ts/core', '@zxcvbn-ts/language-common', '@zxcvbn-ts/language-en', '@vscode/codicons', 'jsqr', 'pngjs', 'jpeg-js'];
+const pkgs = ['kdbxweb', '@xmldom/xmldom', 'hash-wasm', '@zxcvbn-ts/core', '@zxcvbn-ts/language-common', '@zxcvbn-ts/language-en', '@vscode/codicons'];
 let out = 'PasswdManager bundles the following third-party software. Their licenses follow.\n';
 for (const name of pkgs) {
   const dir = path.join('node_modules', name);

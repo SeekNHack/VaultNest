@@ -221,24 +221,3 @@ describe('VaultDocument', () => {
     expect(up.revealField(up.listEntries()[0].id, 'Password')).toBe('x');
   });
 });
-
-describe('VaultDocument 2FA helpers', () => {
-  it('sets, replaces and removes TOTP keys with history', async () => {
-    const doc = VaultDocument.create('T', await makeCredentials({ password: pv('m') }), FAST_KDF);
-    const id = doc.saveEntry(null, entryInput());
-    doc.setTotp(id, 'otpauth://totp/GitHub:me?secret=JBSWY3DPEHPK3PXP&issuer=GitHub');
-    expect(doc.getEntry(id).hasTotp).toBe(true);
-    expect(doc.getEntry(id).historyCount).toBe(1);
-    doc.setTotp(id, 'GEZDGNBVGY3TQOJQ');
-    expect(doc.revealField(id, 'otp')).toMatch(/secret=GEZDGNBVGY3TQOJQ/);
-    expect(() => doc.setTotp(id, 'not base32 !')).toThrow(/authenticator/);
-    doc.setTotp(id, '');
-    expect(doc.getEntry(id).hasTotp).toBe(false);
-  });
-
-  it('reuses an existing top-level folder', async () => {
-    const doc = VaultDocument.create('T', await makeCredentials({ password: pv('m') }), FAST_KDF);
-    const a = doc.ensureFolder('Authenticator');
-    expect(doc.ensureFolder('Authenticator')).toBe(a);
-  });
-});

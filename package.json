@@ -2,7 +2,7 @@
   "name": "passwdmanager",
   "displayName": "PasswdManager",
   "description": "A secure, local-first password manager for VS Code. Encrypted vaults, 2FA codes, password generator, API key storage and password health reports.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "publisher": "hacknseek",
   "license": "MIT",
   "author": {
@@ -58,21 +58,15 @@
     "@zxcvbn-ts/language-common": "^4.1.3",
     "@zxcvbn-ts/language-en": "^4.1.1",
     "hash-wasm": "^4.12.0",
-    "jpeg-js": "^0.4.4",
-    "jsqr": "^1.4.0",
-    "kdbxweb": "^2.1.1",
-    "pngjs": "^7.0.0"
+    "kdbxweb": "^2.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
-    "@types/pngjs": "^6.0.5",
-    "@types/qrcode": "^1.5.6",
     "@types/vscode": "^1.90.0",
     "@vscode/codicons": "^0.0.46-24",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
-    "qrcode": "^1.5.4",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   },
@@ -217,18 +211,6 @@
         "title": "Copy TOTP Code",
         "category": "PasswdManager",
         "icon": "$(watch)"
-      },
-      {
-        "command": "passwdmanager.addTotpFromQr",
-        "title": "Add 2FA Account from QR Code…",
-        "category": "PasswdManager",
-        "icon": "$(shield)"
-      },
-      {
-        "command": "passwdmanager.setupTotpFromQr",
-        "title": "Set Up 2FA from QR Code…",
-        "category": "PasswdManager",
-        "icon": "$(shield)"
       },
       {
         "command": "passwdmanager.copyUrl",
@@ -424,14 +406,6 @@
           "when": "passwdmanager.hasUnlocked"
         },
         {
-          "command": "passwdmanager.addTotpFromQr",
-          "when": "passwdmanager.hasUnlocked"
-        },
-        {
-          "command": "passwdmanager.setupTotpFromQr",
-          "when": "passwdmanager.hasUnlocked"
-        },
-        {
           "command": "passwdmanager.lock",
           "when": "passwdmanager.hasUnlocked"
         },
@@ -509,11 +483,6 @@
           "group": "1_vault@2"
         },
         {
-          "command": "passwdmanager.addTotpFromQr",
-          "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
-          "group": "1_vault@3"
-        },
-        {
           "command": "passwdmanager.import",
           "when": "view == passwdmanager.vaults && passwdmanager.hasUnlocked",
           "group": "2_data@1"
@@ -559,11 +528,6 @@
           "command": "passwdmanager.newFolder",
           "when": "view == passwdmanager.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
           "group": "1_new@2"
-        },
-        {
-          "command": "passwdmanager.addTotpFromQr",
-          "when": "view == passwdmanager.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
-          "group": "1_new@3"
         },
         {
           "command": "passwdmanager.syncVault",
@@ -649,11 +613,6 @@
           "command": "passwdmanager.editItem",
           "when": "view == passwdmanager.vaults && viewItem =~ /^entry-active/",
           "group": "2_edit@1"
-        },
-        {
-          "command": "passwdmanager.setupTotpFromQr",
-          "when": "view == passwdmanager.vaults && viewItem =~ /^entry-active/",
-          "group": "2_edit@2"
         },
         {
           "command": "passwdmanager.toggleFavorite",

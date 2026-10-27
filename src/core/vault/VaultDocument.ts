@@ -544,28 +544,6 @@ export class VaultDocument {
     return entry.uuid.id;
   }
 
-  /** Sets (or removes, with an empty string) the TOTP key of an entry, keeping a history version. */
-  setTotp(id: string, value: string): void {
-    const e = this.findEntry(id);
-    if (this.isInTrash(e)) throw new VaultError('Restore the item before editing it');
-    let uri = '';
-    try {
-      uri = value.trim() ? normalizeTotpInput(value, fieldText(e.fields.get(STD_FIELDS.title))) : '';
-    } catch (err) {
-      throw new VaultError(`Invalid authenticator key: ${(err as Error).message}`);
-    }
-    e.pushHistory();
-    for (const k of [...e.fields.keys()]) if (isTotpField(k)) e.fields.delete(k);
-    if (uri) e.fields.set(TOTP_FIELD, ProtectedValue.fromString(uri));
-    e.times.update();
-  }
-
-  /** Returns the id of a top-level folder with this name, creating it if needed. */
-  ensureFolder(name: string): string {
-    const existing = this.root.groups.find((g) => g.name === name && g !== this.trashGroup);
-    return existing ? existing.uuid.id : this.createFolder(name, null);
-  }
-
   setFavorite(id: string, favorite: boolean): void {
     const e = this.findEntry(id);
     this.setCustomData(e, CUSTOM_DATA.favorite, favorite ? 'true' : undefined);
