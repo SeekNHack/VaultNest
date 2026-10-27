@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { config } from '../config';
 
 /**
- * Locks all vaults after a period of inactivity in VS Code and, optionally,
- * when the window loses focus. "Activity" is any interaction with editors,
+ * Locks each vault after its own period of inactivity in VS Code and, optionally,
+ * all of them when the window loses focus. "Activity" is any interaction with editors,
  * terminals, the window, or VaultNest itself.
  */
 export class AutoLock implements vscode.Disposable {
@@ -12,7 +12,10 @@ export class AutoLock implements vscode.Disposable {
   private blurTimer: NodeJS.Timeout | undefined;
   private readonly disposables: vscode.Disposable[] = [];
 
-  constructor(private readonly hasUnlocked: () => boolean, private readonly lockAll: (reason: string) => Promise<void>) {
+  constructor(
+    private readonly unlocked: () => { id: string; minutes: number }[],
+    private readonly lock: (ids: string[], reason: string) => Promise<void>,
+  ) {
     const touch = () => this.touch();
     this.disposables.push(
       vscode.window.onDidChangeTextEditorSelection(touch),
@@ -38,17 +41,17 @@ export class AutoLock implements vscode.Disposable {
       this.blurTimer = undefined;
       return;
     }
-    if (!config.lockOnWindowBlur() || !this.hasUnlocked()) return;
+    if (!config.lockOnWindowBlur() || !this.unlocked().length) return;
+    const lockAll = () => void this.lock(this.unlocked().map((v) => v.id), 'window lost focus');
     const grace = config.blurGraceSeconds();
-    if (grace === 0) void this.lockAll('window lost focus');
-    else this.blurTimer = setTimeout(() => void this.lockAll('window lost focus'), grace * 1000);
+    if (grace === 0) lockAll();
+    else this.blurTimer = setTimeout(lockAll, grace * 1000);
   }
 
   private async check(): Promise<void> {
-    const minutes = config.autoLockMinutes();
-    if (minutes <= 0 || !this.hasUnlocked()) return;
-    if (Date.now() - this.lastActivity >= minutes * 60_000) {
-      await this.lockAll(`inactive for ${minutes} min`);
+    const idle = Date.now() - this.lastActivity;
+    for (const { id, minutes } of this.unlocked()) {
+      if (minutes > 0 && idle >= minutes * 60_000) await this.lock([id], `inactive for ${minutes} min`);
     }
   }
 

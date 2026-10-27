@@ -19,7 +19,7 @@ export interface DashboardState {
   folders: FolderNode[];
   entries: EntrySummary[];
   tags: string[];
-  prefs: { showPasswordStrength: boolean; clipboardClearSeconds: number };
+  prefs: { showPasswordStrength: boolean; clipboardClearSeconds: number; autoLockMinutes: number };
 }
 
 /** RPC method signatures: [params, result]. */
@@ -51,6 +51,7 @@ export interface RpcMethods {
   strength: [{ value: string }, StrengthResult];
   health: [{ vaultId: string }, HealthReport];
   vaultCommand: [{ vaultId: string; command: VaultCommand }, void];
+  setAutoLock: [{ vaultId: string; minutes: number | null }, void];
   openSettings: [Record<string, never>, void];
 }
 

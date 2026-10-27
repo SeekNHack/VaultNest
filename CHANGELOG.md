@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.4.0 — 2026-10-27
 
+- Vault settings: choose after how long each vault locks itself without activity (or use the global default). The setting can only be changed while the vault is unlocked; closing VS Code always locks every vault.
 - Item editor: a new button next to *Generate* opens the generator in a dialog, to choose the length, character sets or a passphrase for that password only (the saved defaults are not changed).
 
 ## 1.3.1 — 2026-10-27

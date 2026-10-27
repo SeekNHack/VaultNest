@@ -282,6 +282,15 @@ exports.run = async function run() {
     assert.ok(!manager.refs().some((r) => r.name === 'Weak Vault'));
   });
 
+  await test('per-vault auto-lock timeout overrides the global setting', async () => {
+    assert.equal(manager.autoLockMinutes(vaultId), 15);
+    await manager.updateRef(vaultId, { autoLockMinutes: 5 });
+    assert.equal(manager.autoLockMinutes(vaultId), 5);
+    assert.equal(manager.info(manager.ref(vaultId)).autoLockMinutes, 5);
+    await manager.updateRef(vaultId, { autoLockMinutes: undefined });
+    assert.equal(manager.autoLockMinutes(vaultId), 15);
+  });
+
   await test('removing the vault keeps the file', async () => {
     await manager.removeRef(vaultId);
     assert.ok(fs.existsSync(file));

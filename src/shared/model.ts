@@ -87,6 +87,8 @@ export interface VaultInfo {
     lastSaved?: number;
   };
   keyFilePath?: string;
+  /** Per-vault inactivity timeout in minutes (0 = never); unset uses the global setting. */
+  autoLockMinutes?: number;
 }
 
 export interface FolderNode {

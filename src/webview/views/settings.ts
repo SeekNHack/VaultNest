@@ -11,6 +11,7 @@ export function renderSettings(pane: HTMLElement): void {
   const cmd = (command: VaultCommand) => () => void rpc('vaultCommand', { vaultId: v.id, command }).catch(reportError);
   const row = (label: string, value: string | HTMLElement) => h('div', { class: 'kv' }, h('span', { class: 'kv-key' }, label), h('span', { class: 'kv-value' }, value));
   const isV4 = d.kdbxVersion.startsWith('4');
+  const autoLock = autoLockSelect(v.id, v.autoLockMinutes, app.data?.prefs.autoLockMinutes ?? 15);
   const weakKdf = d.kdf === 'AES-KDF' || (d.kdfMemoryMiB !== undefined && d.kdfMemoryMiB < 16);
 
   replace(pane, h('div', { class: 'tool' },
@@ -28,6 +29,8 @@ export function renderSettings(pane: HTMLElement): void {
       row('Encryption', d.cipher),
       row('Key derivation', `${d.kdf}${d.kdfMemoryMiB ? ` · ${d.kdfMemoryMiB} MiB` : ''}${d.kdfIterations ? ` · ${d.kdfIterations} iterations` : ''}`),
       row('Key file', d.hasKeyFile ? (v.keyFilePath ?? 'Yes') : 'Not used'),
+      row('Auto-lock', h('span', { class: 'row gap-s wrap' }, autoLock,
+        h('span', { class: 'muted' }, 'without activity in VS Code. Closing VS Code always locks it.'))),
       !isV4 || weakKdf ? h('div', { class: 'callout warn' }, icon('warning'),
         h('span', null, !isV4 ? 'This vault uses the legacy KDBX 3.1 format. ' : 'The key derivation settings are weak. ', 'Upgrading re-encrypts it with KDBX 4 and Argon2id.'),
         button('Upgrade', cmd('upgradeFormat'), { variant: 'primary' })) : null,
@@ -60,4 +63,23 @@ export function renderSettings(pane: HTMLElement): void {
       h('div', { class: 'card-title' }, 'Preferences'),
       h('p', { class: 'muted' }, 'Auto-lock timeout, clipboard clearing, backups, key derivation strength and more are regular VS Code settings.'),
       button('Open VaultNest settings', () => void rpc('openSettings', {}).catch(reportError), { icon: 'gear' }))));
+}
+
+const AUTO_LOCK_CHOICES = [1, 5, 10, 15, 30, 60, 120, 240, 480];
+
+const minutesLabel = (m: number) => (m === 0 ? 'Never' : m < 60 ? `After ${m} min` : `After ${m / 60} h`);
+
+/** Per-vault inactivity timeout; "Default" follows the vaultnest.autoLock.minutes setting. */
+function autoLockSelect(vaultId: string, current: number | undefined, globalMinutes: number): HTMLSelectElement {
+  const choices = [...new Set([...AUTO_LOCK_CHOICES, ...(current ? [current] : [])])].sort((a, b) => a - b);
+  return h('select', {
+    class: 'select', 'aria-label': 'Auto-lock', value: current === undefined ? '' : String(current),
+    onChange: (e: Event) => {
+      const value = (e.target as HTMLSelectElement).value;
+      rpc('setAutoLock', { vaultId, minutes: value === '' ? null : Number(value) }).catch(reportError);
+    },
+  },
+  h('option', { value: '' }, `Default (${minutesLabel(globalMinutes).toLowerCase()})`),
+  choices.map((m) => h('option', { value: String(m) }, minutesLabel(m))),
+  h('option', { value: '0' }, 'Never (not recommended)'));
 }

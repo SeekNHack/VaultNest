@@ -105,7 +105,7 @@ All settings are *application-scoped*, so a workspace's `.vscode/settings.json` 
 
 | Setting | Default | Description |
 |---|---|---|
-| `vaultnest.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never) |
+| `vaultnest.autoLock.minutes` | `15` | Lock after this many minutes without activity in VS Code (`0` = never). Each vault can override it under *Vault settings* in the dashboard |
 | `vaultnest.autoLock.onWindowBlur` | `false` | Lock when the VS Code window loses focus |
 | `vaultnest.autoLock.blurGraceSeconds` | `0` | Delay before the focus-loss lock |
 | `vaultnest.clipboard.clearAfterSeconds` | `30` | Clear copied secrets after N seconds (`0` = never) |
