@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 — 2026-10-27
+
+- **2FA from QR codes:** set up authenticator codes by scanning the screen (with a cancellable countdown), choosing an image file, pasting a screenshot, or dropping an image onto the 2FA field. The editor fills in an empty name or username from the QR code.
+- **Google Authenticator export:** import every account from a *Transfer accounts* QR code as new items.
+- New commands: *Add 2FA Account from QR Code…* and *Set Up 2FA from QR Code…* (in the item context menu).
+- *With 2FA* filter in the dashboard, and a *Set up 2FA…* shortcut on items without codes.
+- Security: the bundled XML parser (`@xmldom/xmldom`) is upgraded to 0.8.15, which fixes several advisories.
+- README with screenshots.
+
 ## 1.0.0 — 2026-10-27
 
 First release.

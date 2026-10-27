@@ -27,8 +27,16 @@ export class AutoLock implements vscode.Disposable {
     this.interval = setInterval(() => void this.check(), 10_000);
   }
 
+  private blurSuspendedUntil = 0;
+
   touch(): void {
     this.lastActivity = Date.now();
+  }
+
+  /** Temporarily ignores focus loss (e.g. while the user switches to the window showing a QR code). */
+  suspendBlurLock(ms: number): void {
+    this.blurSuspendedUntil = Date.now() + ms;
+    this.touch();
   }
 
   private onWindowState(state: vscode.WindowState): void {
@@ -38,7 +46,7 @@ export class AutoLock implements vscode.Disposable {
       this.blurTimer = undefined;
       return;
     }
-    if (!config.lockOnWindowBlur() || !this.hasUnlocked()) return;
+    if (!config.lockOnWindowBlur() || !this.hasUnlocked() || Date.now() < this.blurSuspendedUntil) return;
     const grace = config.blurGraceSeconds();
     if (grace === 0) void this.lockAll('window lost focus');
     else this.blurTimer = setTimeout(() => void this.lockAll('window lost focus'), grace * 1000);

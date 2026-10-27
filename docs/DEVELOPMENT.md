@@ -51,6 +51,8 @@ mkdir -p /tmp/vsix && unzip -q passwdvault-*.vsix -d /tmp/vsix
 PV_EXTENSION_PATH=/tmp/vsix/extension xvfb-run -a node test/integration/runTests.mjs
 ```
 
+The suite also tests 2FA: QR images (a single account and a Google Authenticator export, fixtures in `test/integration/suite/fixtures/`), the dashboard paste endpoint and, on Linux with an X11 screenshot tool, a real screen capture of a QR code opened in VS Code.
+
 The integration suite drives the real commands (unlock with retries, vault creation, master-password change, export), the tree view, the clipboard and the dashboard RPC endpoint. The VS Code prompts are replaced with scripted answers.
 
 ## Manifest
@@ -63,4 +65,10 @@ The `contributes` section of `package.json` (commands, menus, settings) is gener
 2. `npm ci && npm run typecheck && npm test && xvfb-run -a npm run test:integration`
 3. `npx vsce package` — check the file list it prints (only `dist/`, `media/` and the docs should be included).
 4. Install the VSIX locally (`code --install-extension passwdvault-x.y.z.vsix`) and smoke-test: create a vault, add an item, lock/unlock, open the file in KeePassXC.
-5. Publish with `npx vsce publish` (requires a Marketplace publisher and a PAT). The `publisher` field (`SeekNHack`) must match your Marketplace publisher ID.
+5. Commit, then tag and push: `git tag v1.2.3 && git push origin main v1.2.3`. The **Release** workflow (`.github/workflows/release.yml`) checks that the tag matches `package.json`, runs every test (including against the packaged VSIX), publishes to the Marketplace with the `VSCE_PAT` repository secret and attaches the `.vsix` to a GitHub release. The `publisher` field (`SeekNHack`) must match your Marketplace publisher ID.
+
+Bundled dependencies: after changing them, run `node scripts/third-party-licenses.cjs` and update `NOTICE.md`. `@xmldom/xmldom` is pinned through `overrides` in `package.json` (see SECURITY.md).
+
+## Screenshots
+
+The README images in `docs/images/` are real VS Code screenshots taken under Xvfb with a demo vault (fake data only), at 1600×1000 with the title bar cropped.

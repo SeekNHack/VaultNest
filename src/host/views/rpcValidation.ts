@@ -1,5 +1,5 @@
 import { isItemType, type EntryInput, type GeneratorOptions } from '../../shared/model';
-import { VAULT_COMMANDS, type RpcMethod, type RpcRequest } from '../../shared/protocol';
+import { MAX_QR_IMAGE_BASE64, VAULT_COMMANDS, type RpcMethod, type RpcRequest } from '../../shared/protocol';
 
 /**
  * Strict validation of messages received from the webview. Even though the
@@ -101,6 +101,11 @@ const schemas: { [M in RpcMethod]: Check } = {
   health: obj(vaultRef),
   vaultCommand: obj({ vaultId: id, command: oneOf(VAULT_COMMANDS) }),
   openSettings: empty,
+  scanQr: obj({ source: oneOf(['screen', 'file']) }),
+  decodeQrImage: obj({ image: (v, p) => {
+    str(MAX_QR_IMAGE_BASE64)(v, p);
+    if (!/^[A-Za-z0-9+/]*={0,2}$/.test(v as string)) fail(p, 'base64');
+  } }),
 };
 
 export function validateRequest(msg: unknown): RpcRequest {

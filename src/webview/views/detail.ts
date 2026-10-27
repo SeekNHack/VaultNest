@@ -144,6 +144,11 @@ function renderView(pane: HTMLElement, e: EntryDetail): void {
   }
   if (e.hasPassword) credentials.push(fieldBlock(info.passwordLabel ?? 'Password', secretValue(vaultId, e.id, 'Password', e.passwordLength)));
   if (e.hasTotp && !e.trashed) credentials.push(totpBlock(vaultId, e.id));
+  else if (!e.trashed && e.type !== 'note') {
+    credentials.push(fieldBlock('Two-factor authentication', h('div', { class: 'value-row' },
+      h('span', { class: 'muted' }, 'Not set up'),
+      button('Set up 2FA…', () => selectEntry(e.id, 'edit'), { icon: 'shield', title: 'Add an authenticator key by scanning the QR code shown by the website' }))));
+  }
   if (e.url) {
     credentials.push(fieldBlock(info.urlLabel ?? 'URL', plainValue(e.url, [
       iconButton('link-external', 'Open', () => void rpc('openUrl', { url: e.url }).catch(reportError)),

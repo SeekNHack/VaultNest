@@ -100,6 +100,7 @@ function renderNav(): void {
     h('div', { class: 'nav-section' },
       navItem('All items', 'list-flat', { kind: 'all' }, active.length),
       navItem('Favorites', 'star-full', { kind: 'favorites' }, active.filter((e) => e.favorite).length),
+      navItem('With 2FA', 'shield', { kind: 'totp' }, active.filter((e) => e.hasTotp).length),
       navItem('Trash', 'trash', { kind: 'trash' }, trash)),
     h('div', { class: 'nav-section' },
       h('div', { class: 'nav-heading' }, 'Types'),
@@ -137,6 +138,7 @@ function filterTitle(): string {
   const f = app.filter;
   switch (f.kind) {
     case 'favorites': return 'Favorites';
+    case 'totp': return 'With 2FA';
     case 'trash': return 'Trash';
     case 'type': return ITEM_TYPE_INFO[f.value as keyof typeof ITEM_TYPE_INFO]?.plural ?? 'Items';
     case 'folder': {

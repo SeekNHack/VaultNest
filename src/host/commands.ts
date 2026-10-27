@@ -377,6 +377,54 @@ export function registerCommands(
     await action?.run();
   });
 
+  // ------------------------------------------------------------ two-factor (TOTP) QR codes
+  reg('passwdvault.setupTotpFromQr', async (arg) => {
+    const ref = await resolveEntry(arg, 'Set up 2FA for item', (e) => !e.trashed);
+    if (!ref) return;
+    const account = await actions.scanTotpAccount();
+    if (!account || !(await actions.setTotp(ref.vaultId, ref.entryId, account))) return;
+    const title = manager.doc(ref.vaultId).getEntry(ref.entryId).title;
+    void vscode.window.showInformationMessage(`2FA set up for "${title}". Verification codes are now available from the item.`);
+  });
+  reg('passwdvault.addTotpFromQr', async (arg) => {
+    const source = await actions.totpQr.pickSource();
+    if (!source) return;
+    const payload = await actions.totpQr.scan(source);
+    if (!payload) return;
+    const labelOf = (a: (typeof payload.accounts)[number]) => `${a.issuer || a.account || 'Account'}${a.issuer && a.account ? ` (${a.account})` : ''}`;
+    if (payload.accounts.length > 1) {
+      // Google Authenticator export: import the selected accounts as new items.
+      const picks = await vscode.window.showQuickPick(payload.accounts.map((a) => ({ label: labelOf(a), picked: true, account: a })), {
+        title: `Import ${payload.accounts.length} 2FA accounts as new items`, canPickMany: true,
+      });
+      if (!picks?.length) return;
+      const id = await resolveVault(arg, { unlocked: true, prompt: 'Import 2FA accounts into vault' });
+      if (!id) return;
+      const ids = await actions.createTotpItems(id, picks.map((p) => p.account), folderOf(arg));
+      void vscode.window.showInformationMessage(`Imported ${ids.length} 2FA account(s). Add the matching passwords to the new items when you can.`);
+      return;
+    }
+    const account = payload.accounts[0];
+    const choice = await vscode.window.showQuickPick([
+      { label: '$(add) Create a new item', id: 'new' },
+      { label: '$(link) Add to an existing item…', id: 'existing' },
+    ], { title: `2FA key found: ${labelOf(account)}` });
+    if (!choice) return;
+    if (choice.id === 'existing') {
+      const ref = await pickEntry(`Add the 2FA key for ${labelOf(account)} to…`, (e) => !e.trashed);
+      if (!ref || !(await actions.setTotp(ref.vaultId, ref.entryId, account))) return;
+      await manager.setActive(ref.vaultId);
+      dashboard().navigate({ view: 'items', vaultId: ref.vaultId, entryId: ref.entryId });
+      return;
+    }
+    const id = await resolveVault(arg, { unlocked: true, prompt: 'Add item to vault' });
+    if (!id) return;
+    const [entryId] = await actions.createTotpItems(id, [account], folderOf(arg));
+    await manager.setActive(id);
+    dashboard().navigate({ view: 'items', vaultId: id, entryId, edit: true });
+    void vscode.window.showInformationMessage('2FA item created. You can now add its password and website.');
+  });
+
   // ------------------------------------------------------------ generator
   reg('passwdvault.openGenerator', () => dashboard().navigate({ view: 'generator' }));
   reg('passwdvault.generatePassword', async () => {

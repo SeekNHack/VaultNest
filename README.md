@@ -1,50 +1,118 @@
-# PasswdVault
+<p align="center">
+  <img src="media/icon.png" width="96" alt="PasswdVault logo">
+</p>
 
-**A secure, local-first password manager inside Visual Studio Code.**
+<h1 align="center">PasswdVault</h1>
 
-PasswdVault keeps your passwords, API keys, tokens, SSH keys and notes in an encrypted **KeePass-compatible (KDBX 4)** file stored on your machine. No cloud, no account, no telemetry — and the same file opens in KeePassXC, KeePass, KeeWeb or Strongbox.
+<p align="center">
+  <b>A secure, local-first password manager inside Visual Studio Code.</b><br>
+  Passwords, API keys, tokens, SSH keys and 2FA codes in an encrypted KeePass-compatible file that stays on your machine.
+</p>
 
-> Install the extension and you're done: all libraries are bundled. You do **not** need KeePass or anything else installed.
+<p align="center">
+  <a href="https://github.com/SeekNHack/PasswdVault/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/SeekNHack/PasswdVault/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
+</p>
+
+![PasswdVault dashboard with the sidebar, item list and a login with its 2FA code](docs/images/dashboard.png)
+
+- **Your file, your machine.** Vaults are standard **KDBX 4** files (AES-256 + Argon2id). There is no cloud, no account and no telemetry, and the same file opens in KeePassXC, KeePass, KeePassDX or Strongbox.
+- **Nothing else to install.** Every library is bundled in the extension. You don't need KeePass, Node.js or any other program.
+- **Made for developers.** Keep API keys, tokens, SSH keys and `.env` values next to your code. Copy them in one keystroke, and they are cleared from the clipboard automatically.
+
+---
+
+## Contents
+
+- [Features](#features)
+- [Two-factor authentication (2FA)](#two-factor-authentication-2fa)
+- [Getting started](#getting-started)
+- [Everyday use](#everyday-use)
+- [Using the vault on other devices](#using-the-vault-on-other-devices)
+- [Settings](#settings)
+- [Security](#security)
+- [FAQ](#faq)
+- [Development](#development)
 
 ## Features
 
-- **Encrypted vaults** — KDBX 4 with AES-256 and Argon2id key derivation, protected by a master password (optionally plus a KeePass key file). Create several vaults; each one can be *global* (every VS Code window) or tied to a workspace.
-- **Locked by default** — vaults are locked when VS Code starts, after a configurable inactivity period, on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored.
-- **Everything a developer keeps secret** — logins, API keys, tokens, SSH keys, cards and secure notes, with custom fields (plain or hidden), folders, tags, favorites, expiry dates and TOTP authenticator codes.
-- **Dashboard** — a tab with search, filters by type/folder/tag, item details, an editor, a password generator, a password-health report and vault settings. It follows your light, dark or high-contrast theme.
-- **Sidebar & quick access** — an Activity Bar view with vaults, folders and items; one-click copy of usernames and passwords; `Ctrl+Alt+P` (`Cmd+Alt+P` on macOS) searches every unlocked vault from anywhere.
-- **Password generator** — random passwords (length, character sets, minimum digits/symbols, avoid ambiguous characters) or EFF-wordlist passphrases, from a cryptographically secure generator, with a strength meter. Copy the result, insert it into the editor or save it as a new item.
-- **Password health** — finds weak, reused, old and expired passwords and http:// URLs. The analysis runs locally.
-- **Safe clipboard** — copied secrets are cleared after 30 s (configurable), but only if the clipboard still holds them.
-- **No data loss** — atomic, verified saves; rotating encrypted backups; automatic merge when another app (KeePassXC, a sync client) changed the file; an encrypted recovery copy if a save ever fails.
-- **Import/export** — import KeePass `.kdbx`, Bitwarden (JSON/CSV), KeePassXC CSV and Chrome/Edge/Firefox/Safari CSV. Export to `.kdbx` (encrypted) or CSV (with explicit warnings and re-authentication).
+| | |
+|---|---|
+| 🔐 **Encrypted vaults** | KDBX 4 with AES-256 and Argon2id, unlocked with a master password and, optionally, a KeePass key file. You can have several vaults; each one is either *global* or tied to a workspace. |
+| 🔒 **Locked by default** | Vaults are locked when VS Code starts, after a configurable idle time, on demand (`Ctrl+Alt+L`) and optionally when the window loses focus. The master password is never stored. |
+| 🗂️ **Every kind of secret** | Logins, API keys, tokens, SSH keys, cards and secure notes. Items can have custom fields (plain or hidden), folders, tags, favorites, expiry dates and 2FA codes. |
+| 🛡️ **Two-factor codes (TOTP)** | Get 6- or 8-digit codes for any account. Set them up by scanning the QR code on your screen, from an image, from a pasted screenshot, or by typing the setup key. You can also import a whole Google Authenticator export. |
+| 🧭 **Dashboard** | Search, filters (type, folder, tag, favorites, *with 2FA*), item details and editor, password generator, health report and vault settings. It follows your light, dark or high-contrast theme. |
+| ⚡ **Quick access** | `Ctrl+Alt+P` (`Cmd+Alt+P`) searches every unlocked vault. A sidebar tree and inline copy buttons are always one click away. |
+| 🎲 **Generator** | Random passwords or EFF-wordlist passphrases from the OS cryptographic random generator, with a strength meter. |
+| 🩺 **Password health** | Finds weak, reused, old and expired passwords and `http://` logins. The analysis runs entirely on your machine. |
+| 📋 **Safe clipboard** | Copied secrets are cleared after 30 seconds, but only if the clipboard still holds them. |
+| 💾 **No data loss** | Saves are atomic and verified. Rotating encrypted backups are kept, changes made by other apps are merged automatically, and an encrypted recovery copy is written if a save fails. |
+| 🔁 **Import / export** | Import from KeePass `.kdbx`, Bitwarden (JSON/CSV), KeePassXC CSV and Chrome/Edge/Firefox/Safari CSV. Export to an encrypted `.kdbx` or to CSV; CSV export asks for re-authentication. |
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/editor.png" alt="Item editor with hidden fields and the 2FA section"><br><sub><b>Editor.</b> Secrets stay hidden until you choose to reveal them.</sub></td>
+    <td width="50%"><img src="docs/images/generator.png" alt="Password generator"><br><sub><b>Generator.</b> Passwords and passphrases with an entropy estimate.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/health.png" alt="Password health report"><br><sub><b>Health report.</b> Weak, reused, expired and insecure items.</sub></td>
+    <td width="50%"><img src="docs/images/quicksearch.png" alt="Quick search across vaults"><br><sub><b>Quick search.</b> <code>Ctrl+Alt+P</code> from anywhere, with inline copy buttons.</sub></td>
+  </tr>
+</table>
+
+## Two-factor authentication (2FA)
+
+PasswdVault can be your authenticator app. When a website shows a QR code to enable 2FA, you can add it in any of these ways:
+
+| Method | How |
+|---|---|
+| **Scan the screen** | In the item editor, click the 🖥️ button next to *Two-factor authentication* (or run **PasswdVault: Add 2FA Account from QR Code…**). You then have 5 seconds to bring the QR code into view, for example in your browser. |
+| **Paste a screenshot** | Copy the QR code image (for example with your OS screenshot tool to the clipboard) and press `Ctrl+V` / `Cmd+V` in the item editor. |
+| **Drop or pick an image** | Drag a PNG/JPEG file onto the 2FA field, or click 🖼️ to choose a file. |
+| **Type the key** | Paste the text *setup key* or an `otpauth://` link into the field. |
+
+The editor fills in the item name and username from the QR code if they are empty. **PasswdVault: Add 2FA Account from QR Code…** can also read a **Google Authenticator export** QR code (*Transfer accounts*) and import every account as a new item at once.
+
+![Choosing how to read a 2FA QR code](docs/images/qr.png)
+
+Codes are stored in the KeePassXC format (an `otpauth://` URI in the `otp` field), so KeePassXC, KeePassDX and Strongbox show the same codes. The KeePass 2.x `TimeOtp-*` fields are read too.
+
+> **Privacy.** QR codes are decoded on your computer, in a background thread, by a bundled JavaScript decoder. Screenshots are never sent anywhere, logged or kept. On Linux, the capture is written to a private temporary folder (mode `0700`) and deleted at once.
+>
+> **Screen capture needs:** macOS — the *Screen Recording* permission for VS Code (System Settings → Privacy & Security). Windows — nothing. Linux — one of the usual screenshot tools (`gnome-screenshot`, `spectacle`, `grim`, ImageMagick `import`, `scrot`, `maim`, …). If none is available, paste or drop the image instead.
 
 ## Getting started
 
 1. Click the **PasswdVault** shield in the Activity Bar.
-2. Choose **Create New Vault** (or **Open Existing .kdbx**).
-3. Pick a name and a location, then a strong master password. **It cannot be recovered if you forget it.**
-4. Add items from the **+** button in the sidebar or from the dashboard (**PasswdVault: Open Dashboard**).
+2. Choose **Create New Vault**, or **Open Existing .kdbx** to use a file you already have.
+3. Choose a name, a location and a strong master password. **A forgotten master password cannot be recovered.**
+4. Add items with the **+** button in the sidebar or in the dashboard (**PasswdVault: Open Dashboard**).
 
-### Everyday use
+## Everyday use
 
-| Action | How |
+| Task | How |
 |---|---|
-| Search and copy | `Ctrl+Alt+P` / `Cmd+Alt+P` → type → use the inline buttons (username, password, TOTP, open URL) or press Enter for more actions |
-| Copy from the sidebar | Hover an item → key / person icons, or right-click |
-| Insert a secret into a file | **PasswdVault: Insert Secret into Editor…** (e.g. into a local `.env`) |
+| Search and copy | `Ctrl+Alt+P` / `Cmd+Alt+P`, type, then use the inline buttons (username, password, 2FA code, open URL) or press Enter for more actions |
+| Copy from the sidebar | Hover an item for the key/person icons, or right-click it |
+| Copy a 2FA code | The copy button next to the live code, or **PasswdVault: Copy TOTP Code** |
+| Insert a secret into a file | **PasswdVault: Insert Secret into Editor…** (for example into a local `.env`) |
 | Generate a password | **PasswdVault: Generate Password…** or the generator in the dashboard |
 | Lock everything | `Ctrl+Alt+L` / `Cmd+Alt+L`, the lock icon, or the status bar item |
 
-Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit selected item · `Ctrl+S` save · `Esc` cancel · `Ctrl+G` generator · `Ctrl+L` lock.
+Dashboard shortcuts: `Ctrl+F` or `/` search · `Ctrl+N` new item · `E` edit · `Ctrl+S` save · `Esc` cancel · `Ctrl+G` generator · `Ctrl+L` lock.
 
-### Using the vault in other apps and on other devices
+<p align="center"><img src="docs/images/light-dashboard.png" width="80%" alt="The dashboard in a light theme"><br><sub>The dashboard follows your VS Code theme.</sub></p>
 
-The vault is a standard KeePass file. To use it elsewhere, create it (or move it) in a folder you sync yourself — Syncthing, Nextcloud, Dropbox, a USB stick — and open it with KeePassXC, KeePassDX, Strongbox, etc. When the file changes on disk, PasswdVault merges the changes on its next save, or right away with **Reload / Merge Changes from Disk**.
+## Using the vault on other devices
 
-PasswdVault-specific metadata (item type, favorite) is kept in KDBX 4 `CustomData`, which other clients ignore and preserve.
+The vault is an ordinary KeePass file. Keep it in a folder you sync yourself (Syncthing, Nextcloud, Dropbox, a USB stick) and open it with KeePassXC, KeePassDX, Strongbox or another KeePass client. When the file changes on disk, PasswdVault merges the changes on its next save. To merge right away, run **Reload / Merge Changes from Disk**.
+
+Metadata specific to PasswdVault (item type, favorite) is stored in KDBX 4 `CustomData`; other clients ignore it but keep it.
 
 ## Settings
+
+All settings are *application-scoped*, so a workspace's `.vscode/settings.json` cannot weaken them.
 
 | Setting | Default | Description |
 |---|---|---|
@@ -55,23 +123,33 @@ PasswdVault-specific metadata (item type, favorite) is kept in KDBX 4 `CustomDat
 | `passwdvault.backup.enabled` | `true` | Keep rotating encrypted backups |
 | `passwdvault.backup.count` | `10` | Backups kept per vault |
 | `passwdvault.backup.intervalMinutes` | `60` | Minimum minutes between automatic backups |
-| `passwdvault.backup.location` | `extensionStorage` | `extensionStorage` or `besideVault` (`.passwdvault-backups/` next to the file) |
-| `passwdvault.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults / password changes |
-| `passwdvault.security.kdfIterations` | `3` | Argon2id iterations for new vaults / password changes |
-| `passwdvault.security.minMasterPasswordScore` | `2` | Minimum zxcvbn score (0–4) for new master passwords before a warning |
-| `passwdvault.ui.showPasswordStrength` | `true` | Strength meter in the editor |
+| `passwdvault.backup.location` | `extensionStorage` | `extensionStorage`, or `besideVault` (`.passwdvault-backups/` next to the file) |
+| `passwdvault.security.kdfMemoryMiB` | `64` | Argon2id memory for new vaults and password changes |
+| `passwdvault.security.kdfIterations` | `3` | Argon2id iterations for new vaults and password changes |
+| `passwdvault.security.minMasterPasswordScore` | `2` | Minimum zxcvbn score (0–4) for a new master password before a warning |
+| `passwdvault.ui.showPasswordStrength` | `true` | Show the strength meter in the editor |
 | `passwdvault.ui.openDashboardOnUnlock` | `false` | Open the dashboard after unlocking |
-| `passwdvault.ui.showStatusBar` | `true` | Status bar lock indicator |
+| `passwdvault.ui.showStatusBar` | `true` | Show the lock indicator in the status bar |
 | `passwdvault.health.maxPasswordAgeDays` | `365` | Age after which a password is reported as old |
 
 ## Security
 
-- Encryption and the file format come from established libraries ([kdbxweb](https://github.com/keeweb/kdbxweb), Argon2 from [hash-wasm](https://github.com/Daninet/hash-wasm)). PasswdVault does not implement its own cryptography.
-- Decrypted data exists only in the memory of the VS Code extension host while a vault is unlocked. Protected fields stay XOR-masked in memory (kdbxweb `ProtectedValue`) until they are used.
-- The dashboard runs with a strict Content Security Policy and never receives a secret unless you click *reveal* or *edit*. Copying happens in the extension host. Every message from the dashboard is validated.
-- No network access, no telemetry, no AI integration. Secrets are never logged.
+- **No custom cryptography.** The format and the encryption come from [kdbxweb](https://github.com/keeweb/kdbxweb); Argon2 comes from [hash-wasm](https://github.com/Daninet/hash-wasm); random numbers come from the operating system's CSPRNG.
+- **Decrypted data stays in memory**, only in the VS Code extension host and only while a vault is unlocked. Protected fields stay XOR-masked until they are used.
+- **The dashboard is sandboxed.** It runs under a strict Content Security Policy, every message it sends is schema-validated, and it never receives a secret unless you click *reveal* or *edit*. Copying happens in the extension host.
+- **Nothing leaves your machine.** The extension makes no network requests, collects no telemetry and has no AI integration. Secrets and screenshots are never logged.
 
-Read [SECURITY.md](SECURITY.md) for the threat model, the known limits and how to report a vulnerability.
+Read [SECURITY.md](SECURITY.md) for the threat model, the known limitations (including that the project **has not been independently audited**) and how to report a vulnerability privately.
+
+## FAQ
+
+**Do I need KeePass installed?** No. PasswdVault reads and writes KeePass files by itself; KeePass apps are optional.
+
+**I forgot my master password. Can you recover it?** No. Nobody can: that is what makes the encryption meaningful. Keep a written copy somewhere safe.
+
+**Can other extensions read my passwords?** VS Code runs all extensions in one process without isolation from each other. While a vault is unlocked, install only extensions you trust. See [SECURITY.md](SECURITY.md).
+
+**Does it work in Remote / WSL / Codespaces?** PasswdVault runs where the VS Code extension host runs. In remote setups that is the remote machine, so the vault file and the decrypted data are there. Screen capture needs a local desktop session.
 
 ## Development
 
@@ -80,11 +158,11 @@ npm install
 npm run build            # bundle to dist/ (esbuild)
 npm run typecheck        # TypeScript (host + webview)
 npm test                 # unit tests (vitest)
-npm run test:integration # runs the extension inside a real VS Code (needs a display or xvfb-run)
+npm run test:integration # runs the extension in a real VS Code (needs a display or xvfb-run)
 npm run package          # creates passwdvault-<version>.vsix
 ```
 
-Press `F5` in VS Code to launch an Extension Development Host. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the design and [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the release process.
+Press `F5` in VS Code to start an Extension Development Host. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describes the design, and [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) describes testing and the release process.
 
 ## License
 

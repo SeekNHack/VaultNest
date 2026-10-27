@@ -1,0 +1,49 @@
+name: Release
+
+# Publishes to the VS Code Marketplace when a version tag (v1.2.3) is pushed.
+# Requires the repository secret VSCE_PAT (Azure DevOps PAT with Marketplace › Manage scope).
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub release with the .vsix
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Check that the tag matches package.json
+        run: |
+          v=$(node -p "require('./package.json').version")
+          test "v$v" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match package.json version $v"; exit 1; }
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: xvfb-run -a node test/integration/runTests.mjs
+      - run: npx vsce package --out passwdvault.vsix
+      - name: Integration tests against the packaged VSIX
+        run: |
+          mkdir -p /tmp/vsix && unzip -q passwdvault.vsix -d /tmp/vsix
+          PV_EXTENSION_PATH=/tmp/vsix/extension xvfb-run -a node test/integration/runTests.mjs
+      - name: Publish to the VS Code Marketplace
+        run: npx vsce publish --packagePath passwdvault.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: GitHub release
+        run: gh release create "$GITHUB_REF_NAME" passwdvault.vsix --title "PasswdVault $GITHUB_REF_NAME" --notes "See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_REF_NAME/CHANGELOG.md)."
+        env:
+          GH_TOKEN: ${{ github.token }}

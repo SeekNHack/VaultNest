@@ -30,8 +30,8 @@ fs.rmSync('dist', { recursive: true, force: true });
 const contexts = await Promise.all([
   esbuild.context({
     ...common,
-    entryPoints: ['src/extension.ts'],
-    outfile: 'dist/extension.js',
+    entryPoints: { extension: 'src/extension.ts', qrWorker: 'src/host/workers/qrWorker.ts' },
+    outdir: 'dist',
     platform: 'node',
     format: 'cjs',
     target: 'node20',

@@ -1,8 +1,8 @@
 {
   "name": "passwdvault",
   "displayName": "PasswdVault",
-  "description": "A secure, local-first password manager for VS Code. Encrypted KeePass-compatible (KDBX 4) vaults, password generator, API key & token storage, health reports.",
-  "version": "1.0.0",
+  "description": "A secure, local-first password manager for VS Code. Encrypted KeePass-compatible (KDBX 4) vaults, 2FA/TOTP codes with QR scanning, password generator, API key & token storage, health reports.",
+  "version": "1.1.0",
   "publisher": "SeekNHack",
   "license": "MIT",
   "author": {
@@ -36,7 +36,10 @@
     "vault",
     "api key",
     "totp",
-    "generator"
+    "generator",
+    "2fa",
+    "authenticator",
+    "otp"
   ],
   "main": "./dist/extension.js",
   "capabilities": {
@@ -62,15 +65,21 @@
     "@zxcvbn-ts/language-common": "^4.1.3",
     "@zxcvbn-ts/language-en": "^4.1.1",
     "hash-wasm": "^4.12.0",
-    "kdbxweb": "^2.1.1"
+    "jpeg-js": "^0.4.4",
+    "jsqr": "^1.4.0",
+    "kdbxweb": "^2.1.1",
+    "pngjs": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "@types/pngjs": "^6.0.5",
+    "@types/qrcode": "^1.5.6",
     "@types/vscode": "^1.90.0",
     "@vscode/codicons": "^0.0.46-24",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
+    "qrcode": "^1.5.4",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   },
@@ -215,6 +224,18 @@
         "title": "Copy TOTP Code",
         "category": "PasswdVault",
         "icon": "$(watch)"
+      },
+      {
+        "command": "passwdvault.addTotpFromQr",
+        "title": "Add 2FA Account from QR Code…",
+        "category": "PasswdVault",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "passwdvault.setupTotpFromQr",
+        "title": "Set Up 2FA from QR Code…",
+        "category": "PasswdVault",
+        "icon": "$(shield)"
       },
       {
         "command": "passwdvault.copyUrl",
@@ -410,6 +431,14 @@
           "when": "passwdvault.hasUnlocked"
         },
         {
+          "command": "passwdvault.addTotpFromQr",
+          "when": "passwdvault.hasUnlocked"
+        },
+        {
+          "command": "passwdvault.setupTotpFromQr",
+          "when": "passwdvault.hasUnlocked"
+        },
+        {
           "command": "passwdvault.lock",
           "when": "passwdvault.hasUnlocked"
         },
@@ -487,6 +516,11 @@
           "group": "1_vault@2"
         },
         {
+          "command": "passwdvault.addTotpFromQr",
+          "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
+          "group": "1_vault@3"
+        },
+        {
           "command": "passwdvault.import",
           "when": "view == passwdvault.vaults && passwdvault.hasUnlocked",
           "group": "2_data@1"
@@ -532,6 +566,11 @@
           "command": "passwdvault.newFolder",
           "when": "view == passwdvault.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
           "group": "1_new@2"
+        },
+        {
+          "command": "passwdvault.addTotpFromQr",
+          "when": "view == passwdvault.vaults && viewItem =~ /^(vault-unlocked|folder)$/",
+          "group": "1_new@3"
         },
         {
           "command": "passwdvault.syncVault",
@@ -617,6 +656,11 @@
           "command": "passwdvault.editItem",
           "when": "view == passwdvault.vaults && viewItem =~ /^entry-active/",
           "group": "2_edit@1"
+        },
+        {
+          "command": "passwdvault.setupTotpFromQr",
+          "when": "view == passwdvault.vaults && viewItem =~ /^entry-active/",
+          "group": "2_edit@2"
         },
         {
           "command": "passwdvault.toggleFavorite",
@@ -771,5 +815,8 @@
   },
   "activationEvents": [
     "onStartupFinished"
-  ]
+  ],
+  "overrides": {
+    "@xmldom/xmldom": "0.8.15"
+  }
 }

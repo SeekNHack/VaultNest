@@ -6,7 +6,7 @@ import { rpc, vscodeApi } from './rpc';
 import { reportError } from './toast';
 
 export interface Filter {
-  kind: 'all' | 'favorites' | 'trash' | 'type' | 'folder' | 'tag' | 'issue';
+  kind: 'all' | 'favorites' | 'totp' | 'trash' | 'type' | 'folder' | 'tag' | 'issue';
   value?: string;
 }
 
@@ -82,6 +82,7 @@ export function visibleEntries(): EntrySummary[] {
     if (e.trashed) return false;
     switch (f.kind) {
       case 'favorites': return e.favorite;
+      case 'totp': return e.hasTotp;
       case 'type': return e.type === f.value;
       case 'folder': return e.folderId === f.value;
       case 'tag': return e.tags.includes(f.value ?? '');

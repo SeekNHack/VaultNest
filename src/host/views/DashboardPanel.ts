@@ -201,6 +201,8 @@ export class DashboardPanel implements vscode.Disposable {
     },
     vaultCommand: ({ vaultId, command }) => this.vaultCommand(vaultId, command),
     openSettings: async () => { await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:SeekNHack.passwdvault'); },
+    scanQr: async ({ source }) => (await this.actions.scanTotpAccount(source)) ?? null,
+    decodeQrImage: async ({ image }) => (await this.actions.scanTotpAccount(Uint8Array.from(Buffer.from(image, 'base64')))) ?? null,
   };
 
   private async vaultCommand(vaultId: string, command: VaultCommand): Promise<void> {

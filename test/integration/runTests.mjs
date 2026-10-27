@@ -1,7 +1,7 @@
 // Launches a real VS Code instance (downloaded by @vscode/test-electron) with the
 // extension under development and runs test/integration/suite/index.cjs inside it.
 import { runTests } from '@vscode/test-electron';
-import { copyFileSync, mkdirSync, mkdtempSync } from 'node:fs';
+import { cpSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,8 +13,7 @@ const extensionPath = process.env.PV_EXTENSION_PATH ?? root;
 // `vscode` API instance based on the requiring file's location (needed to stub prompts).
 let suite = path.join(root, 'test/integration/suite/index.cjs');
 if (extensionPath !== root) {
-  mkdirSync(path.join(extensionPath, '.test-suite'), { recursive: true });
-  copyFileSync(suite, path.join(extensionPath, '.test-suite', 'index.cjs'));
+  cpSync(path.dirname(suite), path.join(extensionPath, '.test-suite'), { recursive: true });
   suite = path.join(extensionPath, '.test-suite', 'index.cjs');
 }
 try {

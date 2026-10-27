@@ -52,7 +52,17 @@ export interface RpcMethods {
   health: [{ vaultId: string }, HealthReport];
   vaultCommand: [{ vaultId: string; command: VaultCommand }, void];
   openSettings: [Record<string, never>, void];
+  /** Reads a 2FA QR code from the screen or an image file (chosen by the user in a host dialog). */
+  scanQr: [{ source: 'screen' | 'file' }, ScannedOtp | null];
+  /** Reads a 2FA QR code from an image pasted or dropped into the webview (base64 PNG/JPEG). */
+  decodeQrImage: [{ image: string }, ScannedOtp | null];
 }
+
+/** A scanned 2FA account. `uri` is the secret otpauth:// URI, sent only in reply to an explicit user action. */
+export interface ScannedOtp { uri: string; issuer: string; account: string }
+
+/** Largest pasted/dropped image accepted, as base64 characters (≈ 15 MB of image data). */
+export const MAX_QR_IMAGE_BASE64 = 20_000_000;
 
 export type VaultCommand =
   | 'changeMasterPassword' | 'backupNow' | 'openBackupFolder' | 'sync' | 'import' | 'export'
