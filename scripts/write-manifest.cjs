@@ -89,6 +89,7 @@ pkg.contributes = {
       { command: 'vaultnest.deleteFolder', when: `${view} && viewItem == folder`, group: '3_folder@2' },
       { command: 'vaultnest.copyPassword', when: `${view} && viewItem =~ /^entry/`, group: 'inline@1' },
       { command: 'vaultnest.copyUsername', when: `${view} && viewItem =~ /^entry/`, group: 'inline@2' },
+      { command: 'vaultnest.copyTotp', when: `${view} && viewItem =~ /^entry.*-totp/`, group: 'inline@3' },
       { command: 'vaultnest.copyUsername', when: `${view} && viewItem =~ /^entry/`, group: '1_copy@1' },
       { command: 'vaultnest.copyPassword', when: `${view} && viewItem =~ /^entry/`, group: '1_copy@2' },
       { command: 'vaultnest.copyTotp', when: `${view} && viewItem =~ /^entry.*-totp/`, group: '1_copy@3' },

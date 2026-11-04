@@ -200,7 +200,8 @@ function renderList(): void {
       e.issues.length ? h('span', { class: 'badge warn', title: e.issues.map((i) => ISSUE_LABELS[i].label).join(', ') }, icon('warning')) : null),
     !e.trashed ? h('div', { class: 'item-actions' },
       e.username ? iconButton('person', 'Copy username', (ev) => { ev.stopPropagation(); void rpc('copyField', { vaultId: v.id, entryId: e.id, field: 'UserName' }).catch(reportError); }) : null,
-      e.hasPassword ? iconButton('key', 'Copy password', (ev) => { ev.stopPropagation(); void rpc('copyField', { vaultId: v.id, entryId: e.id, field: 'Password' }).catch(reportError); }) : null) : null);
+      e.hasPassword ? iconButton('key', 'Copy password', (ev) => { ev.stopPropagation(); void rpc('copyField', { vaultId: v.id, entryId: e.id, field: 'Password' }).catch(reportError); }) : null,
+      e.hasTotp ? iconButton('watch', 'Copy 2FA code', (ev) => { ev.stopPropagation(); void rpc('copyField', { vaultId: v.id, entryId: e.id, field: 'otp' }).catch(reportError); }) : null) : null);
     ul.appendChild(li);
   }
   replace(listEl, header, ul);

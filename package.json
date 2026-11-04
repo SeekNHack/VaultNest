@@ -589,6 +589,11 @@
           "group": "inline@2"
         },
         {
+          "command": "vaultnest.copyTotp",
+          "when": "view == vaultnest.vaults && viewItem =~ /^entry.*-totp/",
+          "group": "inline@3"
+        },
+        {
           "command": "vaultnest.copyUsername",
           "when": "view == vaultnest.vaults && viewItem =~ /^entry/",
           "group": "1_copy@1"

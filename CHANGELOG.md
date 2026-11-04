@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Quick copy of the 2FA code: a new button next to the username and password buttons, in the sidebar tree and in the dashboard item list.
+
 ## 1.5.1 — 2026-10-27
 
 - The auto-lock time is now stored inside each encrypted vault and changing it asks for the master password (*Vault settings → Auto-lock → Change…* or **VaultNest: Change Auto-Lock Time…**). It can no longer be changed from VS Code settings or by editing a file.

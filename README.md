@@ -83,7 +83,7 @@ Codes are stored as an `otpauth://` URI in the `otp` field, the format most KDBX
 | Task | How |
 |---|---|
 | Search and copy | `Ctrl+Alt+P` / `Cmd+Alt+P`, type, then use the inline buttons (username, password, 2FA code, open URL) or press Enter for more actions |
-| Copy from the sidebar | Hover an item for the key/person icons, or right-click it |
+| Copy from the sidebar | Hover an item for the key/person/2FA icons, or right-click it |
 | Copy a 2FA code | The copy button next to the live code, or **VaultNest: Copy TOTP Code** |
 | Insert a secret into a file | **VaultNest: Insert Secret into Editor…** (for example into a local `.env`) |
 | Generate a password | **VaultNest: Generate Password…** or the generator in the dashboard |
