@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.5.2 — 2026-11-05
 
 - Quick copy of the 2FA code: a new button next to the username and password buttons, in the sidebar tree and in the dashboard item list.
 
